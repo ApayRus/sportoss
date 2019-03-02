@@ -22,8 +22,7 @@ const initialState = { fullname: "", birthday: "", gender: "" };
 class Form extends React.Component {
   state = initialState;
 
-  //state = { ...this.props.data };
-  componentWillReceiveProps() {
+  componentDidMount() {
     const { fullname, birthday, gender } = this.props.data;
     console.log("this.props.data", this.props.data);
     this.setState({ fullname, birthday, gender });
@@ -41,7 +40,10 @@ class Form extends React.Component {
   handleSubmit = () => {
     const { fullname, birthday, gender } = this.state;
     console.log("this.state", this.state);
-    const createdBy = { userName: this.props.profile.username, userId: this.props.auth.uid };
+    const createdBy = {
+      userName: this.props.profile.username,
+      userId: this.props.auth.uid
+    };
     const firestoreAdd = this.props.firestoreAdd(
       { collection: "athlets" },
       { fullname, birthday, gender, createdBy }
@@ -126,13 +128,17 @@ class Form extends React.Component {
               </Select>
             </FormControl>
             <br />
-            <FormHelperText error>{authError ? authError : null}</FormHelperText>
+            <FormHelperText error>
+              {authError ? authError : null}
+            </FormHelperText>
             {/*           <FormHelperText>
             Don't have an accout? Please <Link to="/register">register</Link>.
           </FormHelperText> */}
           </DialogContent>
           <DialogActions>
-            <Button /* onClick={this.handleDelete} */ color="secondary">Delete</Button>
+            <Button /* onClick={this.handleDelete} */ color="secondary">
+              Delete
+            </Button>
             <Button onClick={this.handleCancel} color="primary">
               Cancel
             </Button>

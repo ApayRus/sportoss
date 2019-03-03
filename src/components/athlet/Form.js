@@ -58,13 +58,6 @@ class Form extends React.Component {
     this.handleCancel();
   };
 
-  handleDelete = () => {
-    const { id, name, image } = this.state;
-    const confirmation = window.confirm("Are you sure? ");
-    if (confirmation) this.props.deleteAuthor({ id, name, image }, "authors");
-    this.props.toggleModal();
-  };
-
   handleCancel = () => {
     this.props.closeModal();
   };

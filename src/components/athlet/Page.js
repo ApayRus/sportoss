@@ -12,7 +12,7 @@ import { compose } from "redux";
 //Table columns or fields of our data model
 const columns = [
   { id: "name", numeric: false, disablePadding: false, label: "ФИО" },
-  { id: "birhday", numeric: false, disablePadding: false, label: "Родился" },
+  { id: "birthday", numeric: false, disablePadding: false, label: "Родился" },
   { id: "gender", numeric: false, disablePadding: false, label: "Пол" }
 ];
 
@@ -42,11 +42,12 @@ export class Page extends Component {
       <main>
         {isLoaded(athlets) ? (
           <Table
-            athlets={athlets}
+            data={athlets}
             // handleSelected={this.getSelected}
             openModal={this.openModal}
             firestoreDelete={firestoreDelete}
             columns={columns}
+            title="Спортсмены"
           />
         ) : (
           <CircularProgress />

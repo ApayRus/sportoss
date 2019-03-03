@@ -53,6 +53,8 @@ const EnhancedTableToolbar = props => {
     openModal(selected[selected.length - 1]);
   };
 
+  const {title} = props
+
   return (
     <Toolbar
       className={classNames(classes.root, {
@@ -66,7 +68,7 @@ const EnhancedTableToolbar = props => {
           </Typography>
         ) : (
           <Typography variant="h6" id="tableTitle">
-            Спортсмены
+            {title}
           </Typography>
         )}
       </div>

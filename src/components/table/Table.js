@@ -66,7 +66,7 @@ class EnhancedTable extends React.Component {
   };
 
   handleSelectAllClick = event => {
-    const data = this.props.athlets;
+    const data = this.props.data;
     if (event.target.checked) {
       this.setState(state => ({ selected: data.map(n => n.id) }));
       return;
@@ -100,7 +100,7 @@ class EnhancedTable extends React.Component {
   render() {
     const { classes, columns } = this.props;
     const { order, orderBy, selected } = this.state;
-    const data = this.props.athlets || [];
+    const data = this.props.data || [];
     return (
       <Paper className={classes.root}>
         <EnhancedTableToolbar
@@ -108,6 +108,7 @@ class EnhancedTable extends React.Component {
           selected={selected}
           firestoreDelete={this.props.firestoreDelete}
           openModal={this.props.openModal}
+          title={this.props.title}
         />
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle">
@@ -121,26 +122,26 @@ class EnhancedTable extends React.Component {
               rowCount={data.length}
             />
             <TableBody>
-              {stableSort(data, getSorting(order, orderBy)).map(n => {
-                const isSelected = this.isSelected(n.id);
+              {stableSort(data, getSorting(order, orderBy)).map(row => {
+                const isSelected = this.isSelected(row.id);
                 return (
                   <TableRow
                     hover
-                    onClick={event => this.handleClick(event, n.id)}
+                    onClick={event => this.handleClick(event, row.id)}
                     role="checkbox"
                     aria-checked={isSelected}
                     tabIndex={-1}
-                    key={n.id}
+                    key={row.id}
                     selected={isSelected}
                   >
                     <TableCell padding="checkbox">
                       <Checkbox checked={isSelected} />
                     </TableCell>
-                    <TableCell component="th" scope="row" padding="none">
-                      {n.name}
-                    </TableCell>
-                    <TableCell align="right">{n.birthday}</TableCell>
-                    <TableCell align="right">{n.gender}</TableCell>
+                    {columns.map(col => (
+                      <TableCell align="left" padding="none" key={`${row.id}-${row[col.id]}`}>
+                        {row[col.id]}
+                      </TableCell>
+                    ))}
                   </TableRow>
                 );
               })}

@@ -4,6 +4,7 @@ import LoginForm from "./components/auth/LoginForm";
 import RegisterForm from "./components/auth/RegisterForm";
 import Navbar from "./components/layouts/Navbar";
 import AthletsPage from "./components/athlet/Page";
+import TournamentsPage from "./components/tournament/Page";
 import Main from "./components/main";
 
 class App extends Component {
@@ -15,6 +16,7 @@ class App extends Component {
           <Switch>
             <Route exact path="/" component={Main} />
             <Route path="/athlets" component={AthletsPage} />
+            <Route path="/tournaments" component={TournamentsPage} />
             <Route path="/login" component={LoginForm} />
             <Route path="/register" component={RegisterForm} />
           </Switch>

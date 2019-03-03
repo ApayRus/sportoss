@@ -31,9 +31,7 @@ function stableSort(array, cmp) {
 }
 
 function getSorting(order, orderBy) {
-  return order === "desc"
-    ? (a, b) => desc(a, b, orderBy)
-    : (a, b) => -desc(a, b, orderBy);
+  return order === "desc" ? (a, b) => desc(a, b, orderBy) : (a, b) => -desc(a, b, orderBy);
 }
 
 const styles = theme => ({
@@ -52,7 +50,7 @@ const styles = theme => ({
 class EnhancedTable extends React.Component {
   state = {
     order: "asc",
-    orderBy: "fullname",
+    orderBy: "name",
     selected: []
   };
 
@@ -100,7 +98,7 @@ class EnhancedTable extends React.Component {
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   render() {
-    const { classes } = this.props;
+    const { classes, columns } = this.props;
     const { order, orderBy, selected } = this.state;
     const data = this.props.athlets || [];
     return (
@@ -109,11 +107,12 @@ class EnhancedTable extends React.Component {
           numSelected={selected.length}
           selected={selected}
           firestoreDelete={this.props.firestoreDelete}
-          toggleModal={this.props.toggleModal}
+          openModal={this.props.openModal}
         />
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle">
             <EnhancedTableHead
+              columns={columns}
               numSelected={selected.length}
               order={order}
               orderBy={orderBy}
@@ -138,7 +137,7 @@ class EnhancedTable extends React.Component {
                       <Checkbox checked={isSelected} />
                     </TableCell>
                     <TableCell component="th" scope="row" padding="none">
-                      {n.fullname}
+                      {n.name}
                     </TableCell>
                     <TableCell align="right">{n.birthday}</TableCell>
                     <TableCell align="right">{n.gender}</TableCell>

@@ -7,19 +7,13 @@ import TableSortLabel from "@material-ui/core/TableSortLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import Tooltip from "@material-ui/core/Tooltip";
 
-const rows = [
-  { id: "fullname", numeric: false, disablePadding: false, label: "ФИО" },
-  { id: "birhday", numeric: false, disablePadding: false, label: "Родился" },
-  { id: "gender", numeric: false, disablePadding: false, label: "Пол" }
-];
-
 class EnhancedTableHead extends React.Component {
   createSortHandler = property => event => {
     this.props.onRequestSort(event, property);
   };
 
   render() {
-    const { onSelectAllClick, order, orderBy, numSelected, rowCount } = this.props;
+    const { columns, onSelectAllClick, order, orderBy, numSelected, rowCount } = this.props;
 
     return (
       <TableHead>
@@ -31,25 +25,25 @@ class EnhancedTableHead extends React.Component {
               onChange={onSelectAllClick}
             />
           </TableCell>
-          {rows.map(
-            row => (
+          {columns.map(
+            col => (
               <TableCell
-                key={row.id}
-                align={row.numeric ? "right" : "left"}
-                padding={row.disablePadding ? "none" : "default"}
-                sortDirection={orderBy === row.id ? order : false}
+                key={col.id}
+                align={col.numeric ? "right" : "left"}
+                padding={col.disablePadding ? "none" : "default"}
+                sortDirection={orderBy === col.id ? order : false}
               >
                 <Tooltip
                   title="Sort"
-                  placement={row.numeric ? "bottom-end" : "bottom-start"}
+                  placement={col.numeric ? "bottom-end" : "bottom-start"}
                   enterDelay={300}
                 >
                   <TableSortLabel
-                    active={orderBy === row.id}
+                    active={orderBy === col.id}
                     direction={order}
-                    onClick={this.createSortHandler(row.id)}
+                    onClick={this.createSortHandler(col.id)}
                   >
-                    {row.label}
+                    {col.label}
                   </TableSortLabel>
                 </Tooltip>
               </TableCell>

@@ -49,8 +49,8 @@ const EnhancedTableToolbar = props => {
   };
 
   const handleEdit = () => {
-    const { toggleModal, selected } = props;
-    toggleModal(selected[0]);
+    const { openModal, selected } = props;
+    openModal(selected[selected.length - 1]);
   };
 
   return (
@@ -74,29 +74,17 @@ const EnhancedTableToolbar = props => {
       <div className={classes.actions}>
         {numSelected > 0 ? (
           <div style={{ width: 144 }}>
-            <Tooltip
-              style={{ display: "inline" }}
-              title="Удалить"
-              onClick={handleDelete}
-            >
+            <Tooltip style={{ display: "inline" }} title="Удалить" onClick={handleDelete}>
               <IconButton aria-label="Удалить">
                 <DeleteIcon />
               </IconButton>
             </Tooltip>
-            <Tooltip
-              title="Редактировать"
-              style={{ display: "inline" }}
-              onClick={handleEdit}
-            >
+            <Tooltip title="Редактировать" style={{ display: "inline" }} onClick={handleEdit}>
               <IconButton aria-label="Редактировать">
                 <EditIcon />
               </IconButton>
             </Tooltip>
-            <Tooltip
-              title="Добавить в заявку"
-              style={{ display: "inline" }}
-              onClick={handleDelete}
-            >
+            <Tooltip title="Добавить в заявку" style={{ display: "inline" }} onClick={handleDelete}>
               <IconButton aria-label="Добавить в заявку">
                 <SendIcon />
               </IconButton>

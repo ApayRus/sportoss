@@ -2,32 +2,28 @@ import React, { Component } from "react";
 import { Fab, CircularProgress } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 
-import Table from "./Table";
+import Table from "../table/Table";
 import Form from "./Form";
 
 import { connect } from "react-redux";
 import { firestoreConnect, isLoaded } from "react-redux-firebase";
 import { compose } from "redux";
 
+//Table columns or fields of our data model
+const columns = [
+  { id: "name", numeric: false, disablePadding: false, label: "ФИО" },
+  { id: "birhday", numeric: false, disablePadding: false, label: "Родился" },
+  { id: "gender", numeric: false, disablePadding: false, label: "Пол" }
+];
+
 export class Page extends Component {
   state = { isModalOpen: false, data: {} };
 
-  openModal = data => {
-    const defaultData = data || {
-      fullname: "Aaa",
-      birthday: "1984-11-11",
-      gender: "Жен"
-    };
-
-    this.setState({ data: defaultData });
+  openModal = id => {
+    const defaultData = { name: "", birthday: "", gender: "" }; // if we create new entry
+    const modalData = this.props.athlets.find(el => el.id === id) || defaultData;
+    this.setState({ modalData });
     this.setState({ isModalOpen: true });
-
-    console.log("defaultData", defaultData);
-  };
-
-  toggleModal = id => {
-    const selected = this.props.athlets.find(el => el.id === id);
-    this.openModal(selected);
   };
 
   closeModal = () => {
@@ -36,35 +32,35 @@ export class Page extends Component {
 
   render() {
     const { athlets } = this.props;
-    /*     if (athlets) {
-      console.log("athlets.length", athlets.length);
-    } */
+    const {
+      add: firestoreAdd,
+      delete: firestoreDelete,
+      update: firestoreUpdate
+    } = this.props.firestore;
+
     return (
       <main>
         {isLoaded(athlets) ? (
           <Table
             athlets={athlets}
-            handleSelected={this.getSelected}
-            toggleModal={this.toggleModal}
-            firestoreDelete={this.props.firestore.delete}
+            // handleSelected={this.getSelected}
+            openModal={this.openModal}
+            firestoreDelete={firestoreDelete}
+            columns={columns}
           />
         ) : (
           <CircularProgress />
         )}
-        <Fab
-          style={fabStyle}
-          onClick={() => this.openModal(null)}
-          color="primary"
-          aria-label="Add"
-        >
+        <Fab style={fabStyle} onClick={() => this.openModal(null)} color="primary" aria-label="Add">
           <AddIcon />
         </Fab>
         {this.state.isModalOpen && (
           <Form
             isModalOpen={this.state.isModalOpen}
-            data={this.state.data}
+            data={this.state.modalData}
             closeModal={this.closeModal}
-            firestoreAdd={this.props.firestore.add}
+            firestoreAdd={firestoreAdd}
+            firestoreUpdate={firestoreUpdate}
           />
         )}
       </main>

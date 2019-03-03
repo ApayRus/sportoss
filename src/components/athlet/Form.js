@@ -14,43 +14,46 @@ import {
   DialogTitle
 } from "@material-ui/core";
 // import { Link, Redirect } from "react-router-dom";
-import styles from "./styles";
 import { connect } from "react-redux";
 
-// import { signIn } from '../../store/actions/authActions';
-const initialState = { fullname: "", birthday: "", gender: "" };
 class Form extends React.Component {
-  state = initialState;
+  state = { id: "", name: "", birthday: "", gender: "" };
 
   componentDidMount() {
-    const { fullname, birthday, gender } = this.props.data;
-    console.log("this.props.data", this.props.data);
-    this.setState({ fullname, birthday, gender });
-    console.log("componentWillReceiveProps this.state ", this.state);
+    const { id, name, birthday, gender } = this.props.data;
+    this.setState({ id, name, birthday, gender });
   }
 
   handleChange = e => {
-    // console.log("e.target.id & value", e.target, e.target.value);
-    // const id = e.target.id || "gender";
     this.setState({
       [e.target.id]: e.target.value
     });
   };
 
   handleSubmit = () => {
-    const { fullname, birthday, gender } = this.state;
-    console.log("this.state", this.state);
+    const { id, name, birthday, gender } = this.state;
     const createdBy = {
       userName: this.props.profile.username,
       userId: this.props.auth.uid
     };
-    const firestoreAdd = this.props.firestoreAdd(
-      { collection: "athlets" },
-      { fullname, birthday, gender, createdBy }
-    );
-    firestoreAdd.catch(error => {
-      console.log("firestoreAdd error", error);
-    });
+    //id is empty when we creates new endtry, and filled when we edit an existen one
+    if (!id) {
+      const firestoreAdd = this.props.firestoreAdd(
+        { collection: "athlets" },
+        { name, birthday, gender, createdBy }
+      );
+      firestoreAdd.catch(error => {
+        console.log("firestoreAdd error", error);
+      });
+    } else {
+      const firestoreUpdate = this.props.firestoreUpdate(
+        { collection: "athlets", doc: id },
+        { name, birthday, gender, createdBy }
+      );
+      firestoreUpdate.catch(error => {
+        console.log("firestoreUpdate error", error);
+      });
+    }
 
     this.handleCancel();
   };
@@ -67,28 +70,26 @@ class Form extends React.Component {
   };
 
   render() {
-    const { authError } = this.props;
-    //const { fullname, birthday, gender } = this.state;
-    const { id, fullname, birthday, gender } = this.state;
-    //if (auth.uid) return <Redirect to="/" />;
+    const { id, name, birthday, gender } = this.state;
+    const formTitle = id ? "Редактирование" : "Добавление";
     return (
-      <div style={styles.flexContainer}>
+      <div>
         <Dialog
           open={this.props.isModalOpen}
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title"
         >
           <DialogTitle id="form-dialog-title">
-            <Typography color="primary">Добавление спортсмена</Typography>
+            <Typography color="primary">{formTitle} спортсмена</Typography>
           </DialogTitle>
           <DialogContent>
             {/* FULLNAME */}
             <TextField
               onChange={this.handleChange}
-              id="fullname"
+              id="name"
               label="ФИО"
               type="text"
-              value={fullname}
+              value={name}
               margin="normal"
               autoFocus
               fullWidth
@@ -111,7 +112,7 @@ class Form extends React.Component {
               }}
             />
             {/* GENDER */}
-            <FormControl fullWidth /* className={classes.formControl} */>
+            <FormControl fullWidth>
               <InputLabel htmlFor="gender">Пол</InputLabel>
               <Select
                 native
@@ -128,17 +129,9 @@ class Form extends React.Component {
               </Select>
             </FormControl>
             <br />
-            <FormHelperText error>
-              {authError ? authError : null}
-            </FormHelperText>
-            {/*           <FormHelperText>
-            Don't have an accout? Please <Link to="/register">register</Link>.
-          </FormHelperText> */}
+            <FormHelperText> {/*THIS IS PLACE FOR ERROR MESSAGE */}</FormHelperText>
           </DialogContent>
           <DialogActions>
-            <Button /* onClick={this.handleDelete} */ color="secondary">
-              Delete
-            </Button>
             <Button onClick={this.handleCancel} color="primary">
               Cancel
             </Button>
@@ -154,19 +147,9 @@ class Form extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    // authError: state.auth.authError,
     auth: state.firebase.auth,
     profile: state.firebase.profile
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    // signIn: creds => dispatch(signIn(creds))
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Form);
+export default connect(mapStateToProps)(Form);

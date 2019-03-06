@@ -45,6 +45,9 @@ const Navbar = props => {
           <Button component={Link} to="/tournaments" color="inherit">
             Турниры
           </Button>
+          <Button component={Link} to="/categories" color="inherit">
+            Категории
+          </Button>
           {links}
         </Toolbar>
       </AppBar>

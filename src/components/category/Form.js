@@ -74,87 +74,85 @@ class Form extends React.Component {
     //console.log("gender", gender);
     const formTitle = id ? "Редактирование" : "Добавление";
     return (
-      <div>
-        <Dialog
-          open={this.props.isModalOpen}
-          onClose={this.handleClose}
-          aria-labelledby="form-dialog-title"
-        >
-          <DialogTitle id="form-dialog-title">
-            <Typography color="primary">{formTitle} спортсмена</Typography>
-          </DialogTitle>
-          <DialogContent>
-            <form onChange={this.handleChange}>
-              <Typography style={styles.categoryTypography} inline>
-                Пол
-              </Typography>
-              <FormControl>
-                <Select
-                  native
-                  value={gender}
-                  inputProps={{
-                    id: "gender"
-                  }}
-                >
-                  <option value="" />
-                  <option value="Муж">Муж</option>
-                  <option value="Жен">Жен</option>
-                </Select>
-              </FormControl>
+      <Dialog
+        open={this.props.isModalOpen}
+        onClose={this.handleClose}
+        aria-labelledby="form-dialog-title"
+      >
+        <DialogTitle id="form-dialog-title">
+          <Typography color="primary">{formTitle} спортсмена</Typography>
+        </DialogTitle>
+        <DialogContent>
+          <form style={styles.categoryContainer} onChange={this.handleChange}>
+            <Typography style={styles.categoryTypography} inline>
+              Пол
+            </Typography>
+            <FormControl>
+              <Select
+                native
+                value={gender}
+                inputProps={{
+                  id: "gender"
+                }}
+              >
+                <option value="" />
+                <option value="Муж">Муж</option>
+                <option value="Жен">Жен</option>
+              </Select>
+            </FormControl>
 
-              <Typography style={styles.categoryTypography} inline>
-                Возраст
-              </Typography>
-              <TextField
-                id="minAge"
-                value={minAge}
-                placeholder="от"
-                type="number"
-                style={styles.categoryInput}
-              />
-              {` - `}
-              <TextField
-                placeholder="до"
-                type="number"
-                id="maxAge"
-                value={maxAge}
-                style={styles.categoryInput}
-              />
+            <Typography style={styles.categoryTypography} inline>
+              Возраст
+            </Typography>
+            <TextField
+              id="minAge"
+              value={minAge}
+              placeholder="от"
+              type="number"
+              style={styles.categoryInput}
+            />
+            {` - `}
+            <TextField
+              placeholder="до"
+              type="number"
+              id="maxAge"
+              value={maxAge}
+              style={styles.categoryInput}
+            />
 
-              <Typography style={styles.categoryTypography} inline>
-                Вес
-              </Typography>
-              <TextField
-                placeholder="от"
-                type="number"
-                id="minWeight"
-                value={minWeight}
-                margin="normal"
-                style={styles.categoryInput}
-              />
-              {` - `}
-              <TextField
-                placeholder="до"
-                type="number"
-                id="maxWeight"
-                value={maxWeight}
-                margin="normal"
-                style={styles.categoryInput}
-              />
-            </form>
-            <br />
-            <FormHelperText> {/*THIS IS PLACE FOR ERROR MESSAGE */}</FormHelperText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.handleCancel} color="primary">
-              Cancel
-            </Button>
-            <Button onClick={this.handleSubmit} color="primary">
-              Save
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </div>
+            <Typography style={styles.categoryTypography} inline>
+              Вес
+            </Typography>
+            <TextField
+              placeholder="от"
+              type="number"
+              id="minWeight"
+              value={minWeight}
+              margin="normal"
+              style={styles.categoryInput}
+            />
+            {` - `}
+            <TextField
+              placeholder="до"
+              type="number"
+              id="maxWeight"
+              value={maxWeight}
+              margin="normal"
+              style={styles.categoryInput}
+            />
+          </form>
+          <br />
+          <FormHelperText> {/*THIS IS PLACE FOR ERROR MESSAGE */}</FormHelperText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={this.handleCancel} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={this.handleSubmit} color="primary">
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
     );
   }
 }

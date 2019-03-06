@@ -42,9 +42,10 @@ const EnhancedTableToolbar = props => {
   const { numSelected, classes } = props;
 
   const handleDelete = () => {
-    const { firestoreDelete, selected } = props;
+    const { firestoreDelete, selected, collection } = props;
     selected.forEach(doc => {
-      firestoreDelete({ collection: "athlets", doc });
+      // console.log("collection", collection);
+      firestoreDelete({ collection, doc });
     });
   };
 
@@ -53,7 +54,7 @@ const EnhancedTableToolbar = props => {
     openModal(selected[selected.length - 1]);
   };
 
-  const {title} = props
+  const { title } = props;
 
   return (
     <Toolbar

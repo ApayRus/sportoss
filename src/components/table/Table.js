@@ -107,6 +107,7 @@ class EnhancedTable extends React.Component {
           numSelected={selected.length}
           selected={selected}
           firestoreDelete={this.props.firestoreDelete}
+          collection={this.props.collection}
           openModal={this.props.openModal}
           title={this.props.title}
         />
@@ -137,8 +138,8 @@ class EnhancedTable extends React.Component {
                     <TableCell padding="checkbox">
                       <Checkbox checked={isSelected} />
                     </TableCell>
-                    {columns.map(col => (
-                      <TableCell align="left" padding="none" key={`${row.id}-${row[col.id]}`}>
+                    {columns.map((col, index) => (
+                      <TableCell align="left" padding="none" key={`${row.id}-${col.id}-${index}`}>
                         {row[col.id]}
                       </TableCell>
                     ))}

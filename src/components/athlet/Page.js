@@ -47,6 +47,7 @@ export class Page extends Component {
             openModal={this.openModal}
             firestoreDelete={firestoreDelete}
             columns={columns}
+            collection="athlets"
             title="Спортсмены"
           />
         ) : (

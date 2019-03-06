@@ -76,51 +76,50 @@ class Form extends React.Component {
             <Typography color="primary">{formTitle} спортсмена</Typography>
           </DialogTitle>
           <DialogContent>
-            {/* FULLNAME */}
-            <TextField
-              onChange={this.handleChange}
-              id="name"
-              label="ФИО"
-              type="text"
-              value={name}
-              margin="normal"
-              autoFocus
-              fullWidth
-              InputLabelProps={{
-                shrink: true
-              }}
-            />
-            <br />
-            {/* BIRTHDAY */}
-            <TextField
-              onChange={this.handleChange}
-              id="birthday"
-              label="Дата рождения"
-              type="date"
-              value={birthday}
-              margin="normal"
-              fullWidth
-              InputLabelProps={{
-                shrink: true
-              }}
-            />
-            {/* GENDER */}
-            <FormControl fullWidth>
-              <InputLabel htmlFor="gender">Пол</InputLabel>
-              <Select
-                native
-                value={gender}
-                onChange={this.handleChange}
-                inputProps={{
-                  name: "gender",
-                  id: "gender"
+            <form onChange={this.handleChange}>
+              {/* FULLNAME */}
+              <TextField
+                id="name"
+                label="ФИО"
+                type="text"
+                value={name}
+                margin="normal"
+                autoFocus
+                fullWidth
+                InputLabelProps={{
+                  shrink: true
                 }}
-              >
-                <option value="" />
-                <option value="Муж">Муж</option>
-                <option value="Жен">Жен</option>
-              </Select>
-            </FormControl>
+              />
+              <br />
+              {/* BIRTHDAY */}
+              <TextField
+                id="birthday"
+                label="Дата рождения"
+                type="date"
+                value={birthday}
+                margin="normal"
+                fullWidth
+                InputLabelProps={{
+                  shrink: true
+                }}
+              />
+              {/* GENDER */}
+              <FormControl fullWidth>
+                <InputLabel htmlFor="gender">Пол</InputLabel>
+                <Select
+                  native //if remove that, id does't appear in event.target
+                  value={gender}
+                  inputProps={{
+                    name: "gender",
+                    id: "gender"
+                  }}
+                >
+                  <option value="" />
+                  <option value="Муж">Муж</option>
+                  <option value="Жен">Жен</option>
+                </Select>
+              </FormControl>
+            </form>
             <br />
             <FormHelperText> {/*THIS IS PLACE FOR ERROR MESSAGE */}</FormHelperText>
           </DialogContent>

@@ -26,7 +26,7 @@ class RegistrationForm extends React.Component {
   };
 
   render() {
-    console.log("this.props", this.props);
+    //console.log("this.props", this.props);
     const { authError, auth } = this.props;
     if (auth.uid) return <Redirect to="/" />;
     return (

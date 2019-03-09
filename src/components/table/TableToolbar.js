@@ -44,7 +44,6 @@ const EnhancedTableToolbar = props => {
   const handleDelete = () => {
     const { firestoreDelete, selected, collection } = props;
     selected.forEach(doc => {
-      // console.log("collection", collection);
       firestoreDelete({ collection, doc });
     });
   };

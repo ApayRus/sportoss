@@ -8,16 +8,29 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle
+  DialogTitle,
+  CircularProgress
 } from "@material-ui/core";
 // import { Link, Redirect } from "react-router-dom";
+import { compose } from "redux";
 import { connect } from "react-redux";
+import { firestoreConnect } from "react-redux-firebase";
+import CategoryTable from "../table/Table";
+
+const categoryColumns = [
+  { id: "gender", numeric: false, disablePadding: false, label: "Пол" },
+  { id: "minAge", numeric: false, disablePadding: false, label: "Лет от" },
+  { id: "maxAge", numeric: false, disablePadding: false, label: "Лет до" },
+  { id: "minWeight", numeric: false, disablePadding: false, label: "Вес от" },
+  { id: "maxWeight", numeric: false, disablePadding: false, label: "Вес до" }
+];
 
 class Form extends React.Component {
-  state = { id: "", name: "", date: "", address: "", categories: "" };
+  state = { id: "", name: "", date: "", address: "", categories: [] };
 
   componentDidMount() {
     const { id, name, date, address, categories } = this.props.data;
+    console.log("this.props DidMount", this.props.data);
     this.setState({ id, name, date, address, categories });
   }
 
@@ -25,6 +38,10 @@ class Form extends React.Component {
     this.setState({
       [e.target.id]: e.target.value
     });
+  };
+
+  handleSelect = selected => {
+    this.setState({ categories: selected });
   };
 
   handleSubmit = () => {
@@ -40,15 +57,18 @@ class Form extends React.Component {
         { name, date, address, categories, createdBy }
       );
       firestoreAdd.catch(error => {
-        console.log("firestoreAdd error", error);
+        console.log("firestoreAdd error", error.message);
       });
     } else {
-      const firestoreUpdate = this.props.firestoreUpdate(
-        { collection: "tournaments", doc: id },
-        { id, name, date, address, categories, createdBy }
-      );
+      console.log("update categories", categories);
+      const firestoreUpdate = this.props
+        .firestoreUpdate(
+          { collection: "tournaments", doc: id },
+          { id, name, date, address, categories, createdBy }
+        )
+        .then(result => console.log("result", result));
       firestoreUpdate.catch(error => {
-        console.log("firestoreUpdate error", error);
+        console.log("firestoreUpdate error", error.message);
       });
     }
 
@@ -61,21 +81,24 @@ class Form extends React.Component {
 
   render() {
     const { id, name, date, address, categories } = this.state;
+    const { allCategories } = this.props;
     const formTitle = id ? "Редактирование" : "Добавление";
+    // console.log("categories", categories);
+
     return (
-      <div>
-        <Dialog
-          open={this.props.isModalOpen}
-          onClose={this.handleClose}
-          aria-labelledby="form-dialog-title"
-        >
-          <DialogTitle id="form-dialog-title">
-            <Typography color="primary">{formTitle} турнира</Typography>
-          </DialogTitle>
-          <DialogContent>
+      <Dialog
+        open={this.props.isModalOpen}
+        onClose={this.handleClose}
+        aria-labelledby="form-dialog-title"
+      >
+        <DialogTitle id="form-dialog-title">
+          <Typography color="primary">{formTitle} турнира</Typography>
+        </DialogTitle>
+        <DialogContent>
+          <form onChange={this.handleChange}>
             {/* NAME */}
             <TextField
-              onChange={this.handleChange}
+              // onChange={this.handleChange}
               id="name"
               label="Название"
               type="text"
@@ -90,7 +113,7 @@ class Form extends React.Component {
             <br />
             {/* DATE+TIME */}
             <TextField
-              onChange={this.handleChange}
+              // onChange={this.handleChange}
               id="date"
               label="Дата"
               type="datetime-local"
@@ -103,7 +126,7 @@ class Form extends React.Component {
             />
             {/* ADDRESS */}
             <TextField
-              onChange={this.handleChange}
+              // onChange={this.handleChange}
               id="address"
               label="Адрес"
               type="text"
@@ -114,31 +137,37 @@ class Form extends React.Component {
                 shrink: true
               }}
             />
-            <TextField
-              onChange={this.handleChange}
-              id="categories"
-              label="Категории"
-              type="text"
-              value={categories}
-              margin="normal"
-              fullWidth
-              InputLabelProps={{
-                shrink: true
-              }}
-            />
-            <br />
-            <FormHelperText> {/*THIS IS PLACE FOR ERROR MESSAGE */}</FormHelperText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.handleCancel} color="primary">
-              Cancel
-            </Button>
-            <Button onClick={this.handleSubmit} color="primary">
-              Save
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </div>
+            {categories ? (
+              <CategoryTable
+                data={allCategories}
+                // handleSelected={this.getSelected}
+                openModal={this.openModal}
+                /* firestoreDelete={() => {}} */
+                columns={categoryColumns}
+                collection="categories"
+                title="Категории"
+                selected={this.state.categories}
+                handleSelect={this.handleSelect}
+                // hideToolbar={true}
+              />
+            ) : (
+              <CircularProgress />
+            )}
+
+            {/* <Button onClick={this.addCategory}>Add category</Button> */}
+          </form>
+          <br />
+          <FormHelperText> {/*THIS IS PLACE FOR ERROR MESSAGE */}</FormHelperText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={this.handleCancel} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={this.handleSubmit} color="primary">
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
     );
   }
 }
@@ -146,8 +175,12 @@ class Form extends React.Component {
 const mapStateToProps = state => {
   return {
     auth: state.firebase.auth,
-    profile: state.firebase.profile
+    profile: state.firebase.profile,
+    allCategories: state.firestore.ordered.categories
   };
 };
 
-export default connect(mapStateToProps)(Form);
+export default compose(
+  firestoreConnect([{ collection: "tournaments" }, { collection: "categories" }]),
+  connect(mapStateToProps)
+)(Form);

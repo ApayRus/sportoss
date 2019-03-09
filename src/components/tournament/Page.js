@@ -11,17 +11,17 @@ import { compose } from "redux";
 
 //Table columns or fields of our data model
 const columns = [
-  { id: "name", numeric: false, disablePadding: false, label: "Название" },
-  { id: "date", numeric: false, disablePadding: false, label: "Дата" },
-  { id: "address", numeric: false, disablePadding: false, label: "Адрес" },
-  { id: "categories", numeric: false, disablePadding: false, label: "Категории" }
+  { id: "name", numeric: false, disablePadding: true, label: "Название" },
+  { id: "date", numeric: false, disablePadding: true, label: "Время" },
+  { id: "address", numeric: false, disablePadding: true, label: "Место" }
 ];
 
 export class Page extends Component {
   state = { isModalOpen: false, data: {} };
 
   openModal = id => {
-    const defaultData = { name: "", date: "", address: "", categories: "" }; // if we create new entry
+    //const defaultCategory = { gender: "", minAge: 0, maxAge: 0, minWeight: 0, maxWeight: 0 };
+    const defaultData = { name: "", date: "", address: "", categories: [] };
     const modalData = this.props.tournaments.find(el => el.id === id) || defaultData;
     this.setState({ modalData });
     this.setState({ isModalOpen: true });
@@ -32,7 +32,7 @@ export class Page extends Component {
   };
 
   render() {
-    const { tournaments } = this.props;
+    const { tournaments, categories } = this.props;
     const {
       add: firestoreAdd,
       delete: firestoreDelete,
@@ -41,13 +41,14 @@ export class Page extends Component {
 
     return (
       <main>
-        {isLoaded(tournaments) ? (
+        {isLoaded(tournaments) && isLoaded(categories) ? (
           <Table
             data={tournaments}
             // handleSelected={this.getSelected}
             openModal={this.openModal}
             firestoreDelete={firestoreDelete}
             columns={columns}
+            collection="tournaments"
             title="Турниры"
           />
         ) : (
@@ -72,13 +73,14 @@ export class Page extends Component {
 
 const mapStateToProps = state => {
   return {
-    tournaments: state.firestore.ordered.tournaments
+    tournaments: state.firestore.ordered.tournaments,
+    categories: state.firestore.ordered.categories
   };
 };
 
 export default compose(
   connect(mapStateToProps),
-  firestoreConnect([{ collection: "tournaments" }])
+  firestoreConnect([{ collection: "tournaments" }, { collection: "categories" }])
 )(Page);
 
 const fabStyle = {

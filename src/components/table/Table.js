@@ -51,7 +51,7 @@ class EnhancedTable extends React.Component {
   state = {
     order: "asc",
     orderBy: "name",
-    selected: []
+    selected: this.props.selected || []
   };
 
   handleRequestSort = (event, property) => {
@@ -67,11 +67,15 @@ class EnhancedTable extends React.Component {
 
   handleSelectAllClick = event => {
     const data = this.props.data;
+    let selected = [];
+
     if (event.target.checked) {
-      this.setState(state => ({ selected: data.map(n => n.id) }));
-      return;
+      selected = data.map(n => n.id);
     }
-    this.setState({ selected: [] });
+
+    this.setState({ selected }, () => {
+      if (this.props.handleSelect) this.props.handleSelect(selected);
+    });
   };
 
   handleClick = (event, id) => {
@@ -91,7 +95,10 @@ class EnhancedTable extends React.Component {
         selected.slice(selectedIndex + 1)
       );
     }
-
+    //console.log("newSelected", newSelected);
+    if (this.props.handleSelect) {
+      this.props.handleSelect(newSelected);
+    }
     this.setState({ selected: newSelected });
   };
 

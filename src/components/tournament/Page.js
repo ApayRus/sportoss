@@ -72,6 +72,7 @@ export class Page extends Component {
 }
 
 const mapStateToProps = state => {
+  console.log("state.firestore.ordered.tournaments", state.firestore.ordered.tournaments);
   return {
     tournaments: state.firestore.ordered.tournaments,
     categories: state.firestore.ordered.categories

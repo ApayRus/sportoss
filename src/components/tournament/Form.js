@@ -181,6 +181,8 @@ const mapStateToProps = state => {
 };
 
 export default compose(
-  firestoreConnect([{ collection: "tournaments" }, { collection: "categories" }]),
+  firestoreConnect(props => {
+    return [{ collection: "tournaments" }];
+  }),
   connect(mapStateToProps)
 )(Form);

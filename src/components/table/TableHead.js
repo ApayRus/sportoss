@@ -13,17 +13,27 @@ class EnhancedTableHead extends React.Component {
   };
 
   render() {
-    const { columns, onSelectAllClick, order, orderBy, numSelected, rowCount } = this.props;
+    const {
+      columns,
+      onSelectAllClick,
+      order,
+      orderBy,
+      numSelected,
+      rowCount,
+      hideCheckboxes
+    } = this.props;
     return (
       <TableHead>
         <TableRow>
-          <TableCell padding="checkbox">
-            <Checkbox
-              indeterminate={numSelected > 0 && numSelected < rowCount}
-              checked={numSelected === rowCount}
-              onChange={onSelectAllClick}
-            />
-          </TableCell>
+          {!hideCheckboxes && (
+            <TableCell padding="checkbox">
+              <Checkbox
+                indeterminate={numSelected > 0 && numSelected < rowCount}
+                checked={numSelected === rowCount}
+                onChange={onSelectAllClick}
+              />
+            </TableCell>
+          )}
           {columns.map(
             col => (
               <TableCell

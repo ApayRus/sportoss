@@ -16,14 +16,9 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { firestoreConnect, isLoaded } from "react-redux-firebase";
 import CategoryTable from "../table/Table";
+import { categoryName } from "../category/functions";
 
 const categoryColumns = [{ id: "name", numeric: false, disablePadding: true, label: "Категории" }];
-
-const categoryName = category => {
-  const { id, gender, minAge, maxAge, minWeight, maxWeight } = category;
-  const name = `${gender}, ${minAge}-${maxAge} лет, ${minWeight}-${maxWeight}`;
-  return { id, name };
-};
 
 class Form extends React.Component {
   state = { id: "", name: "", date: "", address: "", categories: [] };

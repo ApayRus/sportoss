@@ -105,19 +105,21 @@ class EnhancedTable extends React.Component {
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   render() {
-    const { classes, columns } = this.props;
+    const { classes, columns, hideToolbar } = this.props;
     const { order, orderBy, selected } = this.state;
     const data = this.props.data || [];
     return (
       <Paper className={classes.root}>
-        <EnhancedTableToolbar
-          numSelected={selected.length}
-          selected={selected}
-          firestoreDelete={this.props.firestoreDelete}
-          collection={this.props.collection}
-          openModal={this.props.openModal}
-          title={this.props.title}
-        />
+        {!hideToolbar && (
+          <EnhancedTableToolbar
+            numSelected={selected.length}
+            selected={selected}
+            firestoreDelete={this.props.firestoreDelete}
+            collection={this.props.collection}
+            openModal={this.props.openModal}
+            title={this.props.title}
+          />
+        )}
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle">
             <EnhancedTableHead

@@ -73,6 +73,7 @@ export class Page extends Component {
 
 const mapStateToProps = state => {
   console.log("state.firestore.ordered.tournaments", state.firestore.ordered.tournaments);
+  console.log("state.firestore", state.firestore);
   return {
     tournaments: state.firestore.ordered.tournaments,
     categories: state.firestore.ordered.categories
@@ -81,7 +82,11 @@ const mapStateToProps = state => {
 
 export default compose(
   connect(mapStateToProps),
-  firestoreConnect([{ collection: "tournaments" }, { collection: "categories" }])
+  firestoreConnect([
+    { collection: "tournaments" },
+    { collection: "tournaments", storeAs: "xxxx" },
+    { collection: "categories" }
+  ])
 )(Page);
 
 const fabStyle = {

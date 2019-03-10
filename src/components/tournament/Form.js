@@ -14,16 +14,16 @@ import {
 // import { Link, Redirect } from "react-router-dom";
 import { compose } from "redux";
 import { connect } from "react-redux";
-import { firestoreConnect } from "react-redux-firebase";
+import { firestoreConnect, isLoaded } from "react-redux-firebase";
 import CategoryTable from "../table/Table";
 
-const categoryColumns = [
-  { id: "gender", numeric: false, disablePadding: false, label: "Пол" },
-  { id: "minAge", numeric: false, disablePadding: false, label: "Лет от" },
-  { id: "maxAge", numeric: false, disablePadding: false, label: "Лет до" },
-  { id: "minWeight", numeric: false, disablePadding: false, label: "Вес от" },
-  { id: "maxWeight", numeric: false, disablePadding: false, label: "Вес до" }
-];
+const categoryColumns = [{ id: "name", numeric: false, disablePadding: true, label: "Категории" }];
+
+const categoryName = category => {
+  const { id, gender, minAge, maxAge, minWeight, maxWeight } = category;
+  const name = `${gender}, ${minAge}-${maxAge} лет, ${minWeight}-${maxWeight}`;
+  return { id, name };
+};
 
 class Form extends React.Component {
   state = { id: "", name: "", date: "", address: "", categories: [] };
@@ -82,6 +82,7 @@ class Form extends React.Component {
   render() {
     const { id, name, date, address, categories } = this.state;
     const { allCategories } = this.props;
+    const allCategoryNames = allCategories.map(cat => categoryName(cat));
     const formTitle = id ? "Редактирование" : "Добавление";
     // console.log("categories", categories);
 
@@ -137,24 +138,20 @@ class Form extends React.Component {
                 shrink: true
               }}
             />
-            {categories ? (
+            {isLoaded(categories) ? (
               <CategoryTable
-                data={allCategories}
-                // handleSelected={this.getSelected}
+                data={allCategoryNames}
                 openModal={this.openModal}
-                /* firestoreDelete={() => {}} */
                 columns={categoryColumns}
                 collection="categories"
                 title="Категории"
                 selected={this.state.categories}
                 handleSelect={this.handleSelect}
-                // hideToolbar={true}
+                hideToolbar={true}
               />
             ) : (
               <CircularProgress />
             )}
-
-            {/* <Button onClick={this.addCategory}>Add category</Button> */}
           </form>
           <br />
           <FormHelperText> {/*THIS IS PLACE FOR ERROR MESSAGE */}</FormHelperText>
@@ -182,7 +179,7 @@ const mapStateToProps = state => {
 
 export default compose(
   firestoreConnect(props => {
-    return [{ collection: "tournaments" }];
+    return [{ collection: "tournaments", storeAs: "tournaments" }];
   }),
   connect(mapStateToProps)
 )(Form);

@@ -17,11 +17,11 @@ import {
 import { connect } from "react-redux";
 
 class Form extends React.Component {
-  state = { id: "", name: "", birthday: "", gender: "" };
+  state = { id: "", firstName: "", familyName: "", fatherName: "", birthday: "", gender: "" };
 
   componentDidMount() {
-    const { id, name, birthday, gender } = this.props.data;
-    this.setState({ id, name, birthday, gender });
+    const { id, firstName, familyName, fatherName, birthday, gender } = this.props.data;
+    this.setState({ id, firstName, familyName, fatherName, birthday, gender });
   }
 
   handleChange = e => {
@@ -31,7 +31,7 @@ class Form extends React.Component {
   };
 
   handleSubmit = () => {
-    const { id, name, birthday, gender } = this.state;
+    const { id, firstName, familyName, fatherName, birthday, gender } = this.state;
     const createdBy = {
       userName: this.props.profile.username,
       userId: this.props.auth.uid
@@ -40,7 +40,7 @@ class Form extends React.Component {
     if (!id) {
       const firestoreAdd = this.props.firestoreAdd(
         { collection: "athlets" },
-        { name, birthday, gender, createdBy }
+        { firstName, familyName, fatherName, birthday, gender, createdBy }
       );
       firestoreAdd.catch(error => {
         console.log("firestoreAdd error", error);
@@ -48,7 +48,7 @@ class Form extends React.Component {
     } else {
       const firestoreUpdate = this.props.firestoreUpdate(
         { collection: "athlets", doc: id },
-        { name, birthday, gender, createdBy }
+        { firstName, familyName, fatherName, birthday, gender, createdBy }
       );
       firestoreUpdate.catch(error => {
         console.log("firestoreUpdate error", error);
@@ -63,7 +63,7 @@ class Form extends React.Component {
   };
 
   render() {
-    const { id, name, birthday, gender } = this.state;
+    const { id, firstName, familyName, fatherName, birthday, gender } = this.state;
     const formTitle = id ? "Редактирование" : "Добавление";
     return (
       <div>
@@ -79,12 +79,34 @@ class Form extends React.Component {
             <form onChange={this.handleChange}>
               {/* FULLNAME */}
               <TextField
-                id="name"
-                label="ФИО"
+                id="familyName"
+                label="Фамилия"
                 type="text"
-                value={name}
+                value={familyName}
                 margin="normal"
                 autoFocus
+                fullWidth
+                InputLabelProps={{
+                  shrink: true
+                }}
+              />
+              <TextField
+                id="firstName"
+                label="Имя"
+                type="text"
+                value={firstName}
+                margin="normal"
+                fullWidth
+                InputLabelProps={{
+                  shrink: true
+                }}
+              />
+              <TextField
+                id="fatherName"
+                label="Отчество"
+                type="text"
+                value={fatherName}
+                margin="normal"
                 fullWidth
                 InputLabelProps={{
                   shrink: true
@@ -110,7 +132,6 @@ class Form extends React.Component {
                   native //if remove that, id does't appear in event.target
                   value={gender}
                   inputProps={{
-                    name: "gender",
                     id: "gender"
                   }}
                 >
@@ -124,11 +145,11 @@ class Form extends React.Component {
             <FormHelperText> {/*THIS IS PLACE FOR ERROR MESSAGE */}</FormHelperText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleCancel} color="primary">
-              Cancel
+            <Button onClick={this.handleCancel} color="default">
+              Отмена
             </Button>
             <Button onClick={this.handleSubmit} color="primary">
-              Save
+              Сохранить
             </Button>
           </DialogActions>
         </Dialog>

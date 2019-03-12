@@ -41,7 +41,8 @@ export class Form extends Component {
     if (isLoaded(athlets) && isLoaded(categories)) {
       selectedAthlets = athlets.filter(athlet => selected.includes(athlet.id));
       selectedAthletsWithCategories = selectedAthlets.map(athlet => {
-        const { id, name } = athlet;
+        const { id, familyName, firstName, fatherName } = athlet;
+        const name = `${familyName} ${firstName} ${fatherName}`;
         const category = (
           <Select
             native

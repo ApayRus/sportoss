@@ -39,6 +39,12 @@ export class Page extends Component {
   render() {
     const { athlets } = this.props;
     const { selected } = this.state;
+    let data = [];
+    if (isLoaded(athlets)) {
+      data = athlets.map(athlet => {
+        return { ...athlet, name: `${athlet.familyName} ${athlet.firstName} ${athlet.fatherName}` };
+      });
+    }
     const {
       add: firestoreAdd,
       delete: firestoreDelete,
@@ -50,33 +56,36 @@ export class Page extends Component {
         {isLoaded(athlets) ? (
           <Grid container spacing={32}>
             <Grid item sm={5}>
-              <Table
-                data={athlets}
-                openModal={this.openModal}
-                firestoreDelete={firestoreDelete}
-                columns={columnsAthlets}
-                collection="athlets"
-                title="Спортсмены"
-                handleSelect={this.handleSelect}
-              />
-
-              <Fab
-                style={styles.fab}
-                onClick={() => this.openModal(null)}
-                color="primary"
-                aria-label="Add"
-              >
-                <AddIcon />
-              </Fab>
-              {this.state.isModalOpen && (
-                <Form
-                  isModalOpen={this.state.isModalOpen}
-                  data={this.state.modalData}
-                  closeModal={this.closeModal}
-                  firestoreAdd={firestoreAdd}
-                  firestoreUpdate={firestoreUpdate}
+              <div style={styles.athletsContainer}>
+                <Table
+                  data={data}
+                  openModal={this.openModal}
+                  firestoreDelete={firestoreDelete}
+                  columns={columnsAthlets}
+                  collection="athlets"
+                  title="Спортсмены"
+                  handleSelect={this.handleSelect}
                 />
-              )}
+
+                <Fab
+                  style={styles.fab}
+                  onClick={() => this.openModal(null)}
+                  color="primary"
+                  aria-label="Add"
+                  size="small"
+                >
+                  <AddIcon />
+                </Fab>
+                {this.state.isModalOpen && (
+                  <Form
+                    isModalOpen={this.state.isModalOpen}
+                    data={this.state.modalData}
+                    closeModal={this.closeModal}
+                    firestoreAdd={firestoreAdd}
+                    firestoreUpdate={firestoreUpdate}
+                  />
+                )}
+              </div>
             </Grid>
             <Grid item sm={5}>
               <Application selected={selected} athlets={athlets} />

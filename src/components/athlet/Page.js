@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Fab, CircularProgress, Grid, Select } from "@material-ui/core";
+import { Fab, CircularProgress, Grid } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 
 import Table from "../table/Table";
@@ -8,7 +8,6 @@ import Form from "./Form";
 import { connect } from "react-redux";
 import { firestoreConnect, isLoaded } from "react-redux-firebase";
 import { compose } from "redux";
-import { categoryName } from "../category/functions";
 import Application from "../application/Form";
 //Table columns or fields of our data model
 const columnsAthlets = [
@@ -16,26 +15,6 @@ const columnsAthlets = [
   { id: "birthday", numeric: false, disablePadding: false, label: "Родился" },
   { id: "gender", numeric: false, disablePadding: false, label: "Пол" }
 ];
-
-//categories = array of ids
-const SelectCategory = categories => {
-  return (
-    <Select
-      native
-      value={""}
-      inputProps={{
-        "data-id": "category"
-      }}
-    >
-      <option value="" />
-      {categories.map(cat => (
-        <option value={cat.id} key={`cat-${cat.id}`}>
-          {categoryName(cat).name}
-        </option>
-      ))}
-    </Select>
-  );
-};
 
 export class Page extends Component {
   state = { isModalOpen: false, data: {}, selected: [] };
@@ -58,20 +37,8 @@ export class Page extends Component {
   };
 
   render() {
-    const { athlets, categories } = this.props;
+    const { athlets } = this.props;
     const { selected } = this.state;
-    let selectedAthlets = [];
-    let selectedAthletsWithCategories = [];
-    if (isLoaded(athlets)) {
-      selectedAthlets = athlets.filter(athlet => selected.includes(athlet.id));
-      console.log("selectedAthlets", selectedAthlets);
-      selectedAthletsWithCategories = selectedAthlets.map(athlet => {
-        const { id, name } = athlet;
-        const category = SelectCategory(categories);
-        return { id, name, category };
-      });
-    }
-
     const {
       add: firestoreAdd,
       delete: firestoreDelete,
@@ -112,7 +79,7 @@ export class Page extends Component {
               )}
             </Grid>
             <Grid item sm={5}>
-              <Application selectedAthletsWithCategories={selectedAthletsWithCategories} />
+              <Application selected={selected} athlets={athlets} />
             </Grid>
           </Grid>
         ) : (
@@ -125,14 +92,13 @@ export class Page extends Component {
 
 const mapStateToProps = state => {
   return {
-    athlets: state.firestore.ordered.athlets,
-    categories: state.firestore.ordered.categories
+    athlets: state.firestore.ordered.athlets
   };
 };
 
 export default compose(
   connect(mapStateToProps),
-  firestoreConnect([{ collection: "athlets" }, { collection: "categories" }])
+  firestoreConnect([{ collection: "athlets" }])
 )(Page);
 
 const styles = {

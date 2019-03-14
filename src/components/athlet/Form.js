@@ -14,7 +14,7 @@ import {
   DialogTitle
 } from "@material-ui/core";
 // import { Link, Redirect } from "react-router-dom";
-import { connect } from "react-redux";
+//import { connect } from "react-redux";
 
 class Form extends React.Component {
   state = { id: "", firstName: "", familyName: "", fatherName: "", birthday: "", gender: "" };
@@ -32,10 +32,7 @@ class Form extends React.Component {
 
   handleSubmit = () => {
     const { id, firstName, familyName, fatherName, birthday, gender } = this.state;
-    const createdBy = {
-      userName: this.props.profile.username,
-      userId: this.props.auth.uid
-    };
+    const createdBy = this.props.user;
     //id is empty when we creates new endtry, and filled when we edit an existen one
     if (!id) {
       const firestoreAdd = this.props.firestoreAdd(
@@ -158,11 +155,4 @@ class Form extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    auth: state.firebase.auth,
-    profile: state.firebase.profile
-  };
-};
-
-export default connect(mapStateToProps)(Form);
+export default Form;

@@ -1,10 +1,8 @@
 import React, { Component } from "react";
 import { Fab, CircularProgress, Grid } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
-
 import Table from "../table/Table";
 import Form from "./Form";
-
 import { connect } from "react-redux";
 import { firestoreConnect, isLoaded } from "react-redux-firebase";
 import { compose } from "redux";
@@ -37,7 +35,7 @@ export class Page extends Component {
   };
 
   render() {
-    const { athlets } = this.props;
+    const { athlets, user } = this.props;
     const { selected } = this.state;
     let data = [];
     if (isLoaded(athlets)) {
@@ -83,12 +81,13 @@ export class Page extends Component {
                     closeModal={this.closeModal}
                     firestoreAdd={firestoreAdd}
                     firestoreUpdate={firestoreUpdate}
+                    user={user}
                   />
                 )}
               </div>
             </Grid>
             <Grid item sm={5}>
-              <Application selected={selected} athlets={athlets} />
+              <Application selected={selected} athlets={athlets} user={user} />
             </Grid>
           </Grid>
         ) : (
@@ -100,14 +99,19 @@ export class Page extends Component {
 }
 
 const mapStateToProps = state => {
+  const userId = state.firebase.auth.uid;
+  const userName = state.firebase.profile.username;
+
   return {
-    athlets: state.firestore.ordered.athlets
+    athlets: state.firestore.ordered.athlets,
+    applications: state.firestore.ordered.applications,
+    user: { userId, userName }
   };
 };
 
 export default compose(
   connect(mapStateToProps),
-  firestoreConnect([{ collection: "athlets" }])
+  firestoreConnect([{ collection: "athlets" }, { collection: "applications" }])
 )(Page);
 
 const styles = {

@@ -23,13 +23,43 @@ const columnsApplication = [
 ];
 
 export class Form extends Component {
-  state = { tournament: "", participants: [{ athletId: "", categoryId: "" }] };
+  state = { tournament: "", participantCategory: {} }; //participantCategory = { athletId:categoryId, ... }
 
   handleChangeCategory = event => {
     const athletId = event.target.dataset.id;
     const categoryId = event.target.value;
 
-    console.log("athletId", athletId, "categoryId", categoryId);
+    this.setState(oldState => {
+      const newParticipantCategory = { ...oldState.participantCategory, [athletId]: categoryId };
+      return { ...oldState, participantCategory: newParticipantCategory };
+    });
+  };
+
+  handleChange = e => {
+    this.setState({
+      [e.target.id]: e.target.value
+    });
+    console.log("e.target.id", e.target.id, "e.target.value", e.target.value);
+  };
+
+  handleSubmit = () => {
+    const { selected } = this.props;
+    const createdBy = this.props.user;
+
+    const { add: firestoreAdd } = this.props.firestore;
+    let participantCategory = this.state.participantCategory;
+    for (let athletId in participantCategory) {
+      //if we deleted some athlets from Application, they wasn't deleted from state.participantCategory
+      // now we do this, by check with "selected"
+      if (!selected.includes(athletId)) delete participantCategory[athletId];
+    }
+    this.setState({ participantCategory }, () => {
+      firestoreAdd({ collection: "applications" }, { ...this.state, createdBy })
+        .then(result => console.log("added new document ", result.path))
+        .catch(error => {
+          console.log("firestoreAdd error", error);
+        });
+    });
   };
 
   render() {
@@ -72,6 +102,7 @@ export class Form extends Component {
               <InputLabel htmlFor="tournament">Турнир</InputLabel>
               <Select
                 native
+                onChange={this.handleChange}
                 inputProps={{
                   id: "tournament"
                 }}
@@ -93,7 +124,12 @@ export class Form extends Component {
               hideToolbar={true}
             />
             <div style={styles.formActions}>
-              <Button variant="contained" color="primary" style={styles.button}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={this.handleSubmit}
+                style={styles.button}
+              >
                 Отправить
               </Button>
             </div>

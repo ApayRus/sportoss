@@ -16,7 +16,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { firestoreConnect, isLoaded } from "react-redux-firebase";
 import CategoryTable from "../table/Table";
-import { categoryName } from "../category/functions";
+import { categoryName } from "../../config/functions";
 
 const categoryColumns = [{ id: "name", numeric: false, disablePadding: true, label: "Категории" }];
 
@@ -77,7 +77,9 @@ class Form extends React.Component {
   render() {
     const { id, name, date, address, categories } = this.state;
     const { allCategories } = this.props;
-    const allCategoryNames = allCategories.map(cat => categoryName(cat));
+    const allCategoryNames = allCategories.map(cat => {
+      return { id: cat.id, name: categoryName(cat) };
+    });
     const formTitle = id ? "Редактирование" : "Добавление";
     // console.log("categories", categories);
 

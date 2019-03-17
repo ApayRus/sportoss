@@ -86,7 +86,7 @@ const EnhancedTableToolbar = props => {
                 <EditIcon />
               </IconButton>
             </Tooltip>
-            <Tooltip title="Добавить в заявку" style={{ display: "inline" }} onClick={handleDelete}>
+            <Tooltip title="Добавить в заявку" style={{ display: "inline" }}>
               <IconButton aria-label="Добавить в заявку">
                 <SendIcon />
               </IconButton>

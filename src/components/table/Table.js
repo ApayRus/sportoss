@@ -151,7 +151,7 @@ class EnhancedTable extends React.Component {
                       </TableCell>
                     )}
                     {columns.map((col, index) => (
-                      <TableCell align="left" padding="none" key={`${row.id}-${col.id}-${index}`}>
+                      <TableCell align="left" key={`${row.id}-${col.id}-${index}`}>
                         {row[col.id]}
                       </TableCell>
                     ))}

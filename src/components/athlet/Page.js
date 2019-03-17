@@ -6,7 +6,7 @@ import Form from "./Form";
 import { connect } from "react-redux";
 import { firestoreConnect, isLoaded } from "react-redux-firebase";
 import { compose } from "redux";
-import Application from "../application/Form";
+import Application from "./ApplicationQuickForm";
 //Table columns or fields of our data model
 const columnsAthlets = [
   { id: "name", numeric: false, disablePadding: false, label: "ФИО" },
@@ -87,7 +87,7 @@ export class Page extends Component {
               </div>
             </Grid>
             <Grid item sm={5}>
-              <Application selected={selected} athlets={athlets} user={user} />
+              <Application selected={selected} user={user} />
             </Grid>
           </Grid>
         ) : (

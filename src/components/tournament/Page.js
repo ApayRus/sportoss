@@ -11,9 +11,9 @@ import { compose } from "redux";
 
 //Table columns or fields of our data model
 const columns = [
-  { id: "name", numeric: false, disablePadding: true, label: "Название" },
-  { id: "date", numeric: false, disablePadding: true, label: "Время" },
-  { id: "address", numeric: false, disablePadding: true, label: "Место" }
+  { id: "name", numeric: false, disablePadding: false, label: "Название" },
+  { id: "date", numeric: false, disablePadding: false, label: "Время" },
+  { id: "address", numeric: false, disablePadding: false, label: "Место" }
 ];
 
 export class Page extends Component {

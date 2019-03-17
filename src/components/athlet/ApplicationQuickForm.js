@@ -14,11 +14,11 @@ import { firestoreConnect, isLoaded } from "react-redux-firebase";
 import { compose } from "redux";
 
 import Table from "../table/Table";
-import { categoryName } from "../category/functions";
+import { categoryName, athletName } from "../../config/functions";
 
 //Table columns or fields of our data model
 const columnsApplication = [
-  { id: "name", numeric: false, disablePadding: false, label: "Участник" },
+  { id: "participant", numeric: false, disablePadding: false, label: "Участник" },
   { id: "category", numeric: false, disablePadding: false, label: "Категория" }
 ];
 
@@ -26,20 +26,18 @@ export class Form extends Component {
   state = { tournament: "", participantCategory: {} }; //participantCategory = { athletId:categoryId, ... }
 
   handleChangeCategory = event => {
-    const athletId = event.target.dataset.id;
+    const athletId = event.target.dataset.athletid;
     const categoryId = event.target.value;
-
+    console.log("event.target.dataset", event.target.dataset);
     this.setState(oldState => {
+      console.log("participantCategory", this.state.participantCategory);
       const newParticipantCategory = { ...oldState.participantCategory, [athletId]: categoryId };
       return { ...oldState, participantCategory: newParticipantCategory };
     });
   };
 
-  handleChange = e => {
-    this.setState({
-      [e.target.id]: e.target.value
-    });
-    console.log("e.target.id", e.target.id, "e.target.value", e.target.value);
+  handleChangeParticipant = event => {
+    console.log("participant", event.target);
   };
 
   handleSubmit = () => {
@@ -70,26 +68,46 @@ export class Form extends Component {
 
     if (isLoaded(athlets) && isLoaded(categories)) {
       selectedAthlets = athlets.filter(athlet => selected.includes(athlet.id));
-      selectedAthletsWithCategories = selectedAthlets.map(athlet => {
-        const { id, familyName, firstName, fatherName } = athlet;
-        const name = `${familyName} ${firstName} ${fatherName}`;
+
+      selectedAthletsWithCategories = selectedAthlets.map(selectedAthlet => {
+        const participant = athletName(selectedAthlet);
+
+        /* (
+          <Select
+            native
+            inputProps={{
+              "data-athletid": selectedAthlet.id
+            }}
+            onChange={this.handleChangeParticipant}
+            value={selectedAthlet.id}
+          >
+            <option value="" />
+            {athlets.map(athlet => (
+              <option value={athlet.id} key={`athlet-${athlet.id}`}>
+                {athletName(athlet)}
+              </option>
+            ))}
+          </Select>
+        ); */
+
         const category = (
           <Select
             native
             inputProps={{
-              "data-id": id
+              "data-athletid": selectedAthlet.id
             }}
             onChange={this.handleChangeCategory}
           >
             <option value="" />
             {categories.map(cat => (
               <option value={cat.id} key={`cat-${cat.id}`}>
-                {categoryName(cat).name}
+                {categoryName(cat)}
               </option>
             ))}
           </Select>
         );
-        return { id, name, category };
+
+        return { id: selectedAthlet.id, participant, category };
       });
     }
 
@@ -145,7 +163,8 @@ export class Form extends Component {
 const mapStateToProps = state => {
   return {
     tournaments: state.firestore.ordered.tournaments,
-    categories: state.firestore.ordered.categories
+    categories: state.firestore.ordered.categories,
+    athlets: state.firestore.ordered.athlets
   };
 };
 
@@ -163,5 +182,9 @@ const styles = {
 
 export default compose(
   connect(mapStateToProps),
-  firestoreConnect([{ collection: "tournaments" }, { collection: "categories" }])
+  firestoreConnect([
+    { collection: "tournaments" },
+    { collection: "categories" },
+    { collection: "athlets" }
+  ])
 )(Form);

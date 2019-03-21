@@ -9,3 +9,8 @@ export function athletName(athlet) {
   const name = `${familyName} ${firstName} ${fatherName}`;
   return name;
 }
+
+export function tournamentName(tournament) {
+  const { name, date, address } = tournament;
+  return `${name}, ${date}, ${address}`;
+}

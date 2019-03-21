@@ -2,24 +2,21 @@ import React, { Component } from "react";
 import { Fab, CircularProgress, Grid } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import Table from "../table/Table";
-import Form from "./Form";
+import Form from "../application/Form";
 import { connect } from "react-redux";
 import { firestoreConnect, isLoaded } from "react-redux-firebase";
 import { compose } from "redux";
-import Application from "./ApplicationQuickForm";
+import { tournamentName } from "../../config/functions";
 //Table columns or fields of our data model
-const columnsAthlets = [
-  { id: "name", numeric: false, disablePadding: false, label: "ФИО" },
-  { id: "birthday", numeric: false, disablePadding: false, label: "Родился" },
-  { id: "gender", numeric: false, disablePadding: false, label: "Пол" }
-];
+const columns = [{ id: "name", numeric: false, disablePadding: false, label: "Турнир" }];
 
 export class Page extends Component {
   state = { isModalOpen: false, data: {}, selected: [] };
 
   openModal = id => {
-    const defaultData = { name: "", birthday: "", gender: "" }; // if we create new entry
-    const modalData = this.props.athlets.find(el => el.id === id) || defaultData;
+    const defaultData = { tournament: "", participants: {} }; // if we create new entry
+    const modalData = this.props.applications.find(el => el.id === id) || defaultData;
+    console.log("modalData", modalData);
     this.setState({ modalData });
     this.setState({ isModalOpen: true });
   };
@@ -35,12 +32,17 @@ export class Page extends Component {
   };
 
   render() {
-    const { athlets, user } = this.props;
+    const { athlets, tournaments, applications, user } = this.props;
     const { selected } = this.state;
+    console.log("applications", applications);
     let data = [];
-    if (isLoaded(athlets)) {
-      data = athlets.map(athlet => {
-        return { ...athlet, name: `${athlet.familyName} ${athlet.firstName} ${athlet.fatherName}` };
+    if (isLoaded(tournaments, applications)) {
+      data = applications.map(app => {
+        const tournament = tournaments.filter(elem => elem.id === app.tournament)[0];
+        console.log("tournament", tournament);
+        //console.log("tournamentName(tournament)", tournamentName(tournament));
+        if (tournament) return { ...app, name: tournamentName(tournament) };
+        else return { ...app, name: "" };
       });
     }
     const {
@@ -57,9 +59,9 @@ export class Page extends Component {
               data={data}
               openModal={this.openModal}
               firestoreDelete={firestoreDelete}
-              columns={columnsAthlets}
-              collection="athlets"
-              title="Спортсмены"
+              columns={columns}
+              collection="applications"
+              title="Заявки"
               handleSelect={this.handleSelect}
             />
 
@@ -97,6 +99,9 @@ const mapStateToProps = state => {
   return {
     athlets: state.firestore.ordered.athlets,
     applications: state.firestore.ordered.applications,
+    categories: state.firestore.ordered.categories,
+    tournaments: state.firestore.ordered.tournaments,
+
     user: { userId, userName }
   };
 };
@@ -104,8 +109,14 @@ const mapStateToProps = state => {
 export default compose(
   connect(mapStateToProps),
   firestoreConnect(props => {
+    console.log("firestoreConnect props", props);
     if (props.user.userId)
-      return [{ collection: "athlets", where: [["createdBy.userId", "==", props.user.userId]] }];
+      return [
+        { collection: "athlets", where: [["createdBy.userId", "==", props.user.userId]] },
+        { collection: "applications", where: [["createdBy.userId", "==", props.user.userId]] },
+        { collection: "categories" },
+        { collection: "tournaments" }
+      ];
     else return [];
   })
 )(Page);

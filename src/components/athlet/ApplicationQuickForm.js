@@ -25,6 +25,12 @@ const columnsApplication = [
 export class Form extends Component {
   state = { tournament: "", participantCategory: {} }; //participantCategory = { athletId:categoryId, ... }
 
+  handleChange = e => {
+    this.setState({
+      [e.target.id]: e.target.value
+    });
+  };
+
   handleChangeCategory = event => {
     const athletId = event.target.dataset.athletid;
     const categoryId = event.target.value;
@@ -34,10 +40,6 @@ export class Form extends Component {
       const newParticipantCategory = { ...oldState.participantCategory, [athletId]: categoryId };
       return { ...oldState, participantCategory: newParticipantCategory };
     });
-  };
-
-  handleChangeParticipant = event => {
-    console.log("participant", event.target);
   };
 
   handleSubmit = () => {
@@ -71,24 +73,6 @@ export class Form extends Component {
 
       selectedAthletsWithCategories = selectedAthlets.map(selectedAthlet => {
         const participant = athletName(selectedAthlet);
-
-        /* (
-          <Select
-            native
-            inputProps={{
-              "data-athletid": selectedAthlet.id
-            }}
-            onChange={this.handleChangeParticipant}
-            value={selectedAthlet.id}
-          >
-            <option value="" />
-            {athlets.map(athlet => (
-              <option value={athlet.id} key={`athlet-${athlet.id}`}>
-                {athletName(athlet)}
-              </option>
-            ))}
-          </Select>
-        ); */
 
         const category = (
           <Select

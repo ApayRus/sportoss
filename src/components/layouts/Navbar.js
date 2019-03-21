@@ -48,6 +48,9 @@ const Navbar = props => {
           <Button component={Link} to="/categories" color="inherit">
             Категории
           </Button>
+          <Button component={Link} to="/applications" color="inherit">
+            Заявки
+          </Button>
           {links}
         </Toolbar>
       </AppBar>

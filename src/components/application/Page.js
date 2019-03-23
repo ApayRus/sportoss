@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Fab, CircularProgress, Grid } from "@material-ui/core";
+import { Fab, CircularProgress } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import Table from "../table/Table";
 import Form from "../application/Form";
@@ -33,7 +33,7 @@ export class Page extends Component {
 
   render() {
     const { athlets, tournaments, applications, user } = this.props;
-    const { selected } = this.state;
+    // const { selected } = this.state;
     console.log("applications", applications);
     let data = [];
     if (isLoaded(tournaments, applications)) {
@@ -128,7 +128,7 @@ const styles = {
     right: 5,
     bottom: 5,
     left: "auto",
-    position: "absolute"
+    position: "fixed"
   },
   athletsContainer: {
     position: "relative"

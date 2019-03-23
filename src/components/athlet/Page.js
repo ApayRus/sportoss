@@ -1,12 +1,12 @@
 import React, { Component } from "react";
-import { Fab, CircularProgress, Grid } from "@material-ui/core";
+import { Fab, CircularProgress } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import Table from "../table/Table";
 import Form from "./Form";
 import { connect } from "react-redux";
 import { firestoreConnect, isLoaded } from "react-redux-firebase";
 import { compose } from "redux";
-import Application from "./ApplicationQuickForm";
+// import Application from "./ApplicationQuickForm";
 //Table columns or fields of our data model
 const columnsAthlets = [
   { id: "name", numeric: false, disablePadding: false, label: "ФИО" },
@@ -36,7 +36,7 @@ export class Page extends Component {
 
   render() {
     const { athlets, user } = this.props;
-    const { selected } = this.state;
+    // const { selected } = this.state;
     let data = [];
     if (isLoaded(athlets)) {
       data = athlets.map(athlet => {
@@ -117,7 +117,7 @@ const styles = {
     right: 5,
     bottom: 5,
     left: "auto",
-    position: "absolute"
+    position: "fixed"
   },
   athletsContainer: {
     position: "relative"

@@ -2,7 +2,6 @@ import React from "react";
 
 import {
   Button,
-  TextField,
   FormControl,
   InputLabel,
   Select,
@@ -100,7 +99,7 @@ class Form extends React.Component {
     const athletsWithCategories = athlets.map(athlet => {
       let categoryValue = "";
       console.log("participants[athlet.id]", participants[athlet.id]);
-      if (participants[athlet.id] != undefined) categoryValue = participants[athlet.id].categoryId;
+      if (participants[athlet.id] !== undefined) categoryValue = participants[athlet.id].categoryId;
 
       console.log("categoryValue", categoryValue);
 

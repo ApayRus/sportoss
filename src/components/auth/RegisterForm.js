@@ -33,7 +33,7 @@ class RegistrationForm extends React.Component {
       <div style={styles.flexContainer}>
         <Paper style={styles.loginForm}>
           <Typography variant="h5" color="primary">
-            Registration
+            Регистрация
           </Typography>
           <TextField
             onChange={this.handleChange}
@@ -57,7 +57,7 @@ class RegistrationForm extends React.Component {
           <TextField
             onChange={this.handleChange}
             id="password"
-            label="Password"
+            label="пароль"
             type="password"
             margin="normal"
             fullWidth
@@ -66,7 +66,7 @@ class RegistrationForm extends React.Component {
           <TextField
             onChange={this.handleChange}
             id="confirmPassword"
-            label="Confirm Password"
+            label="подтверждение"
             type="password"
             margin="normal"
             fullWidth
@@ -79,11 +79,11 @@ class RegistrationForm extends React.Component {
             color="primary"
             margin="normal"
           >
-            Register
+            Войти
           </Button>
           <FormHelperText error>{authError ? authError : null}</FormHelperText>
           <FormHelperText>
-            Alredy have an account? Please <Link to="/login">login</Link>.
+            Уже зарегистрированы? Тогда <Link to="/login">войдите</Link>.
           </FormHelperText>
         </Paper>
       </div>

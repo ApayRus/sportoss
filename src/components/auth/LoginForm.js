@@ -29,7 +29,7 @@ class LoginForm extends React.Component {
       <div style={styles.flexContainer}>
         <Paper style={styles.loginForm}>
           <Typography variant="h5" color="primary">
-            Login
+            Войти
           </Typography>
           <TextField
             onChange={this.handleChange}
@@ -57,11 +57,11 @@ class LoginForm extends React.Component {
             color="primary"
             margin="normal"
           >
-            Login
+            Войти
           </Button>
           <FormHelperText error>{authError ? authError : null}</FormHelperText>
           <FormHelperText>
-            Don't have an accout? Please <Link to="/register">register</Link>.
+            В первый раз на сайте? Тогда <Link to="/register">зарегистрируйтесь</Link>.
           </FormHelperText>
         </Paper>
       </div>

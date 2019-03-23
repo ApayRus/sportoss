@@ -7,6 +7,7 @@ import AthletsPage from "./components/athlet/Page";
 import TournamentsPage from "./components/tournament/Page";
 import CategoriesPage from "./components/category/Page";
 import ApplicationsPage from "./components/application/Page";
+import "./index.css";
 
 import Main from "./components/main";
 

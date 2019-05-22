@@ -49,6 +49,9 @@ class SwipeableTemporaryDrawer extends React.Component {
           <ListItem button component={Link} to="/athlets">
             <ListItemText primary="Спортсмены" />
           </ListItem>
+          <ListItem button component={Link} to="/trainers">
+            <ListItemText primary="Тренеры" />
+          </ListItem>
           <ListItem button component={Link} to="/tournaments">
             <ListItemText primary="Турниры" />
           </ListItem>

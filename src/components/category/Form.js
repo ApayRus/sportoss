@@ -37,8 +37,8 @@ class Form extends React.Component {
   };
 
   handleSubmit = () => {
-    // category = { id, gender, minAge, maxAge, minWeight, maxWeight }
-    const { id, gender, minAge, maxAge, minWeight, maxWeight } = this.state;
+    // category = { id, gender, minAge, maxAge, weight }
+    const { id, gender, minAge, maxAge, weight } = this.state;
     const createdBy = {
       userName: this.props.profile.username,
       userId: this.props.auth.uid
@@ -47,7 +47,7 @@ class Form extends React.Component {
     if (!id) {
       const firestoreAdd = this.props.firestoreAdd(
         { collection: "categories" },
-        { gender, minAge, maxAge, minWeight, maxWeight, createdBy }
+        { gender, minAge, maxAge, weight, createdBy }
       );
       firestoreAdd.catch(error => {
         console.log("firestoreAdd error", error.message);
@@ -55,7 +55,7 @@ class Form extends React.Component {
     } else {
       const firestoreUpdate = this.props.firestoreUpdate(
         { collection: "categories", doc: id },
-        { id, gender, minAge, maxAge, minWeight, maxWeight, createdBy }
+        { id, gender, minAge, maxAge, weight, createdBy }
       );
       firestoreUpdate.catch(error => {
         console.log("firestoreUpdate error", error.message);
@@ -70,7 +70,7 @@ class Form extends React.Component {
   };
 
   render() {
-    const { id, gender, minAge, maxAge, minWeight, maxWeight } = this.state;
+    const { id, gender, minAge, maxAge, weight } = this.state;
     //console.log("gender", gender);
     const formTitle = id ? "Редактирование" : "Добавление";
     return (
@@ -124,19 +124,10 @@ class Form extends React.Component {
               Вес
             </Typography>
             <TextField
-              placeholder="от"
-              type="number"
-              id="minWeight"
-              value={minWeight}
-              margin="normal"
-              style={styles.categoryInput}
-            />
-            {` - `}
-            <TextField
-              placeholder="до"
-              type="number"
-              id="maxWeight"
-              value={maxWeight}
+              placeholder="вес"
+              type="text"
+              id="weight"
+              value={weight}
               margin="normal"
               style={styles.categoryInput}
             />

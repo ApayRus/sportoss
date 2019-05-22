@@ -14,15 +14,14 @@ const columns = [
   { id: "gender", numeric: false, disablePadding: false, label: "Пол" },
   { id: "minAge", numeric: false, disablePadding: false, label: "Лет от" },
   { id: "maxAge", numeric: false, disablePadding: false, label: "Лет до" },
-  { id: "minWeight", numeric: false, disablePadding: false, label: "Вес от" },
-  { id: "maxWeight", numeric: false, disablePadding: false, label: "Вес до" }
+  { id: "weight", numeric: false, disablePadding: false, label: "Вес" }
 ];
 
 export class Page extends Component {
   state = { isModalOpen: false, data: {} };
 
   openModal = id => {
-    const defaultData = { gender: "", minAge: "", maxAge: "", minWeight: "", maxWeight: "" }; // if we create new entry
+    const defaultData = { gender: "", minAge: "", maxAge: "", weight: "" }; // if we create new entry
     const modalData = this.props.categories.find(el => el.id === id) || defaultData;
     this.setState({ modalData });
     this.setState({ isModalOpen: true });

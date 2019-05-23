@@ -5,6 +5,8 @@
 /.pnp
 .pnp.js
 
+launch.json
+
 #config
 src/config/firebase.js
 /.firebase

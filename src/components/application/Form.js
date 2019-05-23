@@ -18,11 +18,12 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { firestoreConnect, isLoaded } from "react-redux-firebase";
 import AthletTable from "../table/Table";
-import { athletName, categoryName } from "../../config/functions";
+import { athletName, categoryName, trainerName } from "../../config/functions";
 
 const columns = [
   { id: "participant", numeric: false, disablePadding: false, label: "Участник" },
-  { id: "category", numeric: false, disablePadding: false, label: "Категория" }
+  { id: "category", numeric: false, disablePadding: false, label: "Категория" },
+  { id: "trainer", numeric: false, disablePadding: false, label: "Тренер" }
 ];
 
 class Form extends React.Component {
@@ -43,15 +44,20 @@ class Form extends React.Component {
   };
 
   handleChangeCategory = event => {
-    // participants: [ {athletId: "1", categoryId:"256"}, {athletId: "2", categoryId:"256"}, {athletId: "3", categoryId:"450"} ]
+    //participants = { athletId: {categoryId, trainerId} }
     const athletId = event.target.dataset.athletid;
     const categoryId = event.target.value;
-    //console.log("athletId categoryId", athletId, categoryId);
     const participants = { ...this.state.participants };
-    console.log("this.state.participants", this.state.participants);
-    participants[athletId] = {};
-    participants[athletId].categoryId = categoryId;
-    this.setState({ participants }, () => console.log("this.state", this.state));
+    participants[athletId] = { ...participants[athletId], categoryId };
+    this.setState({ participants });
+  };
+
+  handleChangeTrainer = event => {
+    const athletId = event.target.dataset.athletid;
+    const trainerId = event.target.value;
+    const participants = { ...this.state.participants };
+    participants[athletId] = { ...participants[athletId], trainerId };
+    this.setState({ participants });
   };
 
   handleSelect = selected => {
@@ -95,33 +101,65 @@ class Form extends React.Component {
 
   render() {
     const { id, tournament, participants } = this.state;
-    const { athlets, tournaments, categories } = this.props;
+    const { athlets, tournaments, categories, trainers } = this.props;
+
     const athletsWithCategories = athlets.map(athlet => {
       let categoryValue = "";
+      let trainerValue = "";
+
       console.log("participants[athlet.id]", participants[athlet.id]);
       if (participants[athlet.id] !== undefined) categoryValue = participants[athlet.id].categoryId;
+      if (participants[athlet.id] !== undefined) trainerValue = participants[athlet.id].trainerId;
 
       console.log("categoryValue", categoryValue);
 
-      const category = (
-        <Select
-          native
-          inputProps={{
-            "data-athletid": athlet.id
-          }}
-          style={{ fontSize: "0.8125rem" }}
-          onChange={this.handleChangeCategory}
-          value={categoryValue}
-        >
-          <option value="" />
-          {categories.map(cat => (
-            <option value={cat.id} key={`cat-${cat.id}`}>
-              {categoryName(cat)}
-            </option>
-          ))}
-        </Select>
-      );
-      return { id: athlet.id, participant: athletName(athlet), category };
+      let category = <CircularProgress />;
+
+      if (isLoaded(categories)) {
+        category = (
+          <Select
+            native
+            inputProps={{
+              "data-athletid": athlet.id
+            }}
+            style={{ fontSize: "0.8125rem" }}
+            onChange={this.handleChangeCategory}
+            value={categoryValue}
+          >
+            <option value="" />
+            {categories.map(cat => (
+              <option value={cat.id} key={`cat-${cat.id}`}>
+                {categoryName(cat)}
+              </option>
+            ))}
+          </Select>
+        );
+      }
+
+      let trainer = <CircularProgress />;
+
+      if (isLoaded(trainers)) {
+        trainer = (
+          <Select
+            native
+            inputProps={{
+              "data-athletid": athlet.id
+            }}
+            style={{ fontSize: "0.8125rem" }}
+            onChange={this.handleChangeTrainer}
+            value={trainerValue}
+          >
+            <option value="" />
+            {trainers.map(trainer => (
+              <option value={trainer.id} key={`cat-${trainer.id}`}>
+                {trainerName(trainer)}
+              </option>
+            ))}
+          </Select>
+        );
+      }
+
+      return { id: athlet.id, participant: athletName(athlet), category, trainer };
     });
     const formTitle = id ? "Редактирование" : "Добавление";
     // console.log("categories", categories);
@@ -191,6 +229,7 @@ const mapStateToProps = state => {
     auth: state.firebase.auth,
     profile: state.firebase.profile,
     athlets: state.firestore.ordered.athlets,
+    trainers: state.firestore.ordered.trainers,
     categories: state.firestore.ordered.categories,
     tournaments: state.firestore.ordered.tournaments
   };
@@ -202,6 +241,7 @@ export default compose(
     if (props.user.userId)
       return [
         { collection: "athlets", where: [["createdBy.userId", "==", props.user.userId]] },
+        { collection: "trainers", where: [["createdBy.userId", "==", props.user.userId]] },
         { collection: "categories" },
         { collection: "tournaments" }
       ];

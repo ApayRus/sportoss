@@ -105,7 +105,7 @@ class EnhancedTable extends React.Component {
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   render() {
-    const { classes, columns, hideToolbar, hideCheckboxes } = this.props;
+    const { classes, columns, hideToolbar, hideCheckboxes, disableRowClick } = this.props;
     const { order, orderBy, selected } = this.state;
     const data = this.props.data || [];
     return (
@@ -138,7 +138,11 @@ class EnhancedTable extends React.Component {
                 return (
                   <TableRow
                     hover
-                    onClick={!hideCheckboxes ? event => this.handleClick(event, row.id) : null}
+                    onClick={
+                      !(hideCheckboxes || disableRowClick)
+                        ? event => this.handleClick(event, row.id)
+                        : null
+                    }
                     role="checkbox"
                     aria-checked={isSelected}
                     tabIndex={-1}
@@ -147,7 +151,12 @@ class EnhancedTable extends React.Component {
                   >
                     {!hideCheckboxes && (
                       <TableCell padding="checkbox">
-                        <Checkbox checked={isSelected} />
+                        <Checkbox
+                          checked={isSelected}
+                          onClick={
+                            disableRowClick ? event => this.handleClick(event, row.id) : null
+                          }
+                        />
                       </TableCell>
                     )}
                     {columns.map((col, index) => (

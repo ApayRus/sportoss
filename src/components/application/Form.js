@@ -203,6 +203,7 @@ class Form extends React.Component {
                 selected={this.state.selected}
                 handleSelect={this.handleSelect}
                 hideToolbar={true}
+                disableRowClick
               />
             ) : (
               <CircularProgress />

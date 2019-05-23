@@ -1,6 +1,8 @@
 import React, { Component } from "react";
-import { Fab, CircularProgress } from "@material-ui/core";
+import { Fab, CircularProgress, IconButton } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
+import GridIcon from "@material-ui/icons/GridOn";
+import { Link } from "react-router-dom";
 
 import Table from "../table/Table";
 import Form from "./Form";
@@ -13,7 +15,8 @@ import { compose } from "redux";
 const columns = [
   { id: "name", numeric: false, disablePadding: false, label: "Название" },
   { id: "date", numeric: false, disablePadding: false, label: "Время" },
-  { id: "address", numeric: false, disablePadding: false, label: "Место" }
+  { id: "address", numeric: false, disablePadding: false, label: "Место" },
+  { id: "grid", numeric: false, disablePadding: false, label: "Сетка" }
 ];
 
 export class Page extends Component {
@@ -39,11 +42,24 @@ export class Page extends Component {
       update: firestoreUpdate
     } = this.props.firestore;
 
+    let extendedTournaments = [];
+
+    if (isLoaded(tournaments)) {
+      extendedTournaments = tournaments.map(tournament => {
+        const grid = (
+          <IconButton component={Link} to={`/tournaments/${tournament.id}/grids/`}>
+            <GridIcon />
+          </IconButton>
+        );
+        return { ...tournament, grid };
+      });
+    }
+
     return (
       <main>
         {isLoaded(tournaments) && isLoaded(categories) ? (
           <Table
-            data={tournaments}
+            data={extendedTournaments}
             // handleSelected={this.getSelected}
             openModal={this.openModal}
             firestoreDelete={firestoreDelete}
@@ -72,8 +88,6 @@ export class Page extends Component {
 }
 
 const mapStateToProps = state => {
-  console.log("state.firestore.ordered.tournaments", state.firestore.ordered.tournaments);
-  console.log("state.firestore", state.firestore);
   return {
     tournaments: state.firestore.ordered.tournaments,
     categories: state.firestore.ordered.categories

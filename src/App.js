@@ -6,6 +6,7 @@ import Navbar from "./components/layouts/Navbar";
 import AthletsPage from "./components/athlet/Page";
 import TrainersPage from "./components/trainer/Page";
 import TournamentsPage from "./components/tournament/Page";
+import TournamentGridPage from "./components/TournamentGrid/Page";
 import CategoriesPage from "./components/category/Page";
 import ApplicationsPage from "./components/application/Page";
 import "./index.css";
@@ -22,6 +23,7 @@ class App extends Component {
             <Route exact path="/" component={Main} />
             <Route path="/athlets" component={AthletsPage} />
             <Route path="/trainers" component={TrainersPage} />
+            <Route path="/tournaments/:tournamentId/grids" component={TournamentGridPage} />
             <Route path="/tournaments" component={TournamentsPage} />
             <Route path="/categories" component={CategoriesPage} />
             <Route path="/applications" component={ApplicationsPage} />

@@ -38,7 +38,7 @@ export class Page extends Component {
     let data = [];
     if (isLoaded(tournaments, applications)) {
       data = applications.map(app => {
-        const tournament = tournaments.filter(elem => elem.id === app.tournament)[0];
+        const tournament = tournaments.filter(elem => elem.id === app.tournamentId)[0];
         console.log("tournament", tournament);
         //console.log("tournamentName(tournament)", tournamentName(tournament));
         if (tournament) return { ...app, name: tournamentName(tournament) };

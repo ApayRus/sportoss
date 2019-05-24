@@ -27,13 +27,13 @@ const columns = [
 ];
 
 class Form extends React.Component {
-  state = { id: "", tournament: "", participants: {} };
+  state = { id: "", tournamentId: "", participants: {} };
 
   componentDidMount() {
-    const { id, tournament, participants } = this.props.data;
+    const { id, tournamentId, participants } = this.props.data;
     const selected = Object.keys(participants);
     console.log("this.props DidMount", this.props.data);
-    this.setState({ id, tournament, participants, selected });
+    this.setState({ id, tournamentId, participants, selected });
   }
 
   handleChange = e => {
@@ -65,7 +65,7 @@ class Form extends React.Component {
   };
 
   handleSubmit = () => {
-    const { id, tournament, participants } = this.state;
+    const { id, tournamentId, participants } = this.state;
     console.log("handleSubmit participants", participants);
     const createdBy = {
       userName: this.props.profile.username,
@@ -75,7 +75,7 @@ class Form extends React.Component {
     if (!id) {
       const firestoreAdd = this.props.firestoreAdd(
         { collection: "applications" },
-        { tournament, participants, createdBy }
+        { tournamentId, participants, createdBy }
       );
       firestoreAdd.catch(error => {
         console.log("firestoreAdd error", error.message);
@@ -84,7 +84,7 @@ class Form extends React.Component {
       const firestoreUpdate = this.props
         .firestoreUpdate(
           { collection: "applications", doc: id },
-          { id, tournament, participants, createdBy }
+          { id, tournamentId, participants, createdBy }
         )
         .then(result => console.log("result", result));
       firestoreUpdate.catch(error => {
@@ -100,7 +100,7 @@ class Form extends React.Component {
   };
 
   render() {
-    const { id, tournament, participants } = this.state;
+    const { id, tournamentId, participants } = this.state;
     const { athlets, tournaments, categories, trainers } = this.props;
 
     const athletsWithCategories = athlets.map(athlet => {
@@ -176,13 +176,13 @@ class Form extends React.Component {
         <DialogContent>
           <form>
             <FormControl fullWidth>
-              <InputLabel htmlFor="tournament">Турнир</InputLabel>
+              <InputLabel htmlFor="tournamentId">Турнир</InputLabel>
               <Select
                 native
                 onChange={this.handleChange}
-                value={tournament}
+                value={tournamentId}
                 inputProps={{
-                  id: "tournament"
+                  id: "tournamentId"
                 }}
               >
                 <option value="" />

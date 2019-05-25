@@ -16,15 +16,12 @@ export class Page extends Component {
   openModal = id => {
     const defaultData = { tournament: "", participants: {} }; // if we create new entry
     const modalData = this.props.applications.find(el => el.id === id) || defaultData;
-    console.log("modalData", modalData);
     this.setState({ modalData });
     this.setState({ isModalOpen: true });
   };
 
   handleSelect = selected => {
-    this.setState({ selected }, () => {
-      console.log("selected", selected);
-    });
+    this.setState({ selected });
   };
 
   closeModal = () => {
@@ -34,13 +31,10 @@ export class Page extends Component {
   render() {
     const { athlets, tournaments, applications, user } = this.props;
     // const { selected } = this.state;
-    console.log("applications", applications);
     let data = [];
     if (isLoaded(tournaments, applications)) {
       data = applications.map(app => {
         const tournament = tournaments.filter(elem => elem.id === app.tournamentId)[0];
-        console.log("tournament", tournament);
-        //console.log("tournamentName(tournament)", tournamentName(tournament));
         if (tournament) return { ...app, name: tournamentName(tournament) };
         else return { ...app, name: "" };
       });
@@ -109,7 +103,6 @@ const mapStateToProps = state => {
 export default compose(
   connect(mapStateToProps),
   firestoreConnect(props => {
-    console.log("firestoreConnect props", props);
     if (props.user.userId)
       return [
         { collection: "athlets", where: [["createdBy.userId", "==", props.user.userId]] },

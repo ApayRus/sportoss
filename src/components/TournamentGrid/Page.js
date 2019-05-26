@@ -3,14 +3,17 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { firestoreConnect, isLoaded } from "react-redux-firebase";
 import { compose } from "redux";
-import { CircularProgress } from "@material-ui/core";
+import { CircularProgress, IconButton } from "@material-ui/core";
 import { categoryName } from "../../config/functions";
 import groupBy from "lodash/groupBy";
 import CategoriesTable from "../table/Table";
+import GridIcon from "@material-ui/icons/GridOn";
+import { Link } from "react-router-dom";
 
 const columns = [
   { id: "name", numeric: false, disablePadding: false, label: "Категория" },
-  { id: "participantsCount", numeric: false, disablePadding: false, label: "Участников" }
+  { id: "participantsCount", numeric: false, disablePadding: false, label: "Участников" },
+  { id: "grid", numeric: false, disablePadding: false, label: "Сетка" }
 ];
 
 /**
@@ -36,8 +39,15 @@ export class Page extends Component {
 
       categories = categories.map(cat => {
         let participantsCount = 0;
+
+        const grid = (
+          <IconButton component={Link} to={`/grid/tournament/${tournament.id}/category/${cat.id}/`}>
+            <GridIcon />
+          </IconButton>
+        );
+
         if (countedCategories[cat.id]) participantsCount = countedCategories[cat.id].length;
-        return { id: cat.id, name: categoryName(cat), participantsCount };
+        return { id: cat.id, name: categoryName(cat), participantsCount, grid };
       });
     }
     return (

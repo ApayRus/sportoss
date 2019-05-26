@@ -16,7 +16,7 @@ const columns = [
   { id: "name", numeric: false, disablePadding: false, label: "Название" },
   { id: "date", numeric: false, disablePadding: false, label: "Время" },
   { id: "address", numeric: false, disablePadding: false, label: "Место" },
-  { id: "grid", numeric: false, disablePadding: false, label: "Сетка" }
+  { id: "grids", numeric: false, disablePadding: false, label: "Сетки" }
 ];
 
 export class Page extends Component {
@@ -46,12 +46,12 @@ export class Page extends Component {
 
     if (isLoaded(tournaments)) {
       extendedTournaments = tournaments.map(tournament => {
-        const grid = (
+        const grids = (
           <IconButton component={Link} to={`/tournaments/${tournament.id}/grids/`}>
             <GridIcon />
           </IconButton>
         );
-        return { ...tournament, grid };
+        return { ...tournament, grids };
       });
     }
 
@@ -96,11 +96,7 @@ const mapStateToProps = state => {
 
 export default compose(
   connect(mapStateToProps),
-  firestoreConnect([
-    { collection: "tournaments" },
-    { collection: "tournaments", storeAs: "xxxx" },
-    { collection: "categories" }
-  ])
+  firestoreConnect([{ collection: "tournaments" }, { collection: "categories" }])
 )(Page);
 
 const fabStyle = {

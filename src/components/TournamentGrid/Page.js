@@ -5,7 +5,7 @@ import { firestoreConnect, isLoaded } from "react-redux-firebase";
 import { compose } from "redux";
 import { CircularProgress, IconButton } from "@material-ui/core";
 import { categoryName } from "../../config/functions";
-import groupBy from "lodash/groupBy";
+import { participantsGroupedByCategories } from "../../dataFunctions";
 import CategoriesTable from "../table/Table";
 import GridIcon from "@material-ui/icons/GridOn";
 import { Link } from "react-router-dom";
@@ -16,29 +16,18 @@ const columns = [
   { id: "grid", numeric: false, disablePadding: false, label: "Сетка" }
 ];
 
-/**
- * Returns count of participans of each category
- */
-function countCategories(applications) {
-  let participants = {};
-  applications.forEach(app => {
-    participants = { ...participants, ...app.participants };
-  });
-  console.log("participants", participants);
-  return groupBy(participants, "categoryId");
-}
-
 export class Page extends Component {
   render() {
     const { tournament, allCategories, applications } = this.props;
     let categories = [];
     if (isLoaded(allCategories, tournament, applications)) {
       categories = allCategories.filter(cat => tournament.categories.includes(cat.id));
-      const countedCategories = countCategories(applications);
-      console.log("countedCategories", countedCategories);
+      const participantsByCategories = participantsGroupedByCategories(applications);
 
       categories = categories.map(cat => {
         let participantsCount = 0;
+        if (participantsByCategories[cat.id])
+          participantsCount = participantsByCategories[cat.id].length;
 
         const grid = (
           <IconButton component={Link} to={`/grid/tournament/${tournament.id}/category/${cat.id}/`}>
@@ -46,7 +35,6 @@ export class Page extends Component {
           </IconButton>
         );
 
-        if (countedCategories[cat.id]) participantsCount = countedCategories[cat.id].length;
         return { id: cat.id, name: categoryName(cat), participantsCount, grid };
       });
     }

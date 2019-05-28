@@ -6,8 +6,8 @@ import Navbar from "./components/layouts/Navbar";
 import AthletsPage from "./components/athlet/Page";
 import TrainersPage from "./components/trainer/Page";
 import TournamentsPage from "./components/tournament/Page";
-import TournamentGridPage from "./components/TournamentGrid/Page";
-import TournamentGridForm from "./components/TournamentGrid/Form";
+import TournamentGridPage from "./components/grid/Page";
+import TournamentGridForm from "./components/grid/Form";
 
 import CategoriesPage from "./components/category/Page";
 import ApplicationsPage from "./components/application/Page";

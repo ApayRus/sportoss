@@ -7,10 +7,12 @@ import { CircularProgress, Avatar, Typography } from "@material-ui/core";
 import { participantsGroupedByCategories } from "../../dataFunctions";
 import { map, sortBy, groupBy, find } from "lodash";
 import { randomColor } from "randomcolor";
-import Participant from './ColoredPerson'
+import Participant from "./ColoredPerson";
+import { generateGrid } from "./functions";
 
 import { athletName, categoryName, trainerName, tournamentName } from "../../config/functions";
 import ColoredPerson from "./ColoredPerson";
+import Duel from "./Duel";
 
 export class Page extends Component {
   render() {
@@ -23,6 +25,9 @@ export class Page extends Component {
     let athlets = [];
     let trainers = [];
     let trainerColors = {};
+    let Participants = [];
+
+    generateGrid(8);
 
     if (isLoaded(applications, category, allAthlets, allTrainers)) {
       participants = participantsGroupedByCategories(applications)[categoryId];
@@ -36,47 +41,43 @@ export class Page extends Component {
       participants = sortBy(participants, "trainerId");
       athlets = allAthlets.filter(athlet => athletIds.includes(athlet.id));
       trainers = allTrainers.filter(trainer => trainerIds.includes(trainer.id));
+      Participants = participants.map(par => {
+        const color = trainerColors[par.trainerId];
+        const athlet = find(athlets, { id: par.athletId });
+        const name = athletName(athlet);
+        const key = par.athletId;
+        const props = {
+          color,
+          name,
+          key
+        };
+        return <ColoredPerson {...props} />;
+      });
     }
 
     return (
       <div>
-        {isLoaded(
-          tournament,
-          category,
-          allAthlets,
-          allTrainers,
-          applications
-        ) ? (
+        {isLoaded(tournament, category, allAthlets, allTrainers, applications) ? (
           <div>
             <h1>Форма категории</h1>
             <h2>{categoryName(category)}</h2>
             <h3>{tournamentName(tournament)}</h3>
+            <Duel participant1={Participants[0]} participant2={Participants[1]} />
             {trainers.map(trainer => {
-                const color = trainerColors[trainer.id];
-                const name = trainerName(trainer);
-                const key = trainer.id
-                const props = {
-                  color,
-                  name,
-                  key
-                };
-                return <ColoredPerson {...props} />;
-              })}
-              
+              const color = trainerColors[trainer.id];
+              const name = trainerName(trainer);
+              const key = trainer.id;
+              const props = {
+                color,
+                name,
+                key
+              };
+              return <ColoredPerson {...props} />;
+            })}
+
             <ul>
               {/* {athletId, trainerId, categoryId} */}
-              {participants.map(par => {
-                const color = trainerColors[par.trainerId];
-                const athlet = find(athlets, {id:par.athletId})
-                const name = athletName(athlet);
-                const key = par.athletId;
-                const props = {
-                  color,
-                  name,
-                  key
-                };
-                return <ColoredPerson {...props} />;
-              })}
+              {Participants}
             </ul>
           </div>
         ) : (

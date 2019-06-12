@@ -8,15 +8,16 @@ import { participantsGroupedByCategories } from "../../dataFunctions";
 import { map, sortBy, groupBy, find } from "lodash";
 import { randomColor } from "randomcolor";
 import Participant from "./ColoredPerson";
-import { generateGrid } from "./functions";
+import { generateGrid, gridByLevels } from "./functions";
 
 import { athletName, categoryName, trainerName, tournamentName } from "../../config/functions";
 import ColoredPerson from "./ColoredPerson";
 import Duel from "./Duel";
+import Grid from "./Grid";
 
 export class Page extends Component {
   render() {
-    const { tournament, category, applications, allAthlets, allTrainers } = this.props;
+    const { tournament, category, applications, allAthlets, allTrainers, grid } = this.props;
     const { categoryId } = this.props.match.params;
     let participants = [];
     //let participantsByTrainer = {};
@@ -26,8 +27,6 @@ export class Page extends Component {
     let trainers = [];
     let trainerColors = {};
     let Participants = [];
-
-    generateGrid(8);
 
     if (isLoaded(applications, category, allAthlets, allTrainers)) {
       participants = participantsGroupedByCategories(applications)[categoryId];
@@ -62,6 +61,10 @@ export class Page extends Component {
             <h1>Форма категории</h1>
             <h2>{categoryName(category)}</h2>
             <h3>{tournamentName(tournament)}</h3>
+            <div>
+              <h2>Grid: </h2>
+              <Grid grid={gridByLevels(grid)} />
+            </div>
             <Duel participant1={Participants[0]} participant2={Participants[1]} />
             {trainers.map(trainer => {
               const color = trainerColors[trainer.id];
@@ -98,6 +101,7 @@ const mapStateToProps = state => {
     allAthlets: state.firestore.ordered.allAthlets,
     allTrainers: state.firestore.ordered.allTrainers,
     applications: state.firestore.ordered.applications,
+    grid: state.grid,
     user: { userId, userName }
   };
 };

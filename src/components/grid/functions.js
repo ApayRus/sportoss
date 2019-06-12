@@ -1,4 +1,4 @@
-import { sum } from "lodash";
+import { sum, map, groupBy } from "lodash";
 
 /**
  *
@@ -68,4 +68,17 @@ export function generateGrid(N) {
   grid[duelCountTotal]["next"] = 0;
 
   return grid;
+}
+
+/**
+ *
+ * @param {Object} grid
+ * @return {Object} gridByLevels - object with array of duel-objects
+ */
+export function gridByLevels(grid) {
+  const gridArray = map(grid, (elem, key) => {
+    return { id: key, ...elem };
+  });
+
+  return groupBy(gridArray, "level");
 }

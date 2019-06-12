@@ -1,4 +1,4 @@
-import { getBaseLog, gridTourDuelCount, generateGrid, totalCountDuelsBeforeTour } from "./functions";
+import { getBaseLog, gridTourDuelCount, generateGrid, totalCountDuelsBeforeTour, gridByLevels } from "./functions";
 
 it("getBaseLog", () => {
   expect(getBaseLog(2, 1)).toEqual(0);
@@ -77,4 +77,32 @@ it("generateGrid", () => {
     31: { next: 0, level: 5 }
   };
   expect(generateGrid(32)).toEqual(trueAnswer32);
+});
+
+it("gridByLevels", () => {
+  const grid8_raw = {
+    /* 1-st tour*/
+    1: { next: 5, level: 1 },
+    2: { next: 5, level: 1 },
+    3: { next: 6, level: 1 },
+    4: { next: 6, level: 1 },
+    /* 2-nd tour */
+    5: { next: 7, level: 2 },
+    6: { next: 7, level: 2 },
+    /* 3-rd tour */
+    7: { next: 0, level: 3 }
+  };
+
+  const grid8_byLevels = {
+    1: [
+      { id: "1", level: 1, next: 5 },
+      { id: "2", level: 1, next: 5 },
+      { id: "3", level: 1, next: 6 },
+      { id: "4", level: 1, next: 6 }
+    ],
+    2: [{ id: "5", level: 2, next: 7 }, { id: "6", level: 2, next: 7 }],
+    3: [{ id: "7", level: 3, next: 0 }]
+  };
+
+  expect(gridByLevels(grid8_raw)).toEqual(grid8_byLevels);
 });

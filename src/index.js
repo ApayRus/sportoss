@@ -7,6 +7,7 @@ import { ReactReduxFirebaseProvider, firebaseReducer } from "react-redux-firebas
 import { createFirestoreInstance, firestoreReducer } from "redux-firestore"; // <- needed if using firestore
 import * as serviceWorker from "./serviceWorker";
 import Router from "./App";
+import gridReducer from "./components/grid/store/reducer";
 import firebase from "./config/firebase";
 
 // react-redux-firebase config
@@ -18,15 +19,16 @@ const rrfConfig = {
 // Add firebase to reducers
 const rootReducer = combineReducers({
   firebase: firebaseReducer,
-  firestore: firestoreReducer // <- needed if using firestore
+  firestore: firestoreReducer, // <- needed if using firestore
+  grid: gridReducer
 });
 
 // Create store with reducers and initial state
 const initialState = {};
 const store = createStore(
   rootReducer,
-  initialState
-  /* window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__() */
+  initialState,
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
 
 const rrfProps = {

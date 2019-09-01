@@ -17,15 +17,36 @@ import { connect } from "react-redux";
 
 const styles = {
   categoryInput: { width: 40, margin: 5 },
-  categoryTypography: { marginRight: 10, marginLeft: 10 },
-  categoryContainer: { display: "flex", alignItems: "center" }
+  categoryTypography: {
+    marginRight: 10,
+    marginLeft: 10,
+    marginTop: 6,
+    display: "inline-block"
+  },
+  categoryContainer: {
+    /* display: "flex", alignItems: "center" */
+  }
 };
 
 class Form extends React.Component {
-  state = { id: "", gender: "", minAge: "", maxAge: "", minWeight: "", maxWeight: "" };
+  state = {
+    id: "",
+    gender: "",
+    minAge: "",
+    maxAge: "",
+    minWeight: "",
+    maxWeight: ""
+  };
 
   componentDidMount() {
-    const { id, gender, minAge, maxAge, minWeight, maxWeight } = this.props.data;
+    const {
+      id,
+      gender,
+      minAge,
+      maxAge,
+      minWeight,
+      maxWeight
+    } = this.props.data;
     this.setState({ id, gender, minAge, maxAge, minWeight, maxWeight });
   }
 
@@ -80,13 +101,11 @@ class Form extends React.Component {
         aria-labelledby="form-dialog-title"
       >
         <DialogTitle id="form-dialog-title">
-          <Typography color="primary">{formTitle} спортсмена</Typography>
+          <Typography color="primary">{formTitle} категории</Typography>
         </DialogTitle>
         <DialogContent>
           <form style={styles.categoryContainer} onChange={this.handleChange}>
-            <Typography style={styles.categoryTypography} inline>
-              Пол
-            </Typography>
+            <Typography style={styles.categoryTypography}>Пол</Typography>
             <FormControl>
               <Select
                 native
@@ -100,8 +119,8 @@ class Form extends React.Component {
                 <option value="Жен">Жен</option>
               </Select>
             </FormControl>
-
-            <Typography style={styles.categoryTypography} inline>
+            <br />
+            <Typography style={{ ...styles.categoryTypography, marginTop: 11 }}>
               Возраст
             </Typography>
             <TextField
@@ -119,8 +138,8 @@ class Form extends React.Component {
               value={maxAge}
               style={styles.categoryInput}
             />
-
-            <Typography style={styles.categoryTypography} inline>
+            <br />
+            <Typography style={{ ...styles.categoryTypography, marginTop: 11 }}>
               Вес
             </Typography>
             <TextField
@@ -133,7 +152,10 @@ class Form extends React.Component {
             />
           </form>
           <br />
-          <FormHelperText> {/*THIS IS PLACE FOR ERROR MESSAGE */}</FormHelperText>
+          <FormHelperText>
+            {" "}
+            {/*THIS IS PLACE FOR ERROR MESSAGE */}
+          </FormHelperText>
         </DialogContent>
         <DialogActions>
           <Button onClick={this.handleCancel} color="primary">

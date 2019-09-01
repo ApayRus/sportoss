@@ -39,15 +39,8 @@ class Form extends React.Component {
   };
 
   componentDidMount() {
-    const {
-      id,
-      gender,
-      minAge,
-      maxAge,
-      minWeight,
-      maxWeight
-    } = this.props.data;
-    this.setState({ id, gender, minAge, maxAge, minWeight, maxWeight });
+    const { id, gender, minAge, maxAge, weight } = this.props.data;
+    this.setState({ id, gender, minAge, maxAge, weight });
   }
 
   handleChange = e => {

@@ -104,7 +104,7 @@ export default compose(
   connect(mapStateToProps),
   firestoreConnect(props => {
     if (props.user.userId)
-      return [{ collection: "trainers", where: [["createdBy.userId", "==", props.user.userId]] }];
+      return [{ collection: "trainers", /* where: [["createdBy.userId", "==", props.user.userId]] */ }];
     else return [];
   })
 )(Page);

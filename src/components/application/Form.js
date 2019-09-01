@@ -220,7 +220,7 @@ export default compose(
     if (props.user.userId)
       return [
         { collection: "athlets", where: [["createdBy.userId", "==", props.user.userId]] },
-        { collection: "trainers", where: [["createdBy.userId", "==", props.user.userId]] },
+        { collection: "trainers"/* , where: [["createdBy.userId", "==", props.user.userId]] */ },
         { collection: "categories" },
         { collection: "tournaments" }
       ];

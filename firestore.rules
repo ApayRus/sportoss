@@ -1,7 +1,49 @@
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write;
+
+    function haveRole(role) {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.roles[role] == true
     }
+
+    function isAuthorized() {
+      return request.auth.uid != null
+    }
+
+    function isOwner() {
+      return request.auth.uid == resource.data.createdBy.userId
+    }
+
+    match /users/{user} {
+    allow read: if request.auth.uid == resource.id;
+    }
+
+    // tournaments, categories, trainers - can add/update only Admin 
+
+      match /tournaments/{document} {
+      allow read: if isAuthorized()
+      allow create, update: if haveRole("admin")
   }
-}
+
+      match /categories/{document} {
+      allow read: if isAuthorized()
+      allow create, update: if haveRole("admin")
+    }
+
+      match /trainers/{document} {
+      allow read: if isAuthorized()
+      allow create, update: if haveRole("admin")
+    }
+
+    // athlets, applications 
+
+      match /athlets/{document} {
+      allow read, create: if isAuthorized()
+      allow update: if isOwner() || haveRole("admin")
+    }
+
+      match /applications/{document} {
+      allow read, create: if isAuthorized()
+      allow update: if isOwner() || haveRole("admin")
+    }
+
+}}

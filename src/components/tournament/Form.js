@@ -21,12 +21,14 @@ import { categoryName } from '../../config/functions'
 const categoryColumns = [{ id: 'name', numeric: false, disablePadding: true, label: 'Категории' }]
 
 class Form extends React.Component {
-  state = { id: '', name: '', date: '', dateAge: '', address: '', categories: [] }
+  constructor(props) {
+    super(props)
+    this.state = { id: '', name: '', date: '', dateAge: '', address: '', categories: [] }
+  }
 
   componentDidMount() {
-    const { id, name, date, address, categories } = this.props.data
-    console.log('this.props DidMount', this.props.data)
-    this.setState({ id, name, date, address, categories })
+    const { id, name, date, dateAge, address, categories } = this.props.data
+    if (id) this.setState({ id, name, date, dateAge, address, categories })
   }
 
   handleChange = e => {

@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 
 import {
   Button,
@@ -12,75 +12,80 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle
-} from "@material-ui/core";
+} from '@material-ui/core'
 // import { Link, Redirect } from "react-router-dom";
 //import { connect } from "react-redux";
 
 class Form extends React.Component {
-  state = { id: "", firstName: "", familyName: "", fatherName: "", birthday: "", gender: "" };
+  constructor(props) {
+    super(props)
+    this.state = { id: '', firstName: '', familyName: '', fatherName: '', birthday: '', gender: '' }
+  }
 
   componentDidMount() {
-    const { id, firstName, familyName, fatherName, birthday, gender } = this.props.data;
-    this.setState({ id, firstName, familyName, fatherName, birthday, gender });
+    const { id, firstName, familyName, fatherName, birthday, gender } = this.props.data
+    if (id) {
+      this.setState({ id, firstName, familyName, fatherName, birthday, gender })
+    }
   }
 
   handleChange = e => {
     this.setState({
       [e.target.id]: e.target.value
-    });
-  };
+    })
+  }
 
   handleSubmit = () => {
-    const { id, firstName, familyName, fatherName, birthday, gender } = this.state;
-    const createdBy = this.props.user;
+    const { id, firstName, familyName, fatherName, birthday, gender } = this.state
+    const createdBy = this.props.user
     //id is empty when we creates new endtry, and filled when we edit an existen one
     if (!id) {
       const firestoreAdd = this.props.firestoreAdd(
-        { collection: "athlets" },
+        { collection: 'athlets' },
         { firstName, familyName, fatherName, birthday, gender, createdBy }
-      );
+      )
       firestoreAdd.catch(error => {
-        console.log("firestoreAdd error", error);
-      });
+        console.log('firestoreAdd error', error)
+      })
     } else {
       const firestoreUpdate = this.props.firestoreUpdate(
-        { collection: "athlets", doc: id },
+        { collection: 'athlets', doc: id },
         { firstName, familyName, fatherName, birthday, gender, createdBy }
-      );
+      )
       firestoreUpdate.catch(error => {
-        console.log("firestoreUpdate error", error);
-      });
+        console.log('firestoreUpdate error', error)
+      })
     }
 
-    this.handleCancel();
-  };
+    this.handleCancel()
+  }
 
   handleCancel = () => {
-    this.props.closeModal();
-  };
+    this.props.closeModal()
+  }
 
   render() {
-    const { id, firstName, familyName, fatherName, birthday, gender } = this.state;
-    const formTitle = id ? "Редактирование" : "Добавление";
+    const { id, firstName, familyName, fatherName, birthday, gender } = this.state
+    const formTitle = id ? 'Редактирование' : 'Добавление'
     return (
       <div>
         <Dialog
           open={this.props.isModalOpen}
           onClose={this.handleClose}
-          aria-labelledby="form-dialog-title"
+          aria-labelledby='form-dialog-title'
         >
-          <DialogTitle id="form-dialog-title">
-            <Typography color="primary">{formTitle} спортсмена</Typography>
+          <DialogTitle id='form-dialog-title'>
+            <Typography color='primary'>{formTitle} спортсмена</Typography>
           </DialogTitle>
           <DialogContent>
             <form onChange={this.handleChange}>
               {/* FULLNAME */}
               <TextField
-                id="familyName"
-                label="Фамилия"
-                type="text"
+                id='familyName'
+                label='Фамилия'
+                type='text'
                 value={familyName}
-                margin="normal"
+                margin='normal'
                 autoFocus
                 fullWidth
                 InputLabelProps={{
@@ -88,22 +93,22 @@ class Form extends React.Component {
                 }}
               />
               <TextField
-                id="firstName"
-                label="Имя"
-                type="text"
+                id='firstName'
+                label='Имя'
+                type='text'
                 value={firstName}
-                margin="normal"
+                margin='normal'
                 fullWidth
                 InputLabelProps={{
                   shrink: true
                 }}
               />
               <TextField
-                id="fatherName"
-                label="Отчество"
-                type="text"
+                id='fatherName'
+                label='Отчество'
+                type='text'
                 value={fatherName}
-                margin="normal"
+                margin='normal'
                 fullWidth
                 InputLabelProps={{
                   shrink: true
@@ -112,11 +117,11 @@ class Form extends React.Component {
               <br />
               {/* BIRTHDAY */}
               <TextField
-                id="birthday"
-                label="Дата рождения"
-                type="date"
+                id='birthday'
+                label='Дата рождения'
+                type='date'
                 value={birthday}
-                margin="normal"
+                margin='normal'
                 fullWidth
                 InputLabelProps={{
                   shrink: true
@@ -124,17 +129,17 @@ class Form extends React.Component {
               />
               {/* GENDER */}
               <FormControl fullWidth>
-                <InputLabel htmlFor="gender">Пол</InputLabel>
+                <InputLabel htmlFor='gender'>Пол</InputLabel>
                 <Select
-                  native //if remove that, id does't appear in event.target
+                  native //if remove that, id does"t appear in event.target
                   value={gender}
                   inputProps={{
-                    id: "gender"
+                    id: 'gender'
                   }}
                 >
-                  <option value="" />
-                  <option value="Муж">Муж</option>
-                  <option value="Жен">Жен</option>
+                  <option value='' />
+                  <option value='Муж'>Муж</option>
+                  <option value='Жен'>Жен</option>
                 </Select>
               </FormControl>
             </form>
@@ -142,17 +147,17 @@ class Form extends React.Component {
             <FormHelperText> {/*THIS IS PLACE FOR ERROR MESSAGE */}</FormHelperText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleCancel} color="default">
+            <Button onClick={this.handleCancel} color='default'>
               Отмена
             </Button>
-            <Button onClick={this.handleSubmit} color="primary">
+            <Button onClick={this.handleSubmit} color='primary'>
               Сохранить
             </Button>
           </DialogActions>
         </Dialog>
       </div>
-    );
+    )
   }
 }
 
-export default Form;
+export default Form

@@ -151,12 +151,16 @@ class Form extends React.Component {
       // applies 3 filters to allCategories: 1) selected for tournament, 2) gender, 3) age from [minAge, maxAge]
       if (tournament) {
         const athletAge = ageAtDate(athlet.birthday, tournament.dateAge || tournament.date)
-        categories = allCategories.filter(
-          cat =>
+        categories = allCategories.filter(cat => {
+          let { minAge, maxAge } = cat
+          if (!minAge) minAge = 0
+          if (!maxAge) maxAge = 100
+          return (
             tournament.categories.includes(cat.id) &&
             athlet.gender === cat.gender &&
-            [cat.minAge, cat.maxAge].includes(athletAge.toString())
-        )
+            (athletAge >= +minAge && athletAge <= +maxAge)
+          )
+        })
       }
       const CategorySelect = (
         <Select

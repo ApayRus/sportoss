@@ -1,46 +1,51 @@
-import React, { Component } from "react";
-import { BrowserRouter, Switch, Route } from "react-router-dom";
-import LoginForm from "./components/auth/LoginForm";
-import RegisterForm from "./components/auth/RegisterForm";
-import Navbar from "./components/layouts/Navbar";
-import AthletsPage from "./components/athlet/Page";
-import TrainersPage from "./components/trainer/Page";
-import TournamentsPage from "./components/tournament/Page";
-import TournamentGridPage from "./components/grid/Page";
-import TournamentGridForm from "./components/grid/Form";
+import React, { Component } from 'react'
+import { BrowserRouter, Switch, Route } from 'react-router-dom'
+import LoginForm from './components/auth/LoginForm'
+import RegisterForm from './components/auth/RegisterForm'
+import Navbar from './components/layouts/Navbar'
+import AthletsPage from './components/athlet/Page'
+import TrainersPage from './components/trainer/Page'
+import TournamentsPage from './components/tournament/Page'
+import TournamentParticipantsPage from './components/tournament/ParticipantsPage'
+import TournamentGridPage from './components/grid/Page'
+import TournamentGridForm from './components/grid/Form'
 
-import CategoriesPage from "./components/category/Page";
-import ApplicationsPage from "./components/application/Page";
-import "./index.css";
+import CategoriesPage from './components/category/Page'
+import ApplicationsPage from './components/application/Page'
+import './index.css'
 
-import Main from "./components/main";
+import Main from './components/main'
 
 class App extends Component {
   render() {
     return (
       <BrowserRouter>
-        <div className="">
+        <div className=''>
           <Navbar />
           <Switch>
-            <Route exact path="/" component={Main} />
-            <Route path="/athlets" component={AthletsPage} />
-            <Route path="/trainers" component={TrainersPage} />
+            <Route exact path='/' component={Main} />
+            <Route path='/athlets' component={AthletsPage} />
+            <Route path='/trainers' component={TrainersPage} />
             <Route
-              path="/grid/tournament/:tournamentId/category/:categoryId"
+              path='/grid/tournament/:tournamentId/category/:categoryId'
               component={TournamentGridForm}
             />
 
-            <Route path="/tournaments/:tournamentId/grids" component={TournamentGridPage} />
-            <Route path="/tournaments" component={TournamentsPage} />
-            <Route path="/categories" component={CategoriesPage} />
-            <Route path="/applications" component={ApplicationsPage} />
-            <Route path="/login" component={LoginForm} />
-            <Route path="/register" component={RegisterForm} />
+            <Route path='/tournaments/:tournamentId/grids' component={TournamentGridPage} />
+            <Route
+              path='/tournaments/:tournamentId/participants'
+              component={TournamentParticipantsPage}
+            />
+            <Route path='/tournaments' component={TournamentsPage} />
+            <Route path='/categories' component={CategoriesPage} />
+            <Route path='/applications' component={ApplicationsPage} />
+            <Route path='/login' component={LoginForm} />
+            <Route path='/register' component={RegisterForm} />
           </Switch>
         </div>
       </BrowserRouter>
-    );
+    )
   }
 }
 
-export default App;
+export default App

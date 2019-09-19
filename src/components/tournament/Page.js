@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Fab, CircularProgress, IconButton } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'
 import GridIcon from '@material-ui/icons/GridOn'
+import PeopleIcon from '@material-ui/icons/People'
 import { Link } from 'react-router-dom'
 
 import Table from '../table/Table'
@@ -16,7 +17,8 @@ const columns = [
   { id: 'name', numeric: false, disablePadding: false, label: 'Название' },
   { id: 'date', numeric: false, disablePadding: false, label: 'Дата' },
   { id: 'address', numeric: false, disablePadding: false, label: 'Место' },
-  { id: 'grids', numeric: false, disablePadding: false, label: 'Сетки' }
+  { id: 'grids', numeric: false, disablePadding: false, label: 'Сетки' },
+  { id: 'participants', numeric: false, disablePadding: false, label: 'Участники' }
 ]
 
 export class Page extends Component {
@@ -35,7 +37,7 @@ export class Page extends Component {
   }
 
   render() {
-    const { tournaments, categories } = this.props
+    const { tournaments, categories, user } = this.props
     const {
       add: firestoreAdd,
       delete: firestoreDelete,
@@ -45,13 +47,20 @@ export class Page extends Component {
     let extendedTournaments = []
 
     if (isLoaded(tournaments)) {
+      console.log('user', user)
       extendedTournaments = tournaments.map(tournament => {
-        const grids = (
+        const gridsLink = (
           <IconButton component={Link} to={`/tournaments/${tournament.id}/grids/`}>
             <GridIcon />
           </IconButton>
         )
-        return { ...tournament, grids }
+
+        const participantsLink = (
+          <IconButton component={Link} to={`/tournaments/${tournament.id}/participants/`}>
+            <PeopleIcon />
+          </IconButton>
+        )
+        return { ...tournament, grids: gridsLink, participants: participantsLink }
       })
     }
 
@@ -90,7 +99,12 @@ export class Page extends Component {
 const mapStateToProps = state => {
   return {
     tournaments: state.firestore.ordered.tournaments,
-    categories: state.firestore.ordered.categories
+    categories: state.firestore.ordered.categories,
+    user: {
+      id: state.firebase.auth.uid,
+      name: state.firebase.profile.username,
+      roles: state.firebase.profile.roles
+    }
   }
 }
 

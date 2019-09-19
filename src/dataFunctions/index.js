@@ -21,5 +21,5 @@ export function summarizeTournamentParticipants(applications) {
   const byCategories = groupBy(participants, 'categoryId')
   const count = size(participants)
 
-  return { byCategories, count }
+  return { byCategories, count, participants }
 }

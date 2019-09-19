@@ -10,6 +10,7 @@ import CategoriesTable from '../table/Table'
 import GridIcon from '@material-ui/icons/GridOn'
 import { Link } from 'react-router-dom'
 import { find, map } from 'lodash'
+import { ageAtDate } from '../../config/functions'
 
 export class Page extends Component {
   render() {
@@ -26,9 +27,11 @@ export class Page extends Component {
       //   console.table(allParticipants)
       participants = map(rawParticipants).map(elem => {
         const athlet = find(allAthlets, { id: elem.athletId })
-        const category = find(allCategories, { id: elem.categoryId })
         const trainer = find(allTrainers, { id: elem.trainerId })
-        return { athlet, category, trainer }
+        const category = find(allCategories, { id: elem.categoryId })
+        const { minAge, maxAge, gender, weight } = category
+        const age = `${minAge}-${maxAge}`
+        return { athlet, gender, age, weight, trainer }
       })
 
       //   console.log('participants', participants)
@@ -42,7 +45,11 @@ export class Page extends Component {
           <thead>
             <tr>
               <th>Участник</th>
-              <th>Категория</th>
+              <th>Родился</th>
+              <th>Лет</th>
+              <th>Пол</th>
+              <th>Возраст</th>
+              <th>Вес</th>
               <th>Тренер</th>
             </tr>
           </thead>
@@ -50,7 +57,11 @@ export class Page extends Component {
             {participants.map(elem => (
               <tr>
                 <td>{athletName(elem.athlet)}</td>
-                <td>{categoryName(elem.category)}</td>
+                <td>{elem.athlet.birthday}</td>
+                <td>{ageAtDate(elem.athlet.birthday, tournament.dateAge || tournament.date)}</td>
+                <td>{elem.gender}</td>
+                <td>{elem.age}</td>
+                <td>{elem.weight}</td>
                 <td>{trainerName(elem.trainer)}</td>
               </tr>
             ))}

@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { firestoreConnect, isLoaded } from 'react-redux-firebase'
 import { compose } from 'redux'
-import { CircularProgress, Avatar, Typography } from '@material-ui/core'
+import { CircularProgress, Select, Avatar, Typography } from '@material-ui/core'
 import { participantsGroupedByCategories } from '../../dataFunctions'
 import { map, sortBy, groupBy, find } from 'lodash'
 import { randomColor } from 'randomcolor'
@@ -16,6 +16,15 @@ import ColoredPerson from './ColoredPerson'
 import Grid from './Grid'
 
 export class Page extends Component {
+  handleChange = e => {
+    console.log('e.target.id', e.target.id)
+    console.log('e.target', e.target)
+    console.log('e.target.value', e.target.value)
+    /*     this.setState({
+      [e.target.dataset.id]: e.target.value
+    }) */
+  }
+
   render() {
     const { tournament, category, applications, allAthlets, allTrainers, grid } = this.props
     const { categoryId } = this.props.match.params
@@ -61,27 +70,41 @@ export class Page extends Component {
             <h1>Форма категории</h1>
             <h2>{categoryName(category)}</h2>
             <h3>{tournamentName(tournament)}</h3>
+            <Select
+              onChange={this.handleChange}
+              native
+              inputProps={{
+                id: 'tossType'
+              }}
+            >
+              <option value=''></option>
+              <option value='playOff'>Олимпийская</option>
+              <option value='circle'>Круговая</option>
+              <option value='group'>Групповая</option>
+            </Select>
+
+            {/* <Duel participant1={Participants[0]} participant2={Participants[1]} /> */}
             <div>
-              <h2>Grid: </h2>
+              {trainers.map(trainer => {
+                const color = trainerColors[trainer.id]
+                const name = trainerName(trainer)
+                const key = trainer.id
+                const props = {
+                  color,
+                  name,
+                  key
+                }
+                return <ColoredPerson {...props} />
+              })}
+            </div>
+            <Typography variant='h6'>Сетка</Typography>
+            <div style={{ display: 'flex' }}>
+              <div style={{ display: 'inline-block' }}>
+                <Typography variant='subtitle1'>Участники</Typography>
+                {Participants}
+              </div>
               <Grid grid={gridByLevels(grid)} />
             </div>
-            {/* <Duel participant1={Participants[0]} participant2={Participants[1]} /> */}
-            {trainers.map(trainer => {
-              const color = trainerColors[trainer.id]
-              const name = trainerName(trainer)
-              const key = trainer.id
-              const props = {
-                color,
-                name,
-                key
-              }
-              return <ColoredPerson {...props} />
-            })}
-
-            <ul>
-              {/* {athletId, trainerId, categoryId} */}
-              {Participants}
-            </ul>
           </div>
         ) : (
           <CircularProgress />
@@ -101,10 +124,12 @@ const mapStateToProps = state => {
     allAthlets: state.firestore.ordered.allAthlets,
     allTrainers: state.firestore.ordered.allTrainers,
     applications: state.firestore.ordered.applications,
-    grid: state.grid,
+    grid: state.grid.grid,
     user: { userId, userName }
   }
 }
+
+const mapDispatchToProps = dispatch => {}
 
 export default compose(
   connect(mapStateToProps),

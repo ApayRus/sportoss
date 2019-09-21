@@ -1,26 +1,32 @@
-import { getBaseLog, gridTourDuelCount, generateGrid, totalCountDuelsBeforeTour, gridByLevels } from "./functions";
+import {
+  getBaseLog,
+  gridTourDuelCount,
+  generateGrid,
+  totalCountDuelsBeforeTour,
+  gridByLevels
+} from './functions'
 
-it("getBaseLog", () => {
-  expect(getBaseLog(2, 1)).toEqual(0);
-  expect(getBaseLog(2, 8)).toEqual(3);
-  expect(getBaseLog(2, 64)).toEqual(6);
-});
+it('getBaseLog', () => {
+  expect(getBaseLog(2, 1)).toEqual(0)
+  expect(getBaseLog(2, 8)).toEqual(3)
+  expect(getBaseLog(2, 64)).toEqual(6)
+})
 
-it("gridTourDuelCount", () => {
-  expect(gridTourDuelCount(10)).toEqual([2, 4, 2, 1]);
-  expect(gridTourDuelCount(32)).toEqual([16, 8, 4, 2, 1]);
-  expect(gridTourDuelCount(555)).toEqual([43, 256, 128, 64, 32, 16, 8, 4, 2, 1]);
-});
+it('gridTourDuelCount', () => {
+  expect(gridTourDuelCount(10)).toEqual([2, 4, 2, 1])
+  expect(gridTourDuelCount(32)).toEqual([0, 16, 8, 4, 2, 1])
+  expect(gridTourDuelCount(555)).toEqual([43, 256, 128, 64, 32, 16, 8, 4, 2, 1])
+})
 
-it("totalCountDuelsBeforeTour", () => {
-  expect(totalCountDuelsBeforeTour([2, 1])).toEqual([0, 2]);
-  expect(totalCountDuelsBeforeTour([4, 2, 1])).toEqual([0, 4, 6]);
-  expect(totalCountDuelsBeforeTour([8, 4, 2, 1])).toEqual([0, 8, 12, 14]);
-  expect(totalCountDuelsBeforeTour([16, 8, 4, 2, 1])).toEqual([0, 16, 24, 28, 30]);
-  expect(totalCountDuelsBeforeTour([32, 16, 8, 4, 2, 1])).toEqual([0, 32, 48, 56, 60, 62]);
-});
+it('totalCountDuelsBeforeTour', () => {
+  expect(totalCountDuelsBeforeTour([2, 1])).toEqual([0, 2])
+  expect(totalCountDuelsBeforeTour([4, 2, 1])).toEqual([0, 4, 6])
+  expect(totalCountDuelsBeforeTour([8, 4, 2, 1])).toEqual([0, 8, 12, 14])
+  expect(totalCountDuelsBeforeTour([16, 8, 4, 2, 1])).toEqual([0, 16, 24, 28, 30])
+  expect(totalCountDuelsBeforeTour([32, 16, 8, 4, 2, 1])).toEqual([0, 32, 48, 56, 60, 62])
+})
 
-it("generateGrid", () => {
+it('generateGrid', () => {
   const trueAnswer8 = {
     /* 1-st tour*/
     1: { next: 5, level: 1 },
@@ -32,9 +38,9 @@ it("generateGrid", () => {
     6: { next: 7, level: 2 },
     /* 3-rd tour */
     7: { next: 0, level: 3 }
-  };
+  }
 
-  expect(generateGrid(8)).toEqual(trueAnswer8);
+  expect(generateGrid(8)).toEqual(trueAnswer8)
 
   const trueAnswer32 = {
     /* 1st tour */
@@ -75,11 +81,35 @@ it("generateGrid", () => {
     /* 5th tour */
 
     31: { next: 0, level: 5 }
-  };
-  expect(generateGrid(32)).toEqual(trueAnswer32);
-});
+  }
+  expect(generateGrid(32)).toEqual(trueAnswer32)
 
-it("gridByLevels", () => {
+  //with zeroTour
+  const trueAnswer15 = {
+    //0 zero tour
+    1: { next: 8, level: 0 },
+    2: { next: 8, level: 0 },
+    3: { next: 9, level: 0 },
+    4: { next: 9, level: 0 },
+    5: { next: 10, level: 0 },
+    6: { next: 10, level: 0 },
+    7: { next: 11, level: 0 },
+    //1st tour
+    8: { next: 12, level: 1 },
+    9: { next: 12, level: 1 },
+    10: { next: 13, level: 1 },
+    11: { next: 13, level: 1 },
+    //2nd tour
+    12: { next: 14, level: 2 },
+    13: { next: 14, level: 2 },
+    //3rd tour - final
+    14: { next: 0, level: 3 }
+  }
+
+  expect(generateGrid(15)).toEqual(trueAnswer15)
+})
+
+it('gridByLevels', () => {
   const grid8_raw = {
     /* 1-st tour*/
     1: { next: 5, level: 1 },
@@ -91,18 +121,18 @@ it("gridByLevels", () => {
     6: { next: 7, level: 2 },
     /* 3-rd tour */
     7: { next: 0, level: 3 }
-  };
+  }
 
   const grid8_byLevels = {
     1: [
-      { id: "1", level: 1, next: 5 },
-      { id: "2", level: 1, next: 5 },
-      { id: "3", level: 1, next: 6 },
-      { id: "4", level: 1, next: 6 }
+      { id: '1', level: 1, next: 5 },
+      { id: '2', level: 1, next: 5 },
+      { id: '3', level: 1, next: 6 },
+      { id: '4', level: 1, next: 6 }
     ],
-    2: [{ id: "5", level: 2, next: 7 }, { id: "6", level: 2, next: 7 }],
-    3: [{ id: "7", level: 3, next: 0 }]
-  };
+    2: [{ id: '5', level: 2, next: 7 }, { id: '6', level: 2, next: 7 }],
+    3: [{ id: '7', level: 3, next: 0 }]
+  }
 
-  expect(gridByLevels(grid8_raw)).toEqual(grid8_byLevels);
-});
+  expect(gridByLevels(grid8_raw)).toEqual(grid8_byLevels)
+})

@@ -7,7 +7,7 @@ import AthletsPage from './components/athlet/Page'
 import TrainersPage from './components/trainer/Page'
 import TournamentsPage from './components/tournament/Page'
 import TournamentParticipantsPage from './components/tournament/ParticipantsPage'
-import TournamentGridPage from './components/grid/Page'
+import TournamentGridList from './components/grid/ListPage'
 import TournamentGridForm from './components/grid/Form'
 
 import CategoriesPage from './components/category/Page'
@@ -31,7 +31,7 @@ class App extends Component {
               component={TournamentGridForm}
             />
 
-            <Route path='/tournaments/:tournamentId/grids' component={TournamentGridPage} />
+            <Route path='/tournaments/:tournamentId/grids' component={TournamentGridList} />
             <Route
               path='/tournaments/:tournamentId/participants'
               component={TournamentParticipantsPage}

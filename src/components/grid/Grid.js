@@ -7,12 +7,13 @@ import { withStyles } from '@material-ui/core/styles'
 function Grid(props) {
   const { grid, classes } = props
   return (
-    <div style={{ display: 'inline-block' }}>
+    <div style={{ display: 'flex' }}>
       {Object.keys(grid).map(key => (
         <div key={key} className={classes.levelBox}>
-          <Typography variant='subtitle1'>{key}-й круг</Typography>
           {grid[key].map(duel => (
-            <DuelSimple id={duel.id} key={duel.id} />
+            <div className={classes.duel}>
+              <DuelSimple id={duel.id} key={duel.id} />
+            </div>
           ))}
         </div>
       ))}
@@ -22,10 +23,15 @@ function Grid(props) {
 
 const styles = {
   levelBox: {
-    display: 'inline-block',
-    marginLeft: 10
+    display: 'flex',
+    flexDirection: 'column',
+    marginLeft: 10,
+    justifyContent: 'space-around'
     /* border: '1px solid orange', */
     /* width: 250 */
+  },
+  duel: {
+    /* flex: 1 */
   }
 }
 

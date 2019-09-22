@@ -49,18 +49,26 @@ export class Page extends Component {
       participants = sortBy(participants, 'trainerId')
       athlets = allAthlets.filter(athlet => athletIds.includes(athlet.id))
       trainers = allTrainers.filter(trainer => trainerIds.includes(trainer.id))
-      Participants = participants.map(par => {
-        const color = trainerColors[par.trainerId]
-        const athlet = find(athlets, { id: par.athletId })
-        const name = athletName(athlet)
-        const key = par.athletId
-        const props = {
-          color,
-          name,
-          key
-        }
-        return <ColoredPerson {...props} />
-      })
+      Participants = () => {
+        return (
+          <div
+            style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
+          >
+            {participants.map(par => {
+              const color = trainerColors[par.trainerId]
+              const athlet = find(athlets, { id: par.athletId })
+              const name = athletName(athlet)
+              const key = par.athletId
+              const props = {
+                color,
+                name,
+                key
+              }
+              return <ColoredPerson {...props} />
+            })}
+          </div>
+        )
+      }
     }
 
     return (
@@ -99,10 +107,7 @@ export class Page extends Component {
             </div>
             <Typography variant='h6'>Сетка</Typography>
             <div style={{ display: 'flex' }}>
-              <div style={{ display: 'inline-block' }}>
-                <Typography variant='subtitle1'>Участники</Typography>
-                {Participants}
-              </div>
+              <Participants />
               <Grid grid={gridByLevels(grid)} />
             </div>
           </div>

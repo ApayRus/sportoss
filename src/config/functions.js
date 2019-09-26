@@ -5,7 +5,7 @@ export function categoryName(category) {
 }
 
 export function athletName(athlet) {
-  const { familyName, firstName, fatherName } = athlet
+  const { familyName, firstName } = athlet
   // const name = `${familyName} ${firstName} ${fatherName}`
   const name = `${familyName} ${firstName}`
   return name

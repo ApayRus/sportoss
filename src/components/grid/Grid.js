@@ -1,6 +1,5 @@
 import React from 'react'
 import DuelSimple from './DuelSimple'
-import { Typography } from '@material-ui/core'
 
 import { withStyles } from '@material-ui/core/styles'
 
@@ -11,7 +10,7 @@ function Grid(props) {
       {Object.keys(grid).map(key => (
         <div key={key} className={classes.levelBox}>
           {grid[key].map(duel => (
-            <div className={classes.duel}>
+            <div>
               <DuelSimple id={duel.id} key={duel.id} />
             </div>
           ))}
@@ -27,11 +26,6 @@ const styles = {
     flexDirection: 'column',
     marginLeft: 10,
     justifyContent: 'space-around'
-    /* border: '1px solid orange', */
-    /* width: 250 */
-  },
-  duel: {
-    /* flex: 1 */
   }
 }
 

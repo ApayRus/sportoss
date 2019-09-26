@@ -3,16 +3,14 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { firestoreConnect, isLoaded } from 'react-redux-firebase'
 import { compose } from 'redux'
-import { CircularProgress, Select, Avatar, Typography } from '@material-ui/core'
+import { CircularProgress, Select, Typography } from '@material-ui/core'
 import { participantsGroupedByCategories } from '../../dataFunctions'
-import { map, sortBy, groupBy, find } from 'lodash'
+import { map, sortBy, find } from 'lodash'
 import { randomColor } from 'randomcolor'
-import Participant from './ColoredPerson'
-import { generateGrid, gridByLevels } from './functions'
+import { gridByLevels } from './functions'
 
 import { athletName, categoryName, trainerName, tournamentName } from '../../config/functions'
 import ColoredPerson from './ColoredPerson'
-// import Duel from "./Duel";
 import Grid from './Grid'
 
 export class Page extends Component {
@@ -29,7 +27,6 @@ export class Page extends Component {
     const { tournament, category, applications, allAthlets, allTrainers, grid } = this.props
     const { categoryId } = this.props.match.params
     let participants = []
-    //let participantsByTrainer = {};
     let athletIds = []
     let trainerIds = []
     let athlets = []
@@ -39,8 +36,6 @@ export class Page extends Component {
 
     if (isLoaded(applications, category, allAthlets, allTrainers)) {
       participants = participantsGroupedByCategories(applications)[categoryId]
-      //participantsByTrainer = groupBy(participants, "trainerId");
-
       athletIds = map(participants, 'athletId') // ['1111', '2222', '3333', ...]
       trainerIds = map(participants, 'trainerId') // ['1111', '2222', '3333', ...]
       trainerIds.forEach(trainerId => {
@@ -134,8 +129,6 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => {}
-
 export default compose(
   connect(mapStateToProps),
   firestoreConnect(props => {
@@ -149,5 +142,3 @@ export default compose(
     ]
   })
 )(Page)
-
-//return [{ collection: "athlets", where: [["createdBy.userId", "==", props.user.userId]] }];

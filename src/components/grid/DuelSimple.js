@@ -1,10 +1,10 @@
 import React from 'react'
 import { withStyles } from '@material-ui/core/styles'
+import Checkbox from '@material-ui/core/Checkbox'
 
 const styles = {
   duel: {
     width: 200,
-    /*     height: 20, */
     border: '1px solid gray',
     borderRadius: 5,
     marginBottom: 5
@@ -18,7 +18,8 @@ const styles = {
   athletRed: { width: 137, borderBottom: '1px solid gray' },
   athletBlue: { width: 137 },
   athletInput: { width: '100%', border: 'none' },
-  winnerRed: { borderBottom: '1px solid gray' }
+  winnerRed: { borderBottom: '1px solid gray' },
+  trainer: { color: 'gray', fontSize: 10 }
 }
 
 function DuelSimple(props) {
@@ -31,17 +32,19 @@ function DuelSimple(props) {
         </td>
         <td className={classes.athletRed}>
           <input type='text' placeholder='red' className={classes.athletInput} />
+          <div className={classes.trainer}>Trainer 1</div>
         </td>
         <td className={classes.winnerRed}>
-          <input type='checkbox' />
+          <Checkbox style={{ width: 7, height: 7, color: 'red' }} />
         </td>
       </tr>
       <tr>
         <td className={classes.athletBlue}>
           <input type='text' placeholder='blue' className={classes.athletInput} />
+          <div className={classes.trainer}>Trainer 1</div>
         </td>
         <td className={classes.winnerBlue}>
-          <input type='checkbox' />
+          <Checkbox style={{ width: 7, height: 7, color: 'blue' }} />
         </td>
       </tr>
     </table>

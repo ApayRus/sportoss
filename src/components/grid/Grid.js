@@ -1,5 +1,5 @@
 import React from 'react'
-import DuelSimple from './DuelSimple'
+import DuelSimple from './Duel'
 
 import { withStyles } from '@material-ui/core/styles'
 

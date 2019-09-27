@@ -6,10 +6,28 @@ import { compose } from 'redux'
 import { CircularProgress, Select, Typography } from '@material-ui/core'
 import { participantsGroupedByCategories } from '../../dataFunctions'
 import { map, sortBy, find } from 'lodash'
-import { gridByLevels } from './functions'
+import { gridByLevels, trainerColors } from './functions'
 
 import { athletName, categoryName, trainerName, tournamentName } from '../../config/functions'
 import Grid from './Grid'
+
+const styles = {
+  coloredTrainer: color => {
+    return {
+      width: 10,
+      height: 10,
+      backgroundColor: color,
+      display: 'inline-block',
+      borderRadius: 5,
+      marginRight: 3
+    }
+  },
+  flexColumn: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between'
+  }
+}
 
 export class Page extends Component {
   handleChange = e => {
@@ -25,31 +43,17 @@ export class Page extends Component {
     const { tournament, category, applications, allAthlets, allTrainers, grid } = this.props
     const { categoryId } = this.props.match.params
     let participants = []
-    let Participants = []
+    let trainerColorMap = {}
 
     if (isLoaded(applications, category, allAthlets, allTrainers)) {
       participants = participantsGroupedByCategories(applications)[categoryId]
       participants = sortBy(participants, 'trainerId')
-
+      trainerColorMap = trainerColors(participants)
       participants = map(participants).map(elem => {
         const athlet = find(allAthlets, { id: elem.athletId })
         const trainer = find(allTrainers, { id: elem.trainerId })
         return { athlet, trainer }
       })
-
-      Participants = () => {
-        return (
-          <div
-            style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
-          >
-            {participants.map(elem => (
-              <Typography variant='body1'>
-                {athletName(elem.athlet)} ({trainerName(elem.trainer)}){' '}
-              </Typography>
-            ))}
-          </div>
-        )
-      }
     }
 
     return (
@@ -73,8 +77,24 @@ export class Page extends Component {
             </Select>
 
             <Typography variant='h6'>Сетка</Typography>
+            {/* columns: participants | level-0 | level-1 | ... */}
             <div style={{ display: 'flex' }}>
-              <Participants />
+              <div style={styles.flexColumn}>
+                {participants.map(elem => {
+                  const trainerColor = trainerColorMap[elem.trainer.id]
+                  return (
+                    <div key={`participant-${elem.athlet.id}`} style={{ whiteSpace: 'nowrap' }}>
+                      <div
+                        title={trainerName(elem.trainer)}
+                        style={styles.coloredTrainer(trainerColor)}
+                      ></div>
+                      <Typography variant='body1' inline>
+                        {athletName(elem.athlet)}
+                      </Typography>
+                    </div>
+                  )
+                })}
+              </div>
               <Grid grid={gridByLevels(grid)} />
             </div>
           </div>
@@ -102,7 +122,6 @@ const mapStateToProps = state => {
 }
 
 export default compose(
-  connect(mapStateToProps),
   firestoreConnect(props => {
     const { tournamentId, categoryId } = props.match.params
     return [
@@ -112,5 +131,6 @@ export default compose(
       { collection: 'athlets', storeAs: 'allAthlets' },
       { collection: 'trainers', storeAs: 'allTrainers' }
     ]
-  })
+  }),
+  connect(mapStateToProps)
 )(Page)

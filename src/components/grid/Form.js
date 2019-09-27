@@ -6,11 +6,9 @@ import { compose } from 'redux'
 import { CircularProgress, Select, Typography } from '@material-ui/core'
 import { participantsGroupedByCategories } from '../../dataFunctions'
 import { map, sortBy, find } from 'lodash'
-import { randomColor } from 'randomcolor'
 import { gridByLevels } from './functions'
 
 import { athletName, categoryName, trainerName, tournamentName } from '../../config/functions'
-import ColoredPerson from './ColoredPerson'
 import Grid from './Grid'
 
 export class Page extends Component {
@@ -27,40 +25,28 @@ export class Page extends Component {
     const { tournament, category, applications, allAthlets, allTrainers, grid } = this.props
     const { categoryId } = this.props.match.params
     let participants = []
-    let athletIds = []
-    let trainerIds = []
-    let athlets = []
-    let trainers = []
-    let trainerColors = {}
     let Participants = []
 
     if (isLoaded(applications, category, allAthlets, allTrainers)) {
       participants = participantsGroupedByCategories(applications)[categoryId]
-      athletIds = map(participants, 'athletId') // ['1111', '2222', '3333', ...]
-      trainerIds = map(participants, 'trainerId') // ['1111', '2222', '3333', ...]
-      trainerIds.forEach(trainerId => {
-        trainerColors[trainerId] = randomColor()
-      })
       participants = sortBy(participants, 'trainerId')
-      athlets = allAthlets.filter(athlet => athletIds.includes(athlet.id))
-      trainers = allTrainers.filter(trainer => trainerIds.includes(trainer.id))
+
+      participants = map(participants).map(elem => {
+        const athlet = find(allAthlets, { id: elem.athletId })
+        const trainer = find(allTrainers, { id: elem.trainerId })
+        return { athlet, trainer }
+      })
+
       Participants = () => {
         return (
           <div
             style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
           >
-            {participants.map(par => {
-              const color = trainerColors[par.trainerId]
-              const athlet = find(athlets, { id: par.athletId })
-              const name = athletName(athlet)
-              const key = par.athletId
-              const props = {
-                color,
-                name,
-                key
-              }
-              return <ColoredPerson {...props} />
-            })}
+            {participants.map(elem => (
+              <Typography variant='body1'>
+                {athletName(elem.athlet)} ({trainerName(elem.trainer)}){' '}
+              </Typography>
+            ))}
           </div>
         )
       }
@@ -86,20 +72,6 @@ export class Page extends Component {
               <option value='group'>Групповая</option>
             </Select>
 
-            {/* <Duel participant1={Participants[0]} participant2={Participants[1]} /> */}
-            <div>
-              {trainers.map(trainer => {
-                const color = trainerColors[trainer.id]
-                const name = trainerName(trainer)
-                const key = trainer.id
-                const props = {
-                  color,
-                  name,
-                  key
-                }
-                return <ColoredPerson {...props} />
-              })}
-            </div>
             <Typography variant='h6'>Сетка</Typography>
             <div style={{ display: 'flex' }}>
               <Participants />

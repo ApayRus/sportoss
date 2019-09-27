@@ -26,27 +26,29 @@ function DuelSimple(props) {
   const { id, classes } = props
   return (
     <table className={classes.duel}>
-      <tr>
-        <td className={classes.duelNumber} rowspan='2'>
-          {id}
-        </td>
-        <td className={classes.athletRed}>
-          <input type='text' placeholder='red' className={classes.athletInput} />
-          <div className={classes.trainer}>Trainer 1</div>
-        </td>
-        <td className={classes.winnerRed}>
-          <Checkbox style={{ width: 7, height: 7, color: 'red' }} />
-        </td>
-      </tr>
-      <tr>
-        <td className={classes.athletBlue}>
-          <input type='text' placeholder='blue' className={classes.athletInput} />
-          <div className={classes.trainer}>Trainer 1</div>
-        </td>
-        <td className={classes.winnerBlue}>
-          <Checkbox style={{ width: 7, height: 7, color: 'blue' }} />
-        </td>
-      </tr>
+      <tbody>
+        <tr>
+          <td className={classes.duelNumber} rowSpan='2'>
+            {id}
+          </td>
+          <td className={classes.athletRed}>
+            <input type='text' placeholder='red' className={classes.athletInput} />
+            <div className={classes.trainer}>Trainer 1</div>
+          </td>
+          <td className={classes.winnerRed}>
+            <Checkbox style={{ width: 7, height: 7, color: 'red' }} />
+          </td>
+        </tr>
+        <tr>
+          <td className={classes.athletBlue}>
+            <input type='text' placeholder='blue' className={classes.athletInput} />
+            <div className={classes.trainer}>Trainer 1</div>
+          </td>
+          <td className={classes.winnerBlue}>
+            <Checkbox style={{ width: 7, height: 7, color: 'blue' }} />
+          </td>
+        </tr>
+      </tbody>
     </table>
   )
 }

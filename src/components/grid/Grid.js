@@ -10,7 +10,7 @@ function Grid(props) {
       {Object.keys(grid).map(key => (
         <div key={key} className={classes.levelBox}>
           {grid[key].map(duel => (
-            <div>
+            <div key={`duel-${duel.id}`}>
               <DuelSimple id={duel.id} key={duel.id} />
             </div>
           ))}

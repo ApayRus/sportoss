@@ -4,6 +4,7 @@ const initState = {
   tournament: '',
   category: '',
   tossType: '',
+  participants: [],
   grid: {}
 }
 
@@ -29,10 +30,10 @@ const gridReducer = (state = initState, action) => {
       return { ...state, ...updatedDuel }
     }
 
-    case 'SET_GRID_PARAM': {
-      console.log('grid param has set', action.payload)
-      const { tossType } = action.payload
-      return { ...state, tossType }
+    case 'SET_GRID_PARAMETER': {
+      const key = Object.keys(action.payload)[0]
+      const value = action.payload[key]
+      return { ...state, [key]: value }
     }
 
     default:

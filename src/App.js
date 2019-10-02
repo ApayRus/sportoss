@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import LoginForm from './components/auth/LoginForm'
 import RegisterForm from './components/auth/RegisterForm'
@@ -16,36 +16,34 @@ import './index.css'
 
 import Main from './components/main'
 
-class App extends Component {
-  render() {
-    return (
-      <BrowserRouter>
-        <div className=''>
-          <Navbar />
-          <Switch>
-            <Route exact path='/' component={Main} />
-            <Route path='/athlets' component={AthletsPage} />
-            <Route path='/trainers' component={TrainersPage} />
-            <Route
-              path='/grid/tournament/:tournamentId/category/:categoryId'
-              component={TournamentGridForm}
-            />
+function App(props) {
+  return (
+    <BrowserRouter>
+      <div className='App'>
+        <Navbar />
+        <Switch>
+          <Route exact path='/' component={Main} />
+          <Route path='/athlets' component={AthletsPage} />
+          <Route path='/trainers' component={TrainersPage} />
+          <Route
+            path='/grid/tournament/:tournamentId/category/:categoryId'
+            component={TournamentGridForm}
+          />
 
-            <Route path='/tournaments/:tournamentId/grids' component={TournamentGridList} />
-            <Route
-              path='/tournaments/:tournamentId/participants'
-              component={TournamentParticipantsPage}
-            />
-            <Route path='/tournaments' component={TournamentsPage} />
-            <Route path='/categories' component={CategoriesPage} />
-            <Route path='/applications' component={ApplicationsPage} />
-            <Route path='/login' component={LoginForm} />
-            <Route path='/register' component={RegisterForm} />
-          </Switch>
-        </div>
-      </BrowserRouter>
-    )
-  }
+          <Route path='/tournaments/:tournamentId/grids' component={TournamentGridList} />
+          <Route
+            path='/tournaments/:tournamentId/participants'
+            component={TournamentParticipantsPage}
+          />
+          <Route path='/tournaments' component={TournamentsPage} />
+          <Route path='/categories' component={CategoriesPage} />
+          <Route path='/applications' component={ApplicationsPage} />
+          <Route path='/login' component={LoginForm} />
+          <Route path='/register' component={RegisterForm} />
+        </Switch>
+      </div>
+    </BrowserRouter>
+  )
 }
 
 export default App

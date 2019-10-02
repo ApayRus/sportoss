@@ -1,4 +1,4 @@
-import { generateGrid } from '../functions'
+import { generateGrid } from '../components/grid/functions'
 
 const initState = {
   tournament: '',

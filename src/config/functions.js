@@ -1,26 +1,31 @@
-export function categoryName(category) {
-  const { gender, minAge, maxAge, weight } = category
-  const name = `${gender}, ${minAge}-${maxAge} лет, ${weight}`
-  return name
-}
-
 export function athletName(athlet) {
-  const { familyName, firstName } = athlet
-  // const name = `${familyName} ${firstName} ${fatherName}`
-  const name = `${familyName} ${firstName}`
-  return name
+  if (athlet) {
+    const { familyName, firstName } = athlet
+    // const name = `${familyName} ${firstName} ${fatherName}`
+    return `${familyName} ${firstName}`
+  } else return ''
 }
 
 export function trainerName(trainer) {
-  const { familyName, firstName, fatherName } = trainer
-  // const name = `${familyName} ${firstName} ${fatherName}`
-  const name = `${familyName} ${firstName[0]}. ${fatherName[0]}.`
-  return name
+  if (trainer) {
+    const { familyName, firstName, fatherName } = trainer
+    // const name = `${familyName} ${firstName} ${fatherName}`
+    return `${familyName} ${firstName[0]}. ${fatherName[0]}.`
+  } else return ''
+}
+
+export function categoryName(category) {
+  if (category) {
+    const { gender, minAge, maxAge, weight } = category
+    return `${gender}, ${minAge}-${maxAge} лет, ${weight}`
+  } else return ''
 }
 
 export function tournamentName(tournament) {
-  const { name, date, address } = tournament
-  return `${name}, ${date}, ${address}`
+  if (tournament) {
+    const { name, date, address } = tournament
+    return `${name}, ${date}, ${address}`
+  } else return ''
 }
 
 /**

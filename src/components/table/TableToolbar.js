@@ -1,24 +1,23 @@
-import React from "react";
-import classNames from "classnames";
-import PropTypes from "prop-types";
-import { withStyles } from "@material-ui/core/styles";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import IconButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
-import DeleteIcon from "@material-ui/icons/Delete";
-import EditIcon from "@material-ui/icons/Edit";
-import SendIcon from "@material-ui/icons/Send";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { withStyles } from '@material-ui/core/styles'
+import Toolbar from '@material-ui/core/Toolbar'
+import Typography from '@material-ui/core/Typography'
+import IconButton from '@material-ui/core/IconButton'
+import Tooltip from '@material-ui/core/Tooltip'
+import DeleteIcon from '@material-ui/icons/Delete'
+import EditIcon from '@material-ui/icons/Edit'
+import SendIcon from '@material-ui/icons/Send'
 
-import FilterListIcon from "@material-ui/icons/FilterList";
-import { lighten } from "@material-ui/core/styles/colorManipulator";
+import FilterListIcon from '@material-ui/icons/FilterList'
+import { lighten } from '@material-ui/core/styles/colorManipulator'
 
 const toolbarStyles = theme => ({
   root: {
     paddingRight: theme.spacing.unit
   },
   highlight:
-    theme.palette.type === "light"
+    theme.palette.type === 'light'
       ? {
           color: theme.palette.secondary.main,
           backgroundColor: lighten(theme.palette.secondary.light, 0.85)
@@ -28,46 +27,42 @@ const toolbarStyles = theme => ({
           backgroundColor: theme.palette.secondary.dark
         },
   spacer: {
-    flex: "1 1 100%"
+    flex: '1 1 100%'
   },
   actions: {
     color: theme.palette.text.secondary
   },
   title: {
-    flex: "0 0 auto"
+    flex: '0 0 auto'
   }
-});
+})
 
 const EnhancedTableToolbar = props => {
-  const { numSelected, classes } = props;
+  const { numSelected, classes } = props
 
   const handleDelete = () => {
-    const { firestoreDelete, selected, collection } = props;
+    const { firestoreDelete, selected, collection } = props
     selected.forEach(doc => {
-      firestoreDelete({ collection, doc });
-    });
-  };
+      firestoreDelete({ collection, doc })
+    })
+  }
 
   const handleEdit = () => {
-    const { openModal, selected } = props;
-    openModal(selected[selected.length - 1]);
-  };
+    const { openModal, selected } = props
+    openModal(selected[selected.length - 1])
+  }
 
-  const { title } = props;
-
+  const { title } = props
+  const toolbarClassName = `${classes.root}` + numSelected > 0 ? ` ${classes.highlight}` : ``
   return (
-    <Toolbar
-      className={classNames(classes.root, {
-        [classes.highlight]: numSelected > 0
-      })}
-    >
+    <Toolbar className={toolbarClassName}>
       <div className={classes.title}>
         {numSelected > 0 ? (
-          <Typography color="inherit" variant="subtitle1">
+          <Typography color='inherit' variant='subtitle1'>
             {numSelected} выбрано
           </Typography>
         ) : (
-          <Typography variant="h6" id="tableTitle">
+          <Typography variant='h6' id='tableTitle'>
             {title}
           </Typography>
         )}
@@ -76,37 +71,37 @@ const EnhancedTableToolbar = props => {
       <div className={classes.actions}>
         {numSelected > 0 ? (
           <div style={{ width: 144 }}>
-            <Tooltip style={{ display: "inline" }} title="Удалить" onClick={handleDelete}>
-              <IconButton aria-label="Удалить">
+            <Tooltip style={{ display: 'inline' }} title='Удалить' onClick={handleDelete}>
+              <IconButton aria-label='Удалить'>
                 <DeleteIcon />
               </IconButton>
             </Tooltip>
-            <Tooltip title="Редактировать" style={{ display: "inline" }} onClick={handleEdit}>
-              <IconButton aria-label="Редактировать">
+            <Tooltip title='Редактировать' style={{ display: 'inline' }} onClick={handleEdit}>
+              <IconButton aria-label='Редактировать'>
                 <EditIcon />
               </IconButton>
             </Tooltip>
-            <Tooltip title="Добавить в заявку" style={{ display: "inline" }}>
-              <IconButton aria-label="Добавить в заявку">
+            <Tooltip title='Добавить в заявку' style={{ display: 'inline' }}>
+              <IconButton aria-label='Добавить в заявку'>
                 <SendIcon />
               </IconButton>
             </Tooltip>
           </div>
         ) : (
-          <Tooltip title="Filter list">
-            <IconButton aria-label="Filter list">
+          <Tooltip title='Filter list'>
+            <IconButton aria-label='Filter list'>
               <FilterListIcon />
             </IconButton>
           </Tooltip>
         )}
       </div>
     </Toolbar>
-  );
-};
+  )
+}
 
 EnhancedTableToolbar.propTypes = {
   classes: PropTypes.object.isRequired,
   numSelected: PropTypes.number.isRequired
-};
+}
 
-export default withStyles(toolbarStyles)(EnhancedTableToolbar);
+export default withStyles(toolbarStyles)(EnhancedTableToolbar)

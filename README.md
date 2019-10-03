@@ -1,3 +1,34 @@
+## Install locally
+
+`cd <project-folder-path>` - open in terminal project folder.
+
+`npm install` - for install locally all npm dependencies.
+
+## Setup Firebase
+
+Then you should create your own [firebase project](https://console.firebase.google.com/). And turn on **Authentication** (Email-Password) and **Database** (Cloud Firestore). Then add App, and choose type: "WEB".
+
+Your final goal is config object like:
+
+```
+{
+  apiKey: 'xxxxx',
+  authDomain: 'xxxxx',
+  databaseURL: 'xxxxx',
+  projectId: 'xxxxx',
+  storageBucket: 'xxxxx',
+  messagingSenderId: 'xxxxxx'
+}
+```
+
+Copy this object and paste it to `/src/config/firebase-example.js`. Also rename file to `firebase.js`. It is used along the application, and hidden in `.gitignore` file (it will not appear on github when you publish code).
+
+That's all. After that little preparation you can run application locally, and all data you put into the app will be saved on a Google Firebase platform.
+
+Next steps (commands) that you need in work process are typical for `create-react-app CLI` , and I just leave them unchanged.
+
+## Create react app (default readme.md text)
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 
 import { connect } from 'react-redux'
 import { firestoreConnect, isLoaded } from 'react-redux-firebase'
@@ -10,6 +10,7 @@ import { gridByLevels, trainerColors } from './functions'
 
 import { athletName, categoryName, trainerName, tournamentName } from '../../config/functions'
 import Grid from './Grid'
+import { setGridParameter } from '../../store/gridActions'
 
 const styles = {
   coloredTrainer: color => {
@@ -29,8 +30,8 @@ const styles = {
   }
 }
 
-export class Page extends Component {
-  handleChange = e => {
+function Form(props) {
+  const handleChange = e => {
     console.log('e.target.id', e.target.id)
     console.log('e.target', e.target)
     console.log('e.target.value', e.target.value)
@@ -39,71 +40,73 @@ export class Page extends Component {
     }) */
   }
 
-  render() {
-    const { tournament, category, applications, allAthlets, allTrainers, grid } = this.props
-    const { categoryId } = this.props.match.params
-    let participants = []
-    let trainerColorMap = {}
+  const { tournament, category, applications, allAthlets, allTrainers, grid } = props
+  const { categoryId } = props.match.params
+  let participants = []
+  let trainerColorMap = {}
 
-    if (isLoaded(applications, category, allAthlets, allTrainers)) {
-      participants = participantsGroupedByCategories(applications)[categoryId]
-      participants = sortBy(participants, 'trainerId')
-      trainerColorMap = trainerColors(participants)
-      participants = map(participants).map(elem => {
-        const athlet = find(allAthlets, { id: elem.athletId })
-        const trainer = find(allTrainers, { id: elem.trainerId })
-        return { athlet, trainer }
-      })
-    }
-
-    return (
-      <div>
-        {isLoaded(tournament, category, allAthlets, allTrainers, applications) ? (
-          <div>
-            <h1>Форма категории</h1>
-            <h2>{categoryName(category)}</h2>
-            <h3>{tournamentName(tournament)}</h3>
-            <Select
-              onChange={this.handleChange}
-              native
-              inputProps={{
-                id: 'tossType'
-              }}
-            >
-              <option value=''></option>
-              <option value='playOff'>Олимпийская</option>
-              <option value='circle'>Круговая</option>
-              <option value='group'>Групповая</option>
-            </Select>
-
-            <Typography variant='h6'>Сетка</Typography>
-            {/* columns: participants | level-0 | level-1 | ... */}
-            <div style={{ display: 'flex' }}>
-              <div style={styles.flexColumn}>
-                {participants.map(elem => {
-                  const trainerColor = trainerColorMap[elem.trainer.id]
-                  return (
-                    <div key={`participant-${elem.athlet.id}`} style={{ whiteSpace: 'nowrap' }}>
-                      <div
-                        title={trainerName(elem.trainer)}
-                        style={styles.coloredTrainer(trainerColor)}
-                      ></div>
-                      <Typography variant='body1' inline>
-                        {athletName(elem.athlet)}
-                      </Typography>
-                    </div>
-                  )
-                })}
-              </div>
-              <Grid grid={gridByLevels(grid)} />
-            </div>
-          </div>
-        ) : (
-          <CircularProgress />
-        )}
-      </div>
-    )
+  if (isLoaded(tournament, category, applications, category, allAthlets, allTrainers)) {
+    participants = participantsGroupedByCategories(applications)[categoryId]
+    participants = sortBy(participants, 'trainerId')
+    trainerColorMap = trainerColors(participants)
+    participants = map(participants).map(elem => {
+      const athlet = find(allAthlets, { id: elem.athletId })
+      const trainer = find(allTrainers, { id: elem.trainerId })
+      return { athlet, trainer }
+    })
+    props.dispatch(setGridParameter({ tournament }))
+    props.dispatch(setGridParameter({ category }))
+    props.dispatch(setGridParameter({ participants }))
+    props.dispatch(setGridParameter({ trainerColorMap }))
   }
+
+  return (
+    <div>
+      {isLoaded(tournament, category, allAthlets, allTrainers, applications) ? (
+        <div>
+          <h1>Форма категории</h1>
+          <h2>{categoryName(category)}</h2>
+          <h3>{tournamentName(tournament)}</h3>
+          <Select
+            onChange={handleChange}
+            native
+            inputProps={{
+              id: 'tossType'
+            }}
+          >
+            <option value=''></option>
+            <option value='playOff'>Олимпийская</option>
+            <option value='circle'>Круговая</option>
+            <option value='group'>Групповая</option>
+          </Select>
+
+          <Typography variant='h6'>Сетка</Typography>
+          {/* columns: participants | level-0 | level-1 | ... */}
+          <div style={{ display: 'flex' }}>
+            <div style={styles.flexColumn}>
+              {participants.map(elem => {
+                const trainerColor = trainerColorMap[elem.trainer.id]
+                return (
+                  <div key={`participant-${elem.athlet.id}`} style={{ whiteSpace: 'nowrap' }}>
+                    <div
+                      title={trainerName(elem.trainer)}
+                      style={styles.coloredTrainer(trainerColor)}
+                    ></div>
+                    <Typography variant='body1' inline>
+                      {athletName(elem.athlet)}
+                    </Typography>
+                  </div>
+                )
+              })}
+            </div>
+            <Grid grid={gridByLevels(grid)} />
+          </div>
+        </div>
+      ) : (
+        <CircularProgress />
+      )}
+    </div>
+  )
 }
 
 const mapStateToProps = state => {
@@ -122,6 +125,7 @@ const mapStateToProps = state => {
 }
 
 export default compose(
+  connect(mapStateToProps),
   firestoreConnect(props => {
     const { tournamentId, categoryId } = props.match.params
     return [
@@ -131,6 +135,5 @@ export default compose(
       { collection: 'athlets', storeAs: 'allAthlets' },
       { collection: 'trainers', storeAs: 'allTrainers' }
     ]
-  }),
-  connect(mapStateToProps)
-)(Page)
+  })
+)(Form)

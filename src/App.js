@@ -19,7 +19,7 @@ import Main from './components/main'
 function App(props) {
   return (
     <BrowserRouter>
-      <div className='App'>
+      <div>
         <Navbar />
         <Switch>
           <Route exact path='/' component={Main} />

@@ -46,7 +46,7 @@ export class Page extends Component {
           </thead>
           <tbody>
             {participants.map(elem => (
-              <tr>
+              <tr key={`partic-${elem.athlet.id}`}>
                 <td>{athletName(elem.athlet)}</td>
                 <td>{elem.athlet.birthday}</td>
                 <td>{ageAtDate(elem.athlet.birthday, tournament.dateAge || tournament.date)}</td>

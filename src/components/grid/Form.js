@@ -1,16 +1,9 @@
 import React from 'react'
-
 import { connect } from 'react-redux'
-import { firestoreConnect, isLoaded } from 'react-redux-firebase'
-import { compose } from 'redux'
-import { CircularProgress, Select, Typography } from '@material-ui/core'
-import { participantsGroupedByCategories } from '../../dataFunctions'
-import { map, sortBy, find } from 'lodash'
-import { gridByLevels, trainerColors } from './functions'
-
+import { Select, Typography } from '@material-ui/core'
+import { gridByLevels } from './functions'
 import { athletName, categoryName, trainerName, tournamentName } from '../../config/functions'
 import Grid from './Grid'
-import { setGridParameter } from '../../store/gridActions'
 
 const styles = {
   coloredTrainer: color => {
@@ -32,108 +25,70 @@ const styles = {
 
 function Form(props) {
   const handleChange = e => {
-    console.log('e.target.id', e.target.id)
-    console.log('e.target', e.target)
-    console.log('e.target.value', e.target.value)
-    /*     this.setState({
-      [e.target.dataset.id]: e.target.value
-    }) */
+    // this.setState({[e.target.id]: e.target.value })
   }
 
-  const { tournament, category, applications, allAthlets, allTrainers, grid } = props
-  const { categoryId } = props.match.params
-  let participants = []
-  let trainerColorMap = {}
-
-  if (isLoaded(tournament, category, applications, category, allAthlets, allTrainers)) {
-    participants = participantsGroupedByCategories(applications)[categoryId]
-    participants = sortBy(participants, 'trainerId')
-    trainerColorMap = trainerColors(participants)
-    participants = map(participants).map(elem => {
-      const athlet = find(allAthlets, { id: elem.athletId })
-      const trainer = find(allTrainers, { id: elem.trainerId })
-      return { athlet, trainer }
-    })
-    props.dispatch(setGridParameter({ tournament }))
-    props.dispatch(setGridParameter({ category }))
-    props.dispatch(setGridParameter({ participants }))
-    props.dispatch(setGridParameter({ trainerColorMap }))
-  }
+  const { tournament, category, participants, trainerColorMap, grid } = props
 
   return (
     <div>
-      {isLoaded(tournament, category, allAthlets, allTrainers, applications) ? (
-        <div>
-          <h1>Форма категории</h1>
-          <h2>{categoryName(category)}</h2>
-          <h3>{tournamentName(tournament)}</h3>
-          <Select
-            onChange={handleChange}
-            native
-            inputProps={{
-              id: 'tossType'
-            }}
-          >
-            <option value=''></option>
-            <option value='playOff'>Олимпийская</option>
-            <option value='circle'>Круговая</option>
-            <option value='group'>Групповая</option>
-          </Select>
+      <h1>Форма категории</h1>
+      <h2>{categoryName(category)}</h2>
+      <h3>{tournamentName(tournament)}</h3>
+      <Select
+        onChange={handleChange}
+        native
+        inputProps={{
+          id: 'tossType'
+        }}
+      >
+        <option value=''></option>
+        <option value='playOff'>Олимпийская</option>
+        <option value='circle'>Круговая</option>
+        <option value='group'>Групповая</option>
+      </Select>
 
-          <Typography variant='h6'>Сетка</Typography>
-          {/* columns: participants | level-0 | level-1 | ... */}
-          <div style={{ display: 'flex' }}>
-            <div style={styles.flexColumn}>
-              {participants.map(elem => {
-                const trainerColor = trainerColorMap[elem.trainer.id]
-                return (
-                  <div key={`participant-${elem.athlet.id}`} style={{ whiteSpace: 'nowrap' }}>
-                    <div
-                      title={trainerName(elem.trainer)}
-                      style={styles.coloredTrainer(trainerColor)}
-                    ></div>
-                    <Typography variant='body1' inline>
-                      {athletName(elem.athlet)}
-                    </Typography>
-                  </div>
-                )
-              })}
-            </div>
-            <Grid grid={gridByLevels(grid)} />
-          </div>
+      <Typography variant='h6'>Сетка</Typography>
+      {/* columns: participants | level-0 | level-1 | ... */}
+      <div style={{ display: 'flex' }}>
+        <div style={styles.flexColumn}>
+          {participants.map(elem => {
+            const trainerColor = trainerColorMap[elem.trainer.id]
+            return (
+              <div key={`participant-${elem.athlet.id}`} style={{ whiteSpace: 'nowrap' }}>
+                <div
+                  title={trainerName(elem.trainer)}
+                  style={styles.coloredTrainer(trainerColor)}
+                ></div>
+                <Typography variant='body1' style={{ display: 'inline-block' }}>
+                  {athletName(elem.athlet)}
+                </Typography>
+              </div>
+            )
+          })}
         </div>
-      ) : (
-        <CircularProgress />
-      )}
+        <Grid grid={gridByLevels(grid)} />
+      </div>
     </div>
   )
 }
 
 const mapStateToProps = state => {
-  const userId = state.firebase.auth.uid
-  const userName = state.firebase.profile.username
-
+  const { tournament, category, participants, trainerColorMap, grid } = state.grid
   return {
-    tournament: state.firestore.data.tournament,
-    category: state.firestore.data.category,
-    allAthlets: state.firestore.ordered.allAthlets,
-    allTrainers: state.firestore.ordered.allTrainers,
-    applications: state.firestore.ordered.applications,
-    grid: state.grid.grid,
-    user: { userId, userName }
+    tournament,
+    category,
+    participants,
+    trainerColorMap,
+    grid
   }
 }
 
-export default compose(
-  connect(mapStateToProps),
-  firestoreConnect(props => {
-    const { tournamentId, categoryId } = props.match.params
-    return [
-      { collection: 'tournaments', doc: tournamentId, storeAs: 'tournament' },
-      { collection: 'categories', doc: categoryId, storeAs: 'category' },
-      { collection: 'applications', where: [['tournamentId', '==', tournamentId]] },
-      { collection: 'athlets', storeAs: 'allAthlets' },
-      { collection: 'trainers', storeAs: 'allTrainers' }
-    ]
-  })
+/* const mapDispatchToProps = dispatch => ({
+  // setGridParameter: payload => dispatch(setGridParameter(payload))
+}) */
+
+export default connect(
+  mapStateToProps
+  /* mapDispatchToProps */
 )(Form)

@@ -8,7 +8,7 @@ import TrainersPage from './components/trainer/Page'
 import TournamentsPage from './components/tournament/Page'
 import TournamentParticipantsPage from './components/tournament/ParticipantsPage'
 import TournamentGridList from './components/grid/ListPage'
-import TournamentGridForm from './components/grid/Form'
+import TournamentGridForm from './components/grid/FormFirebaseContainer'
 
 import CategoriesPage from './components/category/Page'
 import ApplicationsPage from './components/application/Page'

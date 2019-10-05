@@ -4,6 +4,7 @@ import { Select, Typography } from '@material-ui/core'
 import { gridByLevels } from './functions'
 import { athletName, categoryName, trainerName, tournamentName } from '../../config/functions'
 import Grid from './Grid'
+import { setGridParameter, createGrid } from '../../store/gridActions'
 
 const styles = {
   coloredTrainer: color => {
@@ -24,11 +25,20 @@ const styles = {
 }
 
 function Form(props) {
-  const handleChange = e => {
-    // this.setState({[e.target.id]: e.target.value })
-  }
+  const {
+    tournament,
+    category,
+    participants,
+    trainerColorMap,
+    grid,
+    setGridParameter,
+    createGrid
+  } = props
 
-  const { tournament, category, participants, trainerColorMap, grid } = props
+  const handleChange = e => {
+    setGridParameter({ tossType: e.target.value })
+    createGrid({ participantCount: participants.length })
+  }
 
   return (
     <div>
@@ -84,11 +94,12 @@ const mapStateToProps = state => {
   }
 }
 
-/* const mapDispatchToProps = dispatch => ({
-  // setGridParameter: payload => dispatch(setGridParameter(payload))
-}) */
+const mapDispatchToProps = dispatch => ({
+  setGridParameter: payload => dispatch(setGridParameter(payload)),
+  createGrid: payload => dispatch(createGrid(payload))
+})
 
 export default connect(
-  mapStateToProps
-  /* mapDispatchToProps */
+  mapStateToProps,
+  mapDispatchToProps
 )(Form)

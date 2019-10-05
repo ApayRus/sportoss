@@ -18,22 +18,26 @@ function FormFirebaseContainer(props) {
     allAthlets,
     allTrainers,
     setGridParameter
-    /* grid, auth, profile */
+    /*
+    userId,
+    userName,
+    userRoles
+     grid */
   } = props
-
+  console.log('props', props)
   const { categoryId } = props.match.params
 
   let participants = []
   let trainerColorMap = {}
 
-  if (isLoaded(tournament, category, applications, allAthlets, allTrainers /* , auth, profile */)) {
+  if (isLoaded(tournament, category, applications, allAthlets, allTrainers)) {
     participants = participantsGroupedByCategories(applications)[categoryId]
     participants = sortBy(participants, 'trainerId')
     trainerColorMap = trainerColors(participants)
     participants = map(participants).map(elem => {
       const athlet = find(allAthlets, { id: elem.athletId })
       const trainer = find(allTrainers, { id: elem.trainerId })
-      return { athlet, trainer }
+      return { athlet, trainer, alsoInGrid: false }
     })
     setGridParameter({ participants })
     setGridParameter({ trainerColorMap })
@@ -45,12 +49,9 @@ function FormFirebaseContainer(props) {
 }
 
 const mapStateToProps = state => {
-  /*   
-  const auth = state.firebase.auth
-  const profile = state.firebase.profile
   const userId = state.firebase.auth.uid
-  const userName = state.firebase.profile.username 
-*/
+  const userName = state.firebase.profile.username
+  const userRoles = state.firebase.profile.roles
 
   const { tournament, category } = state.firestore.data
   const { allAthlets, allTrainers, applications } = state.firestore.ordered
@@ -61,12 +62,9 @@ const mapStateToProps = state => {
     allAthlets,
     allTrainers,
     applications,
-    grid: state.grid.grid
-    /* 
-    user: { userId, userName },
-    auth,
-    profile 
-*/
+    userId,
+    userName,
+    userRoles
   }
 }
 

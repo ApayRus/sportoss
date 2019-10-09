@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Select, Typography } from '@material-ui/core'
-import { gridByLevels } from './functions'
+import { gridByLevels, participantsInGrid } from './functions'
 import { athletName, categoryName, trainerName, tournamentName } from '../../config/functions'
 import Grid from './Grid'
 import { setGridParameter, createGrid } from '../../store/gridActions'
@@ -40,6 +40,8 @@ function Form(props) {
     createGrid({ participantCount: participants.length })
   }
 
+  const participantsAlredyInGrid = participantsInGrid(grid)
+
   return (
     <div>
       <h1>Форма категории</h1>
@@ -64,8 +66,15 @@ function Form(props) {
         <div style={styles.flexColumn}>
           {participants.map(elem => {
             const trainerColor = trainerColorMap[elem.trainer.id]
+
             return (
-              <div key={`participant-${elem.athlet.id}`} style={{ whiteSpace: 'nowrap' }}>
+              <div
+                key={`participant-${elem.athlet.id}`}
+                style={{
+                  whiteSpace: 'nowrap',
+                  visibility: participantsAlredyInGrid.has(elem.athlet.id) ? 'hidden' : 'visible'
+                }}
+              >
                 <div
                   title={trainerName(elem.trainer)}
                   style={styles.coloredTrainer(trainerColor)}

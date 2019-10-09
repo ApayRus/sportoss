@@ -3,7 +3,8 @@ import {
   gridTourDuelCount,
   generateGrid,
   totalCountDuelsBeforeTour,
-  gridByLevels
+  gridByLevels,
+  participantsInGrid
 } from './functions'
 
 it('getBaseLog', () => {
@@ -135,4 +136,34 @@ it('gridByLevels', () => {
   }
 
   expect(gridByLevels(grid8_raw)).toEqual(grid8_byLevels)
+})
+
+it('participantsInGrid', () => {
+  const gridInput = {
+    '1': {
+      next: 5,
+      level: 1,
+      fighterRed: 'QieoVtFAIDHUbNJ1IImt',
+      fighterBlue: 'gqEU6ME2bAf9YRP1N0Zb'
+    },
+    '2': {
+      next: 5,
+      level: 1,
+      fighterRed: 'JRjMBmBc4P0Oq8C19ebx',
+      fighterBlue: '1SvvQDlXWJNACTZigeDP'
+    },
+    '3': {
+      next: 6,
+      level: 1
+    }
+  }
+
+  const setOutput = new Set([
+    'QieoVtFAIDHUbNJ1IImt',
+    'gqEU6ME2bAf9YRP1N0Zb',
+    'JRjMBmBc4P0Oq8C19ebx',
+    '1SvvQDlXWJNACTZigeDP'
+  ])
+
+  expect(participantsInGrid(gridInput)).toEqual(setOutput)
 })

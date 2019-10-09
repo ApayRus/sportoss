@@ -112,3 +112,12 @@ export function trainerColors(participants) {
   })
   return trainerColorsMap
 }
+
+export function participantsInGrid(grid) {
+  const alradyInGridSet = new Set()
+  Object.keys(grid).forEach(duelId => {
+    if (grid[duelId].fighterRed) alradyInGridSet.add(grid[duelId].fighterRed)
+    if (grid[duelId].fighterBlue) alradyInGridSet.add(grid[duelId].fighterBlue)
+  })
+  return alradyInGridSet
+}

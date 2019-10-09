@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { find } from 'lodash'
 import { athletName, trainerName } from '../../config/functions'
-import { updateFighter } from '../../store/gridActions'
+import { updateFighter, setWinner } from '../../store/gridActions'
 
 const styles = {
   duel: {
@@ -28,7 +28,7 @@ const styles = {
 }
 
 function DuelSimple(props) {
-  const { duelData, classes, participants, updateFighter } = props
+  const { duelData, classes, participants, updateFighter, setWinner } = props
   const { id, fighterRed, fighterBlue, winner } = duelData
   let athletRedName,
     athletBlueName,
@@ -48,13 +48,17 @@ function DuelSimple(props) {
   }
 
   const onFighterChange = e => {
-    console.log(e.target.dataset.id, e.target.dataset.color, e.target.value)
     const { id: duelId, color: fighterColor } = e.target.dataset
     const [familyName, firstName] = e.target.value.split(' ')
 
     const relatedParticipant = find(participants, { athlet: { familyName, firstName } })
     const athletId = relatedParticipant ? relatedParticipant.athlet.id : ''
     updateFighter({ duelId, fighterColor, athletId })
+  }
+
+  const onWinnerChange = e => {
+    const athletId = e.target.checked ? e.target.dataset.winner : ''
+    setWinner({ duelId: id, athletId })
   }
 
   return (
@@ -77,7 +81,12 @@ function DuelSimple(props) {
             <div className={classes.trainer}>{trainerRedName}</div>
           </td>
           <td className={classes.winnerRed}>
-            <Checkbox style={{ width: 7, height: 7, color: 'red' }} />
+            <Checkbox
+              inputProps={{ 'data-winner': fighterRed }}
+              onChange={onWinnerChange}
+              style={{ width: 7, height: 7, color: 'red' }}
+              checked={winner === fighterRed && winner ? true : false}
+            />
           </td>
         </tr>
         <tr>
@@ -94,7 +103,12 @@ function DuelSimple(props) {
             <div className={classes.trainer}>{trainerBlueName}</div>
           </td>
           <td className={classes.winnerBlue}>
-            <Checkbox style={{ width: 7, height: 7, color: 'blue' }} />
+            <Checkbox
+              inputProps={{ 'data-winner': fighterBlue }}
+              onChange={onWinnerChange}
+              style={{ width: 7, height: 7, color: 'blue' }}
+              checked={winner === fighterBlue && winner ? true : false}
+            />
           </td>
         </tr>
       </tbody>
@@ -107,7 +121,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  updateFighter: payload => dispatch(updateFighter(payload))
+  updateFighter: payload => dispatch(updateFighter(payload)),
+  setWinner: payload => dispatch(setWinner(payload))
 })
 
 export default compose(

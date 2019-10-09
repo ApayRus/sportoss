@@ -10,15 +10,15 @@ export function createGrid(payload) {
 
 const createGridExample = {
   type: 'CREATE_GRID',
-  payload: { participantCount: 32 }
+  payload: { participantCount: 8 }
 }
 
 /**
  *
  * @param {Object} payload
- * @param {number} payload.duelId
- * @param {string} payload.color
- * @param {string} payload.fighterId
+ * @param {string} payload.duelId
+ * @param {string} payload.fighterColor
+ * @param {string} payload.athletId
  * @returns {Object} action
  */
 export function updateFighter(payload) {
@@ -27,7 +27,7 @@ export function updateFighter(payload) {
 
 const updateFighterExample = {
   type: 'UPDATE_FIGHTER',
-  payload: { duelId: 8, color: 'red', fighterId: 'djdjdjdjdj' }
+  payload: { duelId: 1, fighterColor: 'Red', athletId: 'djdjdjdjdj' }
 }
 
 /**
@@ -43,7 +43,7 @@ export function setWinner(payload) {
 
 const setWinnerExample = {
   type: 'SET_WINNER',
-  payload: { duelId: 8, fighterId: 'cccdddeee' }
+  payload: { duelId: 8, athletId: 'cccdddeee' }
 }
 
 /**

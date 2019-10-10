@@ -28,7 +28,7 @@ const styles = {
 }
 
 function DuelSimple(props) {
-  const { duelData, classes, participants, updateFighter, setWinner } = props
+  const { duelData, classes, participants, grid, updateFighter, setWinner } = props
   const { id, fighterRed, fighterBlue, winner } = duelData
   let athletRedName,
     athletBlueName,
@@ -58,7 +58,14 @@ function DuelSimple(props) {
 
   const onWinnerChange = e => {
     const athletId = e.target.checked ? e.target.dataset.winner : ''
-    setWinner({ duelId: id, athletId })
+    const duelId = id
+    setWinner({ duelId, athletId })
+    const duelNextId = grid[duelId].next
+    if (duelNextId) {
+      const duelNext = grid[duelNextId]
+      const fighterColor = duelNext.fighterRed ? 'Blue' : 'Red'
+      updateFighter({ duelId: duelNextId, fighterColor, athletId })
+    }
   }
 
   return (
@@ -117,7 +124,8 @@ function DuelSimple(props) {
 }
 
 const mapStateToProps = state => ({
-  participants: state.grid.participants
+  participants: state.grid.participants,
+  grid: state.grid.grid
 })
 
 const mapDispatchToProps = dispatch => ({

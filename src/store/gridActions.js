@@ -3,14 +3,14 @@
  * @param {Object} payload
  * @param {number} payload.participantsCount
  * @returns {Object} action
+ * @example 
+  const createGridExample = {
+    type: 'CREATE_GRID',
+    payload: { participantCount: 8 }
+  }
  */
 export function createGrid(payload) {
   return { type: 'CREATE_GRID', payload }
-}
-
-const createGridExample = {
-  type: 'CREATE_GRID',
-  payload: { participantCount: 8 }
 }
 
 /**
@@ -20,14 +20,14 @@ const createGridExample = {
  * @param {string} payload.fighterColor
  * @param {string} payload.athletId
  * @returns {Object} action
+ * @example
+  const updateFighterExample = {
+    type: 'UPDATE_FIGHTER',
+    payload: { duelId: 1, fighterColor: 'Red', athletId: 'djdjdjdjdj' }
+  }
  */
 export function updateFighter(payload) {
   return { type: 'UPDATE_FIGHTER', payload }
-}
-
-const updateFighterExample = {
-  type: 'UPDATE_FIGHTER',
-  payload: { duelId: 1, fighterColor: 'Red', athletId: 'djdjdjdjdj' }
 }
 
 /**
@@ -36,14 +36,14 @@ const updateFighterExample = {
  * @param {number} payload.duelId
  * @param {string} payload.fighterId
  * @returns {Object} action
+ * @example
+  const setWinnerExample = {
+    type: 'SET_WINNER',
+    payload: { duelId: 8, athletId: 'cccdddeee' }
+  }
  */
 export function setWinner(payload) {
   return { type: 'SET_WINNER', payload }
-}
-
-const setWinnerExample = {
-  type: 'SET_WINNER',
-  payload: { duelId: 8, athletId: 'cccdddeee' }
 }
 
 /**

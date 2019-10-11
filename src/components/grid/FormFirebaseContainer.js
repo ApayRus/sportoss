@@ -24,7 +24,6 @@ function FormFirebaseContainer(props) {
     userRoles
      grid */
   } = props
-  console.log('props', props)
   const { categoryId } = props.match.params
 
   let participants = []

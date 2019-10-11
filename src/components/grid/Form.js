@@ -4,6 +4,7 @@ import { Select, Typography } from '@material-ui/core'
 import { gridByLevels, participantsInGrid } from './functions'
 import { athletName, categoryName, trainerName, tournamentName } from '../../config/functions'
 import Grid from './Grid'
+import TopPlaces from './TopPlaces'
 import { setGridParameter, createGrid } from '../../store/gridActions'
 
 const styles = {
@@ -87,6 +88,9 @@ function Form(props) {
           })}
         </div>
         <Grid grid={gridByLevels(grid)} />
+        {Object.keys(grid).length > 0 ? (
+          <TopPlaces grid={grid} participants={participants} />
+        ) : null}
       </div>
     </div>
   )

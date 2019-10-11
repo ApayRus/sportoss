@@ -20,6 +20,9 @@ const styles = {
     textAlign: 'center',
     color: 'slategray'
   },
+  duelLabel: {
+    fontSize: 9
+  },
   athletRed: { width: 137, borderBottom: '1px solid gray' },
   athletBlue: { width: 137 },
   athletInput: { width: '100%', border: 'none' },
@@ -29,7 +32,7 @@ const styles = {
 
 function DuelSimple(props) {
   const { duelData, classes, participants, grid, updateFighter, setWinner } = props
-  const { id, fighterRed, fighterBlue, winner } = duelData
+  const { id, fighterRed, fighterBlue, winner, label } = duelData
   let athletRedName,
     athletBlueName,
     trainerRedName,
@@ -57,15 +60,28 @@ function DuelSimple(props) {
   }
 
   const onWinnerChange = e => {
-    const athletId = e.target.checked ? e.target.dataset.winner : ''
+    const winnerId = e.target.checked ? e.target.dataset.winner : ''
     const duelId = id
-    setWinner({ duelId, athletId })
-    const duelNextId = grid[duelId].next
+    const duel = grid[duelId]
+    setWinner({ duelId, athletId: winnerId })
+    //winner goes to the next round (level)
+    const duelNextId = duel.next
     if (duelNextId) {
       const duelNext = grid[duelNextId]
       const fighterColor = duelNext.fighterRed ? 'Blue' : 'Red'
-      updateFighter({ duelId: duelNextId, fighterColor, athletId })
+      updateFighter({ duelId: duelNextId, fighterColor, athletId: winnerId })
     }
+    //in 1/2 finals, loser goes to Duel for 3rd place, also it is a last Duel in Grid
+    const duelTotalCount = Object.keys(grid).length
+    const { fighterRed, fighterBlue } = duel
+    const loserId = winnerId === fighterRed ? fighterBlue : fighterRed
+
+    if (+duelId === duelTotalCount - 3)
+      //1-st of 1/2 finals
+      updateFighter({ duelId: duelTotalCount, fighterColor: 'Red', athletId: loserId })
+    if (+duelId === duelTotalCount - 2)
+      //2-nd of 1/2 finals
+      updateFighter({ duelId: duelTotalCount, fighterColor: 'Blue', athletId: loserId })
   }
 
   return (
@@ -74,6 +90,7 @@ function DuelSimple(props) {
         <tr>
           <td className={classes.duelNumber} rowSpan='2'>
             {id}
+            {label ? <div className={classes.duelLabel}>{label}</div> : ''}
           </td>
           <td className={classes.athletRed}>
             <input

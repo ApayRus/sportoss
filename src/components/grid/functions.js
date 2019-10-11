@@ -26,6 +26,7 @@ export function gridTourDuelCount(N) {
     tourDuelCount.push(Math.pow(2, tourCount - i))
   }
   //console.log("totalDuelCount", totalDuelCount)
+  tourDuelCount[tourDuelCount.length - 1]++ //one additional duel for 3rd place, after the Final
   return tourDuelCount
 }
 
@@ -63,7 +64,12 @@ export function generateGrid(N) {
     }
   })
 
+  //final
+  grid[duelCountTotal - 1]['next'] = 0
+  grid[duelCountTotal - 1]['label'] = 'Финал'
+  //duel for 3rd place
   grid[duelCountTotal]['next'] = 0
+  grid[duelCountTotal]['label'] = 'за 3-е место'
 
   return grid
 }

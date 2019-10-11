@@ -38,12 +38,12 @@ function DuelSimple(props) {
     trainerRedName,
     trainerBlueName = ''
 
+  //populate fighters data by id
   if (fighterRed) {
     const participantRedPopulated = find(participants, { athlet: { id: fighterRed } })
     athletRedName = athletName(participantRedPopulated.athlet)
     trainerRedName = trainerName(participantRedPopulated.trainer)
   }
-
   if (fighterBlue) {
     const participantBluePopulated = find(participants, { athlet: { id: fighterBlue } })
     athletBlueName = athletName(participantBluePopulated.athlet)
@@ -64,24 +64,33 @@ function DuelSimple(props) {
     const duelId = id
     const duel = grid[duelId]
     setWinner({ duelId, athletId: winnerId })
-    //winner goes to the next round (level)
-    const duelNextId = duel.next
-    if (duelNextId) {
-      const duelNext = grid[duelNextId]
-      const fighterColor = duelNext.fighterRed ? 'Blue' : 'Red'
-      updateFighter({ duelId: duelNextId, fighterColor, athletId: winnerId })
-    }
-    //in 1/2 finals, loser goes to Duel for 3rd place, also it is a last Duel in Grid
-    const duelTotalCount = Object.keys(grid).length
-    const { fighterRed, fighterBlue } = duel
-    const loserId = winnerId === fighterRed ? fighterBlue : fighterRed
 
-    if (+duelId === duelTotalCount - 3)
-      //1-st of 1/2 finals
-      updateFighter({ duelId: duelTotalCount, fighterColor: 'Red', athletId: loserId })
-    if (+duelId === duelTotalCount - 2)
-      //2-nd of 1/2 finals
-      updateFighter({ duelId: duelTotalCount, fighterColor: 'Blue', athletId: loserId })
+    const fillNextRoundByWinners = () => {
+      //winner goes to the next round (level)
+      const duelNextId = duel.next
+      if (duelNextId) {
+        const duelNext = grid[duelNextId]
+        const fighterColor = duelNext.fighterRed ? 'Blue' : 'Red'
+        updateFighter({ duelId: duelNextId, fighterColor, athletId: winnerId })
+      }
+    }
+
+    const fillDuelFor3rdPlaceByLosers = () => {
+      //in 1/2 finals, loser goes to Duel for 3rd place, also it is a last Duel in Grid
+      const duelTotalCount = Object.keys(grid).length
+      const { fighterRed, fighterBlue } = duel
+      const loserId = winnerId === fighterRed ? fighterBlue : fighterRed
+
+      if (+duelId === duelTotalCount - 3)
+        //1-st of 1/2 finals
+        updateFighter({ duelId: duelTotalCount, fighterColor: 'Red', athletId: loserId })
+      if (+duelId === duelTotalCount - 2)
+        //2-nd of 1/2 finals
+        updateFighter({ duelId: duelTotalCount, fighterColor: 'Blue', athletId: loserId })
+    }
+
+    fillNextRoundByWinners()
+    fillDuelFor3rdPlaceByLosers()
   }
 
   return (

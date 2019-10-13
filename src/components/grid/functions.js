@@ -127,3 +127,26 @@ export function participantsInGrid(grid) {
   })
   return alradyInGridSet
 }
+
+//  ALL PLAY ALL TOURNAMENT (round-robin tournament)
+/*
+Rotate clockwise all except 1
+1	8				1	2				1	3				1	4				1	5				1	6				1	7
+2	7		=>	3	8		=>	4	2		=>	5	3		=>	6	4		=>	7	5		=>	8	6
+3	6				4	7				5	8				6	2				7	3				8	4				2	5
+4	5				5	6				6	7				7	8				8	2				2	3				3	4
+
+duelCount = n*(n-1)/2
+tourCount = n%2 ? n : n-1
+*/
+
+export function rotateClockwiseAllExcept1(array1, array2) {
+  const n = array1.length
+  array2.unshift(array1[1])
+  const newArray2 = array2
+  const newArray1 = array1.map((elem, index, array) => array[index + 1])
+  newArray1[0] = array1[0]
+  newArray1[n - 1] = array2[n]
+  newArray2.pop()
+  return [newArray1, newArray2]
+}

@@ -11,13 +11,11 @@ const initState = {
 const gridReducer = (state = initState, action) => {
   switch (action.type) {
     case 'CREATE_GRID': {
-      console.log('grid generated', action.payload)
       const grid = generateGrid(action.payload.participantCount)
       return { ...state, grid }
     }
 
     case 'UPDATE_FIGHTER': {
-      console.log('updated fighter', action.payload)
       const { duelId, fighterColor, athletId } = action.payload
       const updatedDuel = {
         [duelId]: { ...state.grid[duelId], [`fighter${fighterColor}`]: athletId }
@@ -26,7 +24,6 @@ const gridReducer = (state = initState, action) => {
     }
 
     case 'SET_WINNER': {
-      console.log('winner has set', action.payload)
       const { duelId, athletId } = action.payload
       const updatedDuel = { [duelId]: { ...state.grid[duelId], winner: athletId } }
       return { ...state, grid: { ...state.grid, ...updatedDuel } }

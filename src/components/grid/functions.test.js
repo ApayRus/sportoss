@@ -5,7 +5,8 @@ import {
   totalCountDuelsBeforeTour,
   gridByLevels,
   participantsInGrid,
-  rotateClockwiseAllExcept1
+  rotateClockwiseAllExcept1,
+  generateAllPlayAllGrid
 } from './functions'
 
 it('getBaseLog', () => {
@@ -211,4 +212,13 @@ it('rotateClockwiseAllExcept1', () => {
    */
   expect(rotateClockwiseAllExcept1(array8_1[0], array8_2[0])).toEqual([array8_1[1], array8_2[1]])
   expect(rotateClockwiseAllExcept1(array6_1[0], array6_2[0])).toEqual([array6_1[1], array6_2[1]])
+})
+
+it('generate', () => {
+  const athletIds3 = [1, 2, 3]
+  const grid3 = [[[1, 3]], [[1, 2]], [[3, 2]]]
+  const athletIds4 = [1, 2, 3, 4]
+  const grid4 = [[[1, 3], [2, 4]], [[1, 2], [4, 3]], [[1, 4], [3, 2]]]
+  expect(generateAllPlayAllGrid(athletIds3)).toEqual(grid3)
+  expect(generateAllPlayAllGrid(athletIds4)).toEqual(grid4)
 })

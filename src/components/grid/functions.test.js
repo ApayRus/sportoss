@@ -14,9 +14,9 @@ it('getBaseLog', () => {
 })
 
 it('gridTourDuelCount', () => {
-  expect(gridTourDuelCount(10)).toEqual([2, 4, 2, 1])
-  expect(gridTourDuelCount(32)).toEqual([0, 16, 8, 4, 2, 1])
-  expect(gridTourDuelCount(555)).toEqual([43, 256, 128, 64, 32, 16, 8, 4, 2, 1])
+  expect(gridTourDuelCount(10)).toEqual([2, 4, 2, 2])
+  expect(gridTourDuelCount(32)).toEqual([0, 16, 8, 4, 2, 2])
+  expect(gridTourDuelCount(555)).toEqual([43, 256, 128, 64, 32, 16, 8, 4, 2, 2])
 })
 
 it('totalCountDuelsBeforeTour', () => {
@@ -38,7 +38,8 @@ it('generateGrid', () => {
     5: { next: 7, level: 2 },
     6: { next: 7, level: 2 },
     /* 3-rd tour */
-    7: { next: 0, level: 3 }
+    7: { next: 0, level: 3, label: 'Финал' },
+    8: { next: 0, level: 3, label: 'за 3-е место' }
   }
 
   expect(generateGrid(8)).toEqual(trueAnswer8)
@@ -81,7 +82,8 @@ it('generateGrid', () => {
     30: { next: 31, level: 4 },
     /* 5th tour */
 
-    31: { next: 0, level: 5 }
+    31: { next: 0, level: 5, label: 'Финал' },
+    32: { next: 0, level: 5, label: 'за 3-е место' }
   }
   expect(generateGrid(32)).toEqual(trueAnswer32)
 
@@ -104,7 +106,8 @@ it('generateGrid', () => {
     12: { next: 14, level: 2 },
     13: { next: 14, level: 2 },
     //3rd tour - final
-    14: { next: 0, level: 3 }
+    14: { next: 0, level: 3, label: 'Финал' },
+    15: { next: 0, level: 3, label: 'за 3-е место' }
   }
 
   expect(generateGrid(15)).toEqual(trueAnswer15)

@@ -47,7 +47,8 @@ test('createGrid action', () => {
       30: { next: 31, level: 4 },
       /* 5th tour */
 
-      31: { next: 0, level: 5 }
+      31: { next: 0, level: 5, label: 'Финал' },
+      32: { next: 0, level: 5, label: 'за 3-е место' }
     }
   }
 
@@ -100,7 +101,8 @@ test('updateFighter action', () => {
       30: { next: 31, level: 4 },
       /* 5th tour */
 
-      31: { next: 0, level: 5 }
+      31: { next: 0, level: 5, label: 'Финал' },
+      32: { next: 0, level: 5, label: 'за 3-е место' }
     }
   }
 
@@ -148,7 +150,8 @@ test('updateFighter action', () => {
       30: { next: 31, level: 4 },
       /* 5th tour */
 
-      31: { next: 0, level: 5 }
+      31: { next: 0, level: 5, label: 'Финал' },
+      32: { next: 0, level: 5, label: 'за 3-е место' }
     }
   }
 

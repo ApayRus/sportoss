@@ -2,28 +2,11 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Select, Typography } from '@material-ui/core'
 import { participantsInGrid } from './functionsPlayOff'
-import { athletName, categoryName, trainerName, tournamentName } from '../../config/functions'
+import { categoryName, tournamentName } from '../../config/functions'
 import Grid from './Grid'
 import TopPlaces from './TopPlaces'
 import { setGridParameter, createGrid } from '../../store/gridActions'
-
-const styles = {
-  coloredTrainer: color => {
-    return {
-      width: 10,
-      height: 10,
-      backgroundColor: color,
-      display: 'inline-block',
-      borderRadius: 5,
-      marginRight: 3
-    }
-  },
-  flexColumn: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between'
-  }
-}
+import Participants from './Participants'
 
 function Form(props) {
   const {
@@ -36,12 +19,14 @@ function Form(props) {
     createGrid
   } = props
 
+  const participantsAlredyInGrid = participantsInGrid(grid)
+
+  const participantsParams = { participants, participantsAlredyInGrid, trainerColorMap }
+
   const handleChange = e => {
     setGridParameter({ tossType: e.target.value })
     createGrid({ participantCount: participants.length })
   }
-
-  const participantsAlredyInGrid = participantsInGrid(grid)
 
   return (
     <div>
@@ -64,29 +49,7 @@ function Form(props) {
       <Typography variant='h6'>Сетка</Typography>
       {/* columns: participants | level-0 | level-1 | ... */}
       <div style={{ display: 'flex' }}>
-        <div style={styles.flexColumn}>
-          {participants.map(elem => {
-            const trainerColor = trainerColorMap[elem.trainer.id]
-
-            return (
-              <div
-                key={`participant-${elem.athlet.id}`}
-                style={{
-                  whiteSpace: 'nowrap',
-                  visibility: participantsAlredyInGrid.has(elem.athlet.id) ? 'hidden' : 'visible'
-                }}
-              >
-                <div
-                  title={trainerName(elem.trainer)}
-                  style={styles.coloredTrainer(trainerColor)}
-                ></div>
-                <Typography variant='body1' style={{ display: 'inline-block' }}>
-                  {athletName(elem.athlet)}
-                </Typography>
-              </div>
-            )
-          })}
-        </div>
+        <Participants {...participantsParams} />
         <Grid />
         {Object.keys(grid).length > 0 ? (
           <TopPlaces grid={grid} participants={participants} />

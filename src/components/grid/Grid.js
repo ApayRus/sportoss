@@ -1,16 +1,70 @@
 import React from 'react'
 import DuelSimple from './Duel'
-
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { find } from 'lodash'
+import { updateFighter, setWinner } from '../../store/gridActions'
 import { withStyles } from '@material-ui/core/styles'
 
 function Grid(props) {
-  const { grid, classes } = props
+  const { grid, gridByLevels, classes, participants, updateFighter, setWinner } = props
+
+  const onFighterChange = duelId => e => {
+    const { color: fighterColor } = e.target.dataset
+    const [familyName, firstName] = e.target.value.split(' ')
+
+    const relatedParticipant = find(participants, { athlet: { familyName, firstName } })
+    const athletId = relatedParticipant ? relatedParticipant.athlet.id : ''
+    updateFighter({ duelId, fighterColor, athletId })
+  }
+
+  const onWinnerChange = duelId => e => {
+    const winnerId = e.target.checked ? e.target.dataset.winner : ''
+    // const duelId = id
+    const duel = grid[duelId]
+    setWinner({ duelId, athletId: winnerId })
+
+    const fillNextRoundByWinners = () => {
+      //winner goes to the next round (level)
+      const duelNextId = duel.next
+      if (duelNextId) {
+        const duelNext = grid[duelNextId]
+        const fighterColor = duelNext.fighterRed ? 'Blue' : 'Red'
+        updateFighter({ duelId: duelNextId, fighterColor, athletId: winnerId })
+      }
+    }
+
+    const fillDuelFor3rdPlaceByLosers = () => {
+      //in 1/2 finals, loser goes to Duel for 3rd place, also it is a last Duel in Grid
+      const duelTotalCount = Object.keys(grid).length
+      const { fighterRed, fighterBlue } = duel
+      const loserId = winnerId === fighterRed ? fighterBlue : fighterRed
+
+      if (+duelId === duelTotalCount - 3)
+        //1-st of 1/2 finals
+        updateFighter({ duelId: duelTotalCount, fighterColor: 'Red', athletId: loserId })
+      if (+duelId === duelTotalCount - 2)
+        //2-nd of 1/2 finals
+        updateFighter({ duelId: duelTotalCount, fighterColor: 'Blue', athletId: loserId })
+    }
+
+    fillNextRoundByWinners()
+    fillDuelFor3rdPlaceByLosers()
+  }
+
+  const eventHandlers = { onWinnerChange, onFighterChange }
+
   return (
     <div style={{ display: 'flex' }}>
-      {Object.keys(grid).map(key => (
+      {Object.keys(gridByLevels).map(key => (
         <div key={key} className={classes.levelBox}>
-          {grid[key].map(duel => (
-            <DuelSimple duelData={duel} key={duel.id} />
+          {gridByLevels[key].map(duel => (
+            <DuelSimple
+              duelData={duel}
+              participants={participants}
+              key={duel.id}
+              {...eventHandlers}
+            />
           ))}
         </div>
       ))}
@@ -27,4 +81,20 @@ const styles = {
   }
 }
 
-export default withStyles(styles)(Grid)
+const mapStateToProps = state => ({
+  participants: state.grid.participants,
+  grid: state.grid.grid
+})
+
+const mapDispatchToProps = dispatch => ({
+  updateFighter: payload => dispatch(updateFighter(payload)),
+  setWinner: payload => dispatch(setWinner(payload))
+})
+
+export default compose(
+  withStyles(styles),
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )
+)(Grid)

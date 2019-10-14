@@ -87,7 +87,7 @@ function Form(props) {
             )
           })}
         </div>
-        <Grid grid={gridByLevels(grid)} />
+        <Grid gridByLevels={gridByLevels(grid)} />
         {Object.keys(grid).length > 0 ? (
           <TopPlaces grid={grid} participants={participants} />
         ) : null}

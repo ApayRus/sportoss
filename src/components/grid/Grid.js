@@ -3,11 +3,13 @@ import DuelSimple from './Duel'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { find } from 'lodash'
+import { gridByLevels as gridByLevelsFunction } from './functionsPlayOff'
+
 import { updateFighter, setWinner } from '../../store/gridActions'
 import { withStyles } from '@material-ui/core/styles'
 
 function Grid(props) {
-  const { grid, gridByLevels, classes, participants, updateFighter, setWinner } = props
+  const { grid, classes, participants, updateFighter, setWinner } = props
 
   const onFighterChange = duelId => e => {
     const { color: fighterColor } = e.target.dataset
@@ -54,6 +56,7 @@ function Grid(props) {
 
   const eventHandlers = { onWinnerChange, onFighterChange }
 
+  const gridByLevels = gridByLevelsFunction(grid)
   return (
     <div style={{ display: 'flex' }}>
       {Object.keys(gridByLevels).map(key => (

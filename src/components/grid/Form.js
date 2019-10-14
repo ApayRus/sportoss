@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Select, Typography } from '@material-ui/core'
-import { gridByLevels, participantsInGrid } from './functions'
+import { gridByLevels, participantsInGrid } from './functionsPlayOff'
 import { athletName, categoryName, trainerName, tournamentName } from '../../config/functions'
 import Grid from './Grid'
 import TopPlaces from './TopPlaces'

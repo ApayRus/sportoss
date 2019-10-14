@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { Select, Typography } from '@material-ui/core'
 import { participantsInGrid } from './functionsPlayOff'
 import { categoryName, tournamentName } from '../../config/functions'
-import Grid from './Grid'
+import GridPlayOff from './GridPlayOff'
 import TopPlaces from './TopPlaces'
 import { setGridParameter, createGrid } from '../../store/gridActions'
 import Participants from './Participants'
@@ -50,7 +50,7 @@ function Form(props) {
       {/* columns: participants | level-0 | level-1 | ... */}
       <div style={{ display: 'flex' }}>
         <Participants {...participantsParams} />
-        <Grid />
+        <GridPlayOff />
         {Object.keys(grid).length > 0 ? (
           <TopPlaces grid={grid} participants={participants} />
         ) : null}

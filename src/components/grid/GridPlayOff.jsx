@@ -1,5 +1,5 @@
 import React from 'react'
-import DuelSimple from './Duel'
+import Duel from './Duel'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { find } from 'lodash'
@@ -62,12 +62,7 @@ function Grid(props) {
       {Object.keys(gridByLevels).map(key => (
         <div key={key} className={classes.levelBox}>
           {gridByLevels[key].map(duel => (
-            <DuelSimple
-              duelData={duel}
-              participants={participants}
-              key={duel.id}
-              {...eventHandlers}
-            />
+            <Duel duelData={duel} participants={participants} key={duel.id} {...eventHandlers} />
           ))}
         </div>
       ))}

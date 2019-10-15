@@ -35,18 +35,20 @@ export function rotateClockwiseAllExcept1(array1, array2) {
    * @param {string[]} athletIds 
    * @example 
     generateAllPlayAllGrid(['1','2','3','4']) --> 
-    [
-      [ [1, 3], [2, 4] ],  //tour 1: 1vs3, 2vs4
-      [ [1, 2], [4, 3] ] //tour 2
-      [ [1, 4], [3, 2] ], //tour 3
-   ]
+    {
+        1: { level: 1, fighterRed: 1, fighterBlue: 3 },
+        2: { level: 1, fighterRed: 2, fighterBlue: 4 },
+        3: { level: 2, fighterRed: 1, fighterBlue: 2 },
+        4: { level: 2, fighterRed: 4, fighterBlue: 3 },
+        5: { level: 3, fighterRed: 1, fighterBlue: 4 },
+        6: { level: 3, fighterRed: 3, fighterBlue: 2 }
+    }
      generateAllPlayAllGrid(['1','2','3']) --> 
-     
-    [
-      [ [1, 3] ],  //tour 1
-      [ [1, 2] ], //tour 2
-      [ [3, 2] ] //tour 3
-   ]
+    {
+        1: { level: 1, fighterRed: 1, fighterBlue: 3 },
+        2: { level: 2, fighterRed: 1, fighterBlue: 2 },
+        3: { level: 3, fighterRed: 3, fighterBlue: 2 }
+    }
    */
 export function generateAllPlayAllGrid(athletIds) {
   if (athletIds.length % 2) athletIds.push(0) //fake fighter
@@ -66,17 +68,17 @@ export function generateAllPlayAllGrid(athletIds) {
   }
 
   // make grid with duels from columns
-  const grid = []
+  const grid = {}
+  let duelId = 1 //grid global index
   for (let tour = 0; tour < tourCount; tour++) {
-    const tourDuels = []
     const duelsInTour = n / 2
     for (let duel = 0; duel < duelsInTour; duel++) {
-      const fighter1 = column1[tour][duel]
-      const fighter2 = column2[tour][duel]
-      if (fighter1 === 0 || fighter2 === 0) continue //duel with fake fighter "0"
-      tourDuels.push([fighter1, fighter2])
+      const fighterRed = column1[tour][duel]
+      const fighterBlue = column2[tour][duel]
+      if (fighterRed === 0 || fighterBlue === 0) continue //duel with fake fighter "0"
+      grid[duelId] = { level: tour + 1, fighterRed, fighterBlue }
+      duelId++
     }
-    grid.push(tourDuels)
   }
 
   return grid

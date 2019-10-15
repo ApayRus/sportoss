@@ -22,10 +22,23 @@ it('rotateClockwiseAllExcept1', () => {
 })
 
 it('generateAllPlayAllGrid', () => {
-  const athletIds3 = [1, 2, 3]
-  const grid3 = [[[1, 3]], [[1, 2]], [[3, 2]]]
   const athletIds4 = [1, 2, 3, 4]
-  const grid4 = [[[1, 3], [2, 4]], [[1, 2], [4, 3]], [[1, 4], [3, 2]]]
+  // const grid4 = [[[1, 3], [2, 4]], [[1, 2], [4, 3]], [[1, 4], [3, 2]]]
+  const grid4 = {
+    1: { level: 1, fighterRed: 1, fighterBlue: 3 },
+    2: { level: 1, fighterRed: 2, fighterBlue: 4 },
+    3: { level: 2, fighterRed: 1, fighterBlue: 2 },
+    4: { level: 2, fighterRed: 4, fighterBlue: 3 },
+    5: { level: 3, fighterRed: 1, fighterBlue: 4 },
+    6: { level: 3, fighterRed: 3, fighterBlue: 2 }
+  }
+  const athletIds3 = [1, 2, 3]
+  //   const grid3 = [[[1, 3]], [[1, 2]], [[3, 2]]]
+  const grid3 = {
+    1: { level: 1, fighterRed: 1, fighterBlue: 3 },
+    2: { level: 2, fighterRed: 1, fighterBlue: 2 },
+    3: { level: 3, fighterRed: 3, fighterBlue: 2 }
+  }
   expect(generateAllPlayAllGrid(athletIds3)).toEqual(grid3)
   expect(generateAllPlayAllGrid(athletIds4)).toEqual(grid4)
 })

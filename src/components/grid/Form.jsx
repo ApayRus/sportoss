@@ -4,6 +4,7 @@ import { Select, Typography } from '@material-ui/core'
 import { participantsInGrid } from './functionsPlayOff'
 import { categoryName, tournamentName } from '../../config/functions'
 import GridPlayOff from './GridPlayOff'
+import GridAllPlayAll from './GridAllPlayAll'
 import TopPlaces from './TopPlaces'
 import { setGridParameter, createGrid } from '../../store/gridActions'
 import Participants from './Participants'
@@ -14,6 +15,7 @@ function Form(props) {
     category,
     participants,
     trainerColorMap,
+    gridType,
     grid,
     setGridParameter,
     createGrid
@@ -24,8 +26,16 @@ function Form(props) {
   const participantsParams = { participants, participantsAlredyInGrid, trainerColorMap }
 
   const handleChange = e => {
-    setGridParameter({ tossType: e.target.value })
-    createGrid({ participantCount: participants.length })
+    const gridType = e.target.value
+    setGridParameter({ gridType })
+    if (gridType === 'playOff') {
+      const participantCount = participants.length
+      createGrid({ gridType, participantCount })
+    }
+    if (gridType === 'allPlayAll') {
+      const participantIds = participants.map(elem => elem.athlet.id)
+      createGrid({ gridType, participantIds })
+    }
   }
 
   return (
@@ -37,12 +47,12 @@ function Form(props) {
         onChange={handleChange}
         native
         inputProps={{
-          id: 'tossType'
+          id: 'gridType'
         }}
       >
         <option value=''></option>
         <option value='playOff'>Олимпийская</option>
-        <option value='circle'>Круговая</option>
+        <option value='allPlayAll'>Круговая</option>
         <option value='group'>Групповая</option>
       </Select>
 
@@ -50,7 +60,8 @@ function Form(props) {
       {/* columns: participants | level-0 | level-1 | ... */}
       <div style={{ display: 'flex' }}>
         <Participants {...participantsParams} />
-        <GridPlayOff />
+        {gridType === 'playOff' && <GridPlayOff />}
+        {gridType === 'allPlayAll' && <GridAllPlayAll />}
         {Object.keys(grid).length > 0 ? (
           <TopPlaces grid={grid} participants={participants} />
         ) : null}
@@ -60,12 +71,13 @@ function Form(props) {
 }
 
 const mapStateToProps = state => {
-  const { tournament, category, participants, trainerColorMap, grid } = state.grid
+  const { tournament, category, participants, trainerColorMap, grid, gridType } = state.grid
   return {
     tournament,
     category,
     participants,
     trainerColorMap,
+    gridType,
     grid
   }
 }

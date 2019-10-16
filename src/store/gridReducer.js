@@ -1,4 +1,5 @@
 import { generateGrid } from '../components/grid/functionsPlayOff'
+import { generateGridAllPlayAll } from '../components/grid/functionsAllPlayAll'
 
 const initState = {
   tournament: '',
@@ -10,8 +11,12 @@ const initState = {
 
 const gridReducer = (state = initState, action) => {
   switch (action.type) {
+    // gridType: playOff
     case 'CREATE_GRID': {
-      const grid = generateGrid(action.payload.participantCount)
+      let grid = {}
+      const { gridType, participantCount, participantIds } = action.payload
+      if (gridType === 'playOff') grid = generateGrid(participantCount)
+      if (gridType === 'allPlayAll') grid = generateGridAllPlayAll(participantIds)
       return { ...state, grid }
     }
 
@@ -34,6 +39,8 @@ const gridReducer = (state = initState, action) => {
       const value = action.payload[key]
       return { ...state, [key]: value }
     }
+
+    //gridType: group
 
     default:
       return state

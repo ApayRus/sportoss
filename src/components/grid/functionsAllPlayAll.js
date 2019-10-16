@@ -50,7 +50,7 @@ export function rotateClockwiseAllExcept1(array1, array2) {
         3: { level: 3, fighterRed: 3, fighterBlue: 2 }
     }
    */
-export function generateAllPlayAllGrid(athletIds) {
+export function generateGridAllPlayAll(athletIds) {
   if (athletIds.length % 2) athletIds.push(0) //fake fighter
   const n = athletIds.length
   const tourCount = n - 1

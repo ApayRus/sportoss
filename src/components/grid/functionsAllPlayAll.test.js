@@ -1,4 +1,4 @@
-import { rotateClockwiseAllExcept1, generateAllPlayAllGrid } from './functionsAllPlayAll'
+import { rotateClockwiseAllExcept1, generateGridAllPlayAll } from './functionsAllPlayAll'
 
 it('rotateClockwiseAllExcept1', () => {
   const array8_1 = [],
@@ -21,7 +21,7 @@ it('rotateClockwiseAllExcept1', () => {
   expect(rotateClockwiseAllExcept1(array6_1[0], array6_2[0])).toEqual([array6_1[1], array6_2[1]])
 })
 
-it('generateAllPlayAllGrid', () => {
+it('generateGridAllPlayAll', () => {
   const athletIds4 = [1, 2, 3, 4]
   // const grid4 = [[[1, 3], [2, 4]], [[1, 2], [4, 3]], [[1, 4], [3, 2]]]
   const grid4 = {
@@ -39,6 +39,6 @@ it('generateAllPlayAllGrid', () => {
     2: { level: 2, fighterRed: 1, fighterBlue: 2 },
     3: { level: 3, fighterRed: 3, fighterBlue: 2 }
   }
-  expect(generateAllPlayAllGrid(athletIds3)).toEqual(grid3)
-  expect(generateAllPlayAllGrid(athletIds4)).toEqual(grid4)
+  expect(generateGridAllPlayAll(athletIds3)).toEqual(grid3)
+  expect(generateGridAllPlayAll(athletIds4)).toEqual(grid4)
 })

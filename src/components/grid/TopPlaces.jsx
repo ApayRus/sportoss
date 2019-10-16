@@ -31,39 +31,41 @@ function TopPlaces(props) {
   return (
     <div className={classes.levelBox}>
       <table className={classes.resultTable}>
-        <tr>
-          <td className={classes.number}>
-            <T variant='body2'>1</T>
-          </td>
-          <td>
-            <CupIcon style={{ color: 'gold' }} />
-          </td>
-          <td>
-            <T variant='body2'>{athletName(gold)}</T>
-          </td>
-        </tr>
-        <tr>
-          <td className={classes.number}>
-            <T variant='body2'>2</T>
-          </td>
-          <td>
-            <CupIcon style={{ color: 'silver' }} />
-          </td>
-          <td>
-            <T variant='body2'>{athletName(silver)}</T>
-          </td>
-        </tr>
-        <tr>
-          <td className={classes.number}>
-            <T variant='body2'>3</T>
-          </td>
-          <td>
-            <CupIcon style={{ color: '#cd7f32' }} />
-          </td>
-          <td>
-            <T variant='body2'>{athletName(bronze)}</T>
-          </td>
-        </tr>
+        <tbody>
+          <tr>
+            <td className={classes.number}>
+              <T variant='body2'>1</T>
+            </td>
+            <td>
+              <CupIcon style={{ color: 'gold' }} />
+            </td>
+            <td>
+              <T variant='body2'>{athletName(gold)}</T>
+            </td>
+          </tr>
+          <tr>
+            <td className={classes.number}>
+              <T variant='body2'>2</T>
+            </td>
+            <td>
+              <CupIcon style={{ color: 'silver' }} />
+            </td>
+            <td>
+              <T variant='body2'>{athletName(silver)}</T>
+            </td>
+          </tr>
+          <tr>
+            <td className={classes.number}>
+              <T variant='body2'>3</T>
+            </td>
+            <td>
+              <CupIcon style={{ color: '#cd7f32' }} />
+            </td>
+            <td>
+              <T variant='body2'>{athletName(bronze)}</T>
+            </td>
+          </tr>
+        </tbody>
       </table>
     </div>
   )

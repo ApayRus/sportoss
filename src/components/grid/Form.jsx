@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { connect } from 'react-redux'
 import { Select, Typography } from '@material-ui/core'
 import { participantsInGrid } from './functionsPlayOff'
@@ -21,8 +21,8 @@ function Form(props) {
     createGrid
   } = props
 
-  const participantsAlredyInGrid = participantsInGrid(grid)
-
+  //in playOff grid we want to hide participants who alredy in greed
+  const participantsAlredyInGrid = gridType === 'playOff' ? participantsInGrid(grid) : new Set()
   const participantsParams = { participants, participantsAlredyInGrid, trainerColorMap }
 
   const handleChange = e => {
@@ -60,11 +60,13 @@ function Form(props) {
       {/* columns: participants | level-0 | level-1 | ... */}
       <div style={{ display: 'flex' }}>
         <Participants {...participantsParams} />
-        {gridType === 'playOff' && <GridPlayOff />}
+        {gridType === 'playOff' && (
+          <Fragment>
+            <GridPlayOff />
+            <TopPlaces grid={grid} participants={participants} />
+          </Fragment>
+        )}
         {gridType === 'allPlayAll' && <GridAllPlayAll />}
-        {Object.keys(grid).length > 0 ? (
-          <TopPlaces grid={grid} participants={participants} />
-        ) : null}
       </div>
     </div>
   )

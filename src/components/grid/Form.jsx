@@ -8,6 +8,7 @@ import GridAllPlayAll from './GridAllPlayAll'
 import TopPlaces from './TopPlaces'
 import { setGridParameter, createGrid } from '../../store/gridActions'
 import Participants from './Participants'
+import TopPlacesAllPlayAll from './TopPlacesAllPlayAll'
 
 function Form(props) {
   const {
@@ -66,7 +67,12 @@ function Form(props) {
             <TopPlaces grid={grid} participants={participants} />
           </Fragment>
         )}
-        {gridType === 'allPlayAll' && <GridAllPlayAll />}
+        {gridType === 'allPlayAll' && (
+          <Fragment>
+            <GridAllPlayAll />
+            <TopPlacesAllPlayAll grid={grid} participants={participants} />
+          </Fragment>
+        )}
       </div>
     </div>
   )

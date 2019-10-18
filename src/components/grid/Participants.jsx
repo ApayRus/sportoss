@@ -21,7 +21,7 @@ const styles = {
 }
 
 function Participants(props) {
-  const { participants, trainerColorMap, participantsAlredyInGrid } = props
+  const { participants, trainerColorMap, participantsToHide } = props
 
   return (
     <div style={styles.flexColumn}>
@@ -33,7 +33,7 @@ function Participants(props) {
             key={`participant-${elem.athlet.id}`}
             style={{
               whiteSpace: 'nowrap',
-              visibility: participantsAlredyInGrid.has(elem.athlet.id) ? 'hidden' : 'visible'
+              visibility: participantsToHide.has(elem.athlet.id) ? 'hidden' : 'visible'
             }}
           >
             <div

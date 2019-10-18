@@ -36,7 +36,7 @@ function FormFirebaseContainer(props) {
     participants = map(participants).map(elem => {
       const athlet = find(allAthlets, { id: elem.athletId })
       const trainer = find(allTrainers, { id: elem.trainerId })
-      return { athlet, trainer, alsoInGrid: false }
+      return { athlet, trainer }
     })
     setGridParameter({ participants })
     setGridParameter({ trainerColorMap })

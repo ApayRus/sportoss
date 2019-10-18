@@ -58,3 +58,23 @@ export function setWinner(payload) {
 export function setGridParameter(payload) {
   return { type: 'SET_GRID_PARAMETER', payload }
 }
+
+/**
+ * 
+ * @param {Object} payload
+ * @param {Number} payload.groupIndex
+ * @param {Number} payload.participantIndex
+ * @param {String} payload.participantId
+ * @example
+ const setGroupParticipantExample = {
+  type: 'SET_GROUP_PARTICIPANT', 
+  payload:{ groupIndex:0, participantIndex:1, participantId:"abcdefg" }
+}
+ */
+export function setGroupParticipant(payload) {
+  return { type: 'SET_GROUP_PARTICIPANT', payload }
+}
+
+export function createGroups(payload) {
+  return { type: 'CREATE_GROUPS', payload }
+}

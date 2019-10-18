@@ -6,9 +6,10 @@ import { categoryName, tournamentName } from '../../config/functions'
 import GridPlayOff from './GridPlayOff'
 import GridAllPlayAll from './GridAllPlayAll'
 import TopPlaces from './TopPlaces'
-import { setGridParameter, createGrid } from '../../store/gridActions'
+import { setGridParameter, createGrid, createGroups } from '../../store/gridActions'
 import Participants from './Participants'
 import TopPlacesAllPlayAll from './TopPlacesAllPlayAll'
+import GroupTable from './GroupTable'
 
 function Form(props) {
   const {
@@ -19,12 +20,24 @@ function Form(props) {
     gridType,
     grid,
     setGridParameter,
-    createGrid
+    createGrid,
+    createGroups,
+    groupParticipants
   } = props
 
-  //in playOff grid we want to hide participants who alredy in greed
-  const participantsAlredyInGrid = gridType === 'playOff' ? participantsInGrid(grid) : new Set()
-  const participantsParams = { participants, participantsAlredyInGrid, trainerColorMap }
+  // Set with participants we want to hide in list
+  let participantsToHide = new Set()
+  //in playOff-grid we want to hide participants who alredy in greed
+  if (gridType === 'playOff') {
+    participantsToHide = participantsInGrid(grid)
+  }
+  //in group-grid - hide who alredy in group
+  if (gridType === 'group') {
+    const alredyInGroups = groupParticipants.flat()
+    participantsToHide = new Set(alredyInGroups)
+  }
+
+  const participantsParams = { participants, participantsToHide, trainerColorMap }
 
   const handleChange = e => {
     const gridType = e.target.value
@@ -36,6 +49,11 @@ function Form(props) {
     if (gridType === 'allPlayAll') {
       const participantIds = participants.map(elem => elem.athlet.id)
       createGrid({ gridType, participantIds })
+    }
+    if (gridType === 'group') {
+      //const participantIds = participants.map(elem => elem.athlet.id)
+      const participantCount = participants.length
+      createGroups({ participantCount })
     }
   }
 
@@ -73,26 +91,50 @@ function Form(props) {
             <TopPlacesAllPlayAll grid={grid} participants={participants} />
           </Fragment>
         )}
+        {gridType === 'group' && (
+          <Fragment>
+            <GroupTable
+              groupParticipants={groupParticipants}
+              participants={participants}
+              groupIndex={0}
+            />
+            <GroupTable
+              groupParticipants={groupParticipants}
+              participants={participants}
+              groupIndex={1}
+            />
+          </Fragment>
+        )}
       </div>
     </div>
   )
 }
 
 const mapStateToProps = state => {
-  const { tournament, category, participants, trainerColorMap, grid, gridType } = state.grid
+  const {
+    tournament,
+    category,
+    participants,
+    trainerColorMap,
+    grid,
+    gridType,
+    groupParticipants
+  } = state.grid
   return {
     tournament,
     category,
     participants,
     trainerColorMap,
     gridType,
-    grid
+    grid,
+    groupParticipants
   }
 }
 
 const mapDispatchToProps = dispatch => ({
   setGridParameter: payload => dispatch(setGridParameter(payload)),
-  createGrid: payload => dispatch(createGrid(payload))
+  createGrid: payload => dispatch(createGrid(payload)),
+  createGroups: payload => dispatch(createGroups(payload))
 })
 
 export default connect(

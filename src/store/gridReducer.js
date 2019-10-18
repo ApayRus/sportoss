@@ -6,7 +6,10 @@ const initState = {
   category: '',
   tossType: '',
   participants: [],
-  grid: {}
+  grid: {},
+  groupParticipants: [[], []],
+  group1: {},
+  group2: {}
 }
 
 const gridReducer = (state = initState, action) => {
@@ -41,6 +44,22 @@ const gridReducer = (state = initState, action) => {
     }
 
     //gridType: group
+
+    case 'CREATE_GROUPS': {
+      const { participantCount } = action.payload
+      const groupParticipantCount = participantCount / 2
+      const emptyArray = new Array(groupParticipantCount).fill('')
+      const groupParticipants = [emptyArray, [...emptyArray]]
+      return { ...state, groupParticipants }
+    }
+
+    case 'SET_GROUP_PARTICIPANT': {
+      const { groupIndex, participantIndex, participantId } = action.payload
+      let { groupParticipants } = state
+      groupParticipants = [...groupParticipants]
+      groupParticipants[groupIndex][participantIndex] = participantId
+      return { ...state, groupParticipants }
+    }
 
     default:
       return state

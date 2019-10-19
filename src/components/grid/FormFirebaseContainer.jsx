@@ -27,19 +27,19 @@ function FormFirebaseContainer(props) {
   const { categoryId } = props.match.params
 
   let participants = []
-  let trainerColorMap = {}
 
   if (isLoaded(tournament, category, applications, allAthlets, allTrainers)) {
     participants = participantsGroupedByCategories(applications)[categoryId]
     participants = sortBy(participants, 'trainerId')
-    trainerColorMap = trainerColors(participants)
+    const trainerColorMap = trainerColors(participants)
     participants = map(participants).map(elem => {
       const athlet = find(allAthlets, { id: elem.athletId })
-      const trainer = find(allTrainers, { id: elem.trainerId })
+      let trainer = find(allTrainers, { id: elem.trainerId })
+      const trainerColor = trainerColorMap[trainer.id]
+      trainer = { ...trainer, color: trainerColor }
       return { athlet, trainer }
     })
     setGridParameter({ participants })
-    setGridParameter({ trainerColorMap })
     setGridParameter({ tournament })
     setGridParameter({ category })
 

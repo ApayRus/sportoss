@@ -51,7 +51,6 @@ export function setWinner(payload) {
  * @param {*} payload 
  * @example 
     setGridParameter({ participants })
-    setGridParameter({ trainerColorMap })
     setGridParameter({ tournament })
     setGridParameter({ category })
  */

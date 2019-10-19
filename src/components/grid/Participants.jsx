@@ -21,13 +21,11 @@ const styles = {
 }
 
 function Participants(props) {
-  const { participants, trainerColorMap, participantsToHide } = props
+  const { participants, participantsToHide } = props
 
   return (
     <div style={styles.flexColumn}>
       {participants.map(elem => {
-        const trainerColor = trainerColorMap[elem.trainer.id]
-
         return (
           <div
             key={`participant-${elem.athlet.id}`}
@@ -38,7 +36,7 @@ function Participants(props) {
           >
             <div
               title={trainerName(elem.trainer)}
-              style={styles.coloredTrainer(trainerColor)}
+              style={styles.coloredTrainer(elem.trainer.color)}
             ></div>
             <Typography variant='body1' style={{ display: 'inline-block' }}>
               {athletName(elem.athlet)}

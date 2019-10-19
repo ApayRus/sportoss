@@ -16,7 +16,6 @@ function Form(props) {
     tournament,
     category,
     participants,
-    trainerColorMap,
     gridType,
     grid,
     setGridParameter,
@@ -37,7 +36,7 @@ function Form(props) {
     participantsToHide = new Set(alredyInGroups)
   }
 
-  const participantsParams = { participants, participantsToHide, trainerColorMap }
+  const participantsParams = { participants, participantsToHide }
 
   const handleChange = e => {
     const gridType = e.target.value
@@ -111,20 +110,11 @@ function Form(props) {
 }
 
 const mapStateToProps = state => {
-  const {
-    tournament,
-    category,
-    participants,
-    trainerColorMap,
-    grid,
-    gridType,
-    groupParticipants
-  } = state.grid
+  const { tournament, category, participants, grid, gridType, groupParticipants } = state.grid
   return {
     tournament,
     category,
     participants,
-    trainerColorMap,
     gridType,
     grid,
     groupParticipants

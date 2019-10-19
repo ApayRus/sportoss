@@ -30,21 +30,22 @@ const styles = {
 function DuelSimple(props) {
   const { duelData, classes, participants, onFighterChange, onWinnerChange } = props
   const { id, fighterRed, fighterBlue, winner, label } = duelData
-  let athletRedName,
-    athletBlueName,
-    trainerRedName,
-    trainerBlueName = ''
+  let athletRedName, athletBlueName, trainerRedName, trainerBlueName
 
   //populate fighters data by id
   if (fighterRed) {
     const participantRedPopulated = find(participants, { athlet: { id: fighterRed } })
     athletRedName = athletName(participantRedPopulated.athlet)
     trainerRedName = trainerName(participantRedPopulated.trainer)
+  } else {
+    athletRedName = ''
   }
   if (fighterBlue) {
     const participantBluePopulated = find(participants, { athlet: { id: fighterBlue } })
     athletBlueName = athletName(participantBluePopulated.athlet)
     trainerBlueName = trainerName(participantBluePopulated.trainer)
+  } else {
+    athletBlueName = ''
   }
 
   return (

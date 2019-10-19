@@ -43,17 +43,21 @@ function GroupTable(props) {
         <tbody>
           {groupParticipants[groupIndex].map((id, participantIndex) => {
             const relatedParticipant = find(participants, { athlet: { id } })
-            let participantName
-            console.log('relatedParticipant', relatedParticipant)
+            let participantName, participantTrainerName, trainerColor
+            // console.log('relatedParticipant', relatedParticipant)
             if (relatedParticipant) {
               participantName = athletName(relatedParticipant.athlet)
+              participantTrainerName = trainerName(relatedParticipant.trainer)
+              trainerColor = relatedParticipant.trainer.color
             } else {
               participantName = ''
+              participantTrainerName = ''
+              trainerColor = 'white'
             }
             return (
               <tr key={`participant-${participantIndex}`}>
                 <td>
-                  <div title='trainer name' style={styles0.coloredTrainer('green')}></div>
+                  <div title='trainer name' style={styles0.coloredTrainer(trainerColor)}></div>
                   <div style={{ display: 'inline-block' }}>
                     <input
                       type='text'
@@ -62,7 +66,7 @@ function GroupTable(props) {
                       className={classes.athletInput}
                       value={participantName}
                     />
-                    <div className={classes.trainer}>(тренер)</div>
+                    <div className={classes.trainer}>{participantTrainerName}</div>
                   </div>
                 </td>
                 <td className={classes.number}>0</td>

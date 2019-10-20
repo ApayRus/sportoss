@@ -8,19 +8,25 @@ const initState = {
   participants: [],
   grid: {},
   groupParticipants: [[], []],
-  group1: {},
-  group2: {}
+  group1grid: {},
+  group2grid: {}
 }
 
 const gridReducer = (state = initState, action) => {
   switch (action.type) {
     // gridType: playOff
     case 'CREATE_GRID': {
-      let grid = {}
+      let grid, group1grid, group2grid
       const { gridType, participantCount, participantIds } = action.payload
       if (gridType === 'playOff') grid = generateGrid(participantCount)
       if (gridType === 'allPlayAll') grid = generateGridAllPlayAll(participantIds)
-      return { ...state, grid }
+      if (gridType === 'group') {
+        const { groupParticipants } = state
+        const [group1ParticipantIds, group2ParticipantIds] = groupParticipants
+        group1grid = generateGridAllPlayAll([...group1ParticipantIds])
+        group2grid = generateGridAllPlayAll([...group2ParticipantIds])
+      }
+      return { ...state, grid, group1grid, group2grid }
     }
 
     case 'UPDATE_FIGHTER': {

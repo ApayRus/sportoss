@@ -18,6 +18,8 @@ function Form(props) {
     participants,
     gridType,
     grid,
+    group1grid,
+    group2grid,
     setGridParameter,
     createGrid,
     createGroups,
@@ -34,6 +36,9 @@ function Form(props) {
   if (gridType === 'group') {
     const alredyInGroups = groupParticipants.flat()
     participantsToHide = new Set(alredyInGroups)
+    participantsToHide.delete('')
+    participantsToHide.delete(0)
+    // console.log('participantsToHide', participantsToHide)
   }
 
   const participantsParams = { participants, participantsToHide }
@@ -56,6 +61,12 @@ function Form(props) {
     }
   }
 
+  console.log('participants.length', participants.length)
+  /*   const groupsAreFilled = (participants, groupParticipants) => {
+    const [group1, group2] = groupParticipants
+    return group1
+  } */
+
   return (
     <div>
       <h1>Форма категории</h1>
@@ -74,49 +85,82 @@ function Form(props) {
         <option value='group'>Групповая</option>
       </Select>
 
-      <Typography variant='h6'>Сетка</Typography>
       {/* columns: participants | level-0 | level-1 | ... */}
-      <div style={{ display: 'flex' }}>
-        <Participants {...participantsParams} />
-        {gridType === 'playOff' && (
-          <Fragment>
-            <GridPlayOff />
-            <TopPlaces grid={grid} participants={participants} />
-          </Fragment>
-        )}
-        {gridType === 'allPlayAll' && (
-          <Fragment>
-            <GridAllPlayAll />
-            <TopPlacesAllPlayAll grid={grid} participants={participants} />
-          </Fragment>
-        )}
-        {gridType === 'group' && (
-          <Fragment>
-            <GroupTable
-              groupParticipants={groupParticipants}
-              participants={participants}
-              groupIndex={0}
-            />
-            <GroupTable
-              groupParticipants={groupParticipants}
-              participants={participants}
-              groupIndex={1}
-            />
-          </Fragment>
-        )}
-      </div>
+      {!gridType && <Participants {...participantsParams} />}
+      {gridType === 'playOff' && (
+        <div style={{ display: 'flex' }}>
+          <Participants {...participantsParams} />
+          <GridPlayOff />
+          <TopPlaces grid={grid} participants={participants} />
+        </div>
+      )}
+      {gridType === 'allPlayAll' && (
+        <div style={{ display: 'flex' }}>
+          <TopPlacesAllPlayAll grid={grid} participants={participants} />
+          <GridAllPlayAll grid={grid} participants={participants} />
+        </div>
+      )}
+      {gridType === 'group' && (
+        <div>
+          <table>
+            <tbody>
+              <tr>
+                <td>
+                  {participantsToHide.size !== participants.length && (
+                    <Participants {...participantsParams} />
+                  )}
+                </td>
+                <td>
+                  <GroupTable
+                    groupParticipants={groupParticipants}
+                    participants={participants}
+                    groupIndex={0}
+                  />
+                </td>
+                <td>
+                  <GroupTable
+                    groupParticipants={groupParticipants}
+                    participants={participants}
+                    groupIndex={1}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>
+                  <GridAllPlayAll grid={group1grid} participants={participants} />
+                </td>
+                <td>
+                  <GridAllPlayAll grid={group2grid} participants={participants} />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   )
 }
 
 const mapStateToProps = state => {
-  const { tournament, category, participants, grid, gridType, groupParticipants } = state.grid
+  const {
+    tournament,
+    category,
+    participants,
+    grid,
+    gridType,
+    groupParticipants,
+    group1grid,
+    group2grid
+  } = state.grid
   return {
     tournament,
     category,
     participants,
     gridType,
     grid,
+    group1grid,
+    group2grid,
     groupParticipants
   }
 }

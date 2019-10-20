@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { find } from 'lodash'
 import { gridByLevels as gridByLevelsFunction } from './functionsPlayOff'
+import { Typography } from '@material-ui/core'
 
 import { updateFighter, setWinner } from '../../store/gridActions'
 import { withStyles } from '@material-ui/core/styles'
@@ -29,9 +30,10 @@ function Grid(props) {
 
   const gridByLevels = gridByLevelsFunction(grid)
   return (
-    <div style={{ display: 'flex' }}>
+    <div /* style={{ display: 'flex' }} */>
       {Object.keys(gridByLevels).map(key => (
-        <div key={key} className={classes.levelBox}>
+        <div key={key} /* className={classes.levelBox} */>
+          <Typography variant='h6'>Тур {key}</Typography>
           {gridByLevels[key].map(duel => (
             <Duel duelData={duel} participants={participants} key={duel.id} {...eventHandlers} />
           ))}
@@ -50,11 +52,6 @@ const styles = {
   }
 }
 
-const mapStateToProps = state => ({
-  participants: state.grid.participants,
-  grid: state.grid.grid
-})
-
 const mapDispatchToProps = dispatch => ({
   updateFighter: payload => dispatch(updateFighter(payload)),
   setWinner: payload => dispatch(setWinner(payload))
@@ -63,7 +60,7 @@ const mapDispatchToProps = dispatch => ({
 export default compose(
   withStyles(styles),
   connect(
-    mapStateToProps,
+    null,
     mapDispatchToProps
   )
 )(Grid)

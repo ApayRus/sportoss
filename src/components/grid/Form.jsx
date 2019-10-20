@@ -1,12 +1,12 @@
-import React, { Fragment } from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
-import { Select, Typography } from '@material-ui/core'
+import { Select } from '@material-ui/core'
 import { participantsInGrid } from './functionsPlayOff'
 import { categoryName, tournamentName } from '../../config/functions'
 import GridPlayOff from './GridPlayOff'
 import GridAllPlayAll from './GridAllPlayAll'
 import TopPlaces from './TopPlaces'
-import { setGridParameter, createGrid, createGroups } from '../../store/gridActions'
+import { setGridParameter, createGrid, createGroups, clearGrid } from '../../store/gridActions'
 import Participants from './Participants'
 import TopPlacesAllPlayAll from './TopPlacesAllPlayAll'
 import GroupTable from './GroupTable'
@@ -22,6 +22,7 @@ function Form(props) {
     group2grid,
     setGridParameter,
     createGrid,
+    clearGrid,
     createGroups,
     groupParticipants
   } = props
@@ -61,11 +62,13 @@ function Form(props) {
     }
   }
 
-  console.log('participants.length', participants.length)
-  /*   const groupsAreFilled = (participants, groupParticipants) => {
-    const [group1, group2] = groupParticipants
-    return group1
-  } */
+  useEffect(() => {
+    //component will mount
+    return () => {
+      //component will UNmount
+      clearGrid()
+    }
+  }, [])
 
   return (
     <div>
@@ -168,6 +171,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
   setGridParameter: payload => dispatch(setGridParameter(payload)),
   createGrid: payload => dispatch(createGrid(payload)),
+  clearGrid: () => dispatch(clearGrid()),
   createGroups: payload => dispatch(createGroups(payload))
 })
 

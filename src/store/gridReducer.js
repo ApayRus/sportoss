@@ -67,6 +67,10 @@ const gridReducer = (state = initState, action) => {
       return { ...state, groupParticipants }
     }
 
+    case 'CLEAR_GRID': {
+      return { ...initState }
+    }
+
     default:
       return state
   }

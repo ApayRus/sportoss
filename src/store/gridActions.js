@@ -74,6 +74,22 @@ export function setGroupParticipant(payload) {
   return { type: 'SET_GROUP_PARTICIPANT', payload }
 }
 
+/**
+ * 
+ * @param {object} payload 
+ * @param {number} payload.participantCount
+ * @example 
+ createGroups({participantCount: 6}) 
+ //will made state.groupParticipants:
+ [ ['', '', ''], ['', '', ''] ]
+ */
 export function createGroups(payload) {
   return { type: 'CREATE_GROUPS', payload }
+}
+
+/**
+ * will set grid to initState
+ */
+export function clearGrid() {
+  return { type: 'CLEAR_GRID' }
 }

@@ -37,7 +37,8 @@ class Form extends React.Component {
 
   handleSubmit = () => {
     const { id, firstName, familyName, fatherName, birthday, gender } = this.state
-    const createdBy = this.props.user
+    const { userId, userName } = this.props
+    const createdBy = { userId, userName }
     //id is empty when we creates new endtry, and filled when we edit an existen one
     if (!id) {
       const firestoreAdd = this.props.firestoreAdd(

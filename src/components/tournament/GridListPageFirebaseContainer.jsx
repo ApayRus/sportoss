@@ -3,7 +3,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { firestoreConnect, isLoaded } from 'react-redux-firebase'
 import { compose } from 'redux'
-import ListPage from './ListPage'
+import ListPage from './GridListPage'
 import { CircularProgress } from '@material-ui/core'
 
 export function Page(props) {

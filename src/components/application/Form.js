@@ -16,7 +16,7 @@ import {
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { firestoreConnect, isLoaded } from 'react-redux-firebase'
-import AthletTable from '../table/Table'
+import AthletTable from '../layouts/table/Table'
 import { athletName, categoryName, trainerName, tournamentName } from '../../config/functions'
 import Select from './Select'
 import { ageAtDate } from '../../config/functions'

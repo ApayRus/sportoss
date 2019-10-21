@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Fab, CircularProgress } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'
 
-import Table from '../table/Table'
+import Table from '../layouts/table/Table'
 import Form from './Form'
 
 import { connect } from 'react-redux'

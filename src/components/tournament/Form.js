@@ -15,7 +15,7 @@ import {
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { firestoreConnect, isLoaded } from 'react-redux-firebase'
-import CategoryTable from '../table/Table'
+import CategoryTable from '../layouts/table/Table'
 import { categoryName } from '../../config/functions'
 
 const categoryColumns = [{ id: 'name', numeric: false, disablePadding: true, label: 'Категории' }]

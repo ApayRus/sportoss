@@ -5,7 +5,7 @@ import GridIcon from '@material-ui/icons/GridOn'
 import PeopleIcon from '@material-ui/icons/People'
 import { Link } from 'react-router-dom'
 
-import Table from '../table/Table'
+import Table from '../layouts/table/Table'
 import Form from './Form'
 
 import { connect } from 'react-redux'

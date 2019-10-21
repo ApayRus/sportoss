@@ -1,20 +1,16 @@
 import React, { useState } from 'react'
-import { Fab, CircularProgress } from '@material-ui/core'
+import { Fab } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'
 
 import Table from '../layouts/table/Table'
 import Form from './Form'
-
-import { connect } from 'react-redux'
-import { firestoreConnect, isLoaded } from 'react-redux-firebase'
-import { compose } from 'redux'
 import { categoryName } from '../../config/functions'
 
 //Table columns or fields of our data model
 const columns = [{ id: 'categoryName', numeric: false, disablePadding: false, label: 'Категория' }]
 
 function Page(props) {
-  const { categories } = props
+  const { categories, userId, userName, firestoreAdd, firestoreUpdate, firestoreDelete } = props
 
   const [isModalOpen, setModalOpen] = useState(false)
   const [modalData, setModalData] = useState({ gender: '', minAge: '', maxAge: '', weight: '' })
@@ -28,30 +24,20 @@ function Page(props) {
   const closeModal = () => {
     setModalOpen(false)
   }
-  let tableData = []
-  if (isLoaded(categories)) {
-    tableData = categories.map(cat => {
-      return { id: cat.id, categoryName: categoryName(cat) }
-    })
-  }
 
-  const { add: firestoreAdd, delete: firestoreDelete, update: firestoreUpdate } = props.firestore
+  const tableData = categories.map(cat => ({ id: cat.id, categoryName: categoryName(cat) }))
 
   return (
     <main>
-      {isLoaded(categories) ? (
-        <Table
-          data={tableData}
-          // handleSelected={this.getSelected}
-          openModal={openModal}
-          firestoreDelete={firestoreDelete}
-          columns={columns}
-          collection='categories'
-          title='Категории'
-        />
-      ) : (
-        <CircularProgress />
-      )}
+      <Table
+        data={tableData}
+        // handleSelected={this.getSelected}
+        openModal={openModal}
+        firestoreDelete={firestoreDelete}
+        columns={columns}
+        collection='categories'
+        title='Категории'
+      />
       <Fab style={fabStyle} onClick={() => openModal(null)} color='primary' aria-label='Add'>
         <AddIcon />
       </Fab>
@@ -62,22 +48,15 @@ function Page(props) {
           closeModal={closeModal}
           firestoreAdd={firestoreAdd}
           firestoreUpdate={firestoreUpdate}
+          userId={userId}
+          userName={userName}
         />
       )}
     </main>
   )
 }
 
-const mapStateToProps = state => {
-  return {
-    categories: state.firestore.ordered.categories
-  }
-}
-
-export default compose(
-  connect(mapStateToProps),
-  firestoreConnect([{ collection: 'categories' }])
-)(Page)
+export default Page
 
 const fabStyle = {
   margin: 0,

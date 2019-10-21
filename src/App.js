@@ -10,7 +10,7 @@ import TournamentParticipantsPage from './components/tournament/ParticipantsPage
 import TournamentGridList from './components/tournament/GridListPageFirebaseContainer'
 import TournamentGridForm from './components/grid/FormFirebaseContainer'
 
-import CategoriesPage from './components/category/Page'
+import CategoriesPage from './components/category/PageFirebaseContainer'
 import ApplicationsPage from './components/application/Page'
 import './index.css'
 

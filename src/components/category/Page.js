@@ -13,10 +13,12 @@ function Page(props) {
   const { categories, userId, userName, firestoreAdd, firestoreUpdate, firestoreDelete } = props
 
   const [isModalOpen, setModalOpen] = useState(false)
-  const [modalData, setModalData] = useState({ gender: '', minAge: '', maxAge: '', weight: '' })
+
+  const defaultFormData = { gender: '', minAge: '', maxAge: '', weight: '' }
+  const [modalData, setModalData] = useState(defaultFormData)
 
   const openModal = id => {
-    const modalData = categories.find(el => el.id === id)
+    const modalData = categories.find(el => el.id === id) || defaultFormData
     setModalData(modalData)
     setModalOpen(true)
   }

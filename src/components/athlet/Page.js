@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { useState } from 'react'
 import { Fab, CircularProgress } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'
 import Table from '../layouts/table/Table'
@@ -6,7 +6,6 @@ import Form from './Form'
 import { connect } from 'react-redux'
 import { firestoreConnect, isLoaded } from 'react-redux-firebase'
 import { compose } from 'redux'
-// import Application from "./ApplicationQuickForm";
 //Table columns or fields of our data model
 const columnsAthlets = [
   { id: 'name', numeric: false, disablePadding: false, label: 'ФИО' },
@@ -14,98 +13,86 @@ const columnsAthlets = [
   { id: 'gender', numeric: false, disablePadding: false, label: 'Пол' }
 ]
 
-export class Page extends Component {
-  state = { isModalOpen: false, data: {}, selected: [] }
+export function Page(props) {
+  const [isModalOpen, setModalOpen] = useState(false)
+  const [modalData, setModalData] = useState({})
+  const [selected, setSelected] = useState(false)
 
-  openModal = id => {
+  const { athlets, userId, userName } = props
+  const { add: firestoreAdd, update: firestoreUpdate, delete: firestoreDelete } = props.firestore
+
+  const openModal = id => {
     const defaultData = { name: '', birthday: '', gender: '' } // if we create new entry
-    const modalData = this.props.athlets.find(el => el.id === id) || defaultData
-    this.setState({ modalData })
-    this.setState({ isModalOpen: true })
+    const modalData = athlets.find(el => el.id === id) || defaultData
+    setModalData(modalData)
+    setModalOpen(true)
   }
 
-  handleSelect = selected => {
-    this.setState({ selected }, () => {
-      console.log('selected', selected)
+  const handleSelect = selected => {
+    setSelected(selected)
+  }
+
+  const closeModal = () => {
+    setModalOpen(false)
+  }
+
+  let tableData = []
+  if (isLoaded(athlets)) {
+    tableData = athlets.map(athlet => {
+      return { ...athlet, name: `${athlet.familyName} ${athlet.firstName} ${athlet.fatherName}` }
     })
   }
 
-  closeModal = () => {
-    this.setState({ isModalOpen: false })
-  }
+  return (
+    <main>
+      {isLoaded(athlets) ? (
+        <div>
+          <Table
+            data={tableData}
+            openModal={openModal}
+            firestoreDelete={firestoreDelete}
+            columns={columnsAthlets}
+            collection='athlets'
+            title='Спортсмены'
+            handleSelect={handleSelect}
+            selected={selected}
+          />
 
-  render() {
-    const { athlets, user } = this.props
-    // const { selected } = this.state;
-    let data = []
-    if (isLoaded(athlets)) {
-      data = athlets.map(athlet => {
-        return { ...athlet, name: `${athlet.familyName} ${athlet.firstName} ${athlet.fatherName}` }
-      })
-    }
-    const {
-      add: firestoreAdd,
-      delete: firestoreDelete,
-      update: firestoreUpdate
-    } = this.props.firestore
-
-    return (
-      <main>
-        {isLoaded(athlets) ? (
-          <div>
-            <Table
-              data={data}
-              openModal={this.openModal}
-              firestoreDelete={firestoreDelete}
-              columns={columnsAthlets}
-              collection='athlets'
-              title='Спортсмены'
-              handleSelect={this.handleSelect}
+          <Fab style={styles.fab} onClick={() => openModal(null)} color='primary' aria-label='Add'>
+            <AddIcon />
+          </Fab>
+          {isModalOpen && (
+            <Form
+              isModalOpen={isModalOpen}
+              data={modalData}
+              closeModal={closeModal}
+              firestoreAdd={firestoreAdd}
+              firestoreUpdate={firestoreUpdate}
+              userId={userId}
+              userName={userName}
             />
-
-            <Fab
-              style={styles.fab}
-              onClick={() => this.openModal(null)}
-              color='primary'
-              aria-label='Add'
-            >
-              <AddIcon />
-            </Fab>
-            {this.state.isModalOpen && (
-              <Form
-                isModalOpen={this.state.isModalOpen}
-                data={this.state.modalData}
-                closeModal={this.closeModal}
-                firestoreAdd={firestoreAdd}
-                firestoreUpdate={firestoreUpdate}
-                user={user}
-              />
-            )}
-          </div>
-        ) : (
-          <CircularProgress />
-        )}
-      </main>
-    )
-  }
+          )}
+        </div>
+      ) : (
+        <CircularProgress />
+      )}
+    </main>
+  )
 }
 
 const mapStateToProps = state => {
-  const userId = state.firebase.auth.uid
-  const userName = state.firebase.profile.username
-
   return {
     athlets: state.firestore.ordered.athlets,
-    applications: state.firestore.ordered.applications,
-    user: { userId, userName }
+    userId: state.firebase.auth.uid,
+    userName: state.firebase.profile.username
   }
 }
 
 export default compose(
   connect(mapStateToProps),
   firestoreConnect(props => {
-    if (props.user.userId)
-      return [{ collection: 'athlets', where: [['createdBy.userId', '==', props.user.userId]] }]
+    if (props.userId)
+      return [{ collection: 'athlets', where: [['createdBy.userId', '==', props.userId]] }]
     else return []
   })
 )(Page)

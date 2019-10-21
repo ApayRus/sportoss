@@ -32,7 +32,13 @@ export function Page(props) {
   const { athlets, userId, userName, firestoreAdd, firestoreUpdate, firestoreDelete } = props
 
   const openModal = id => {
-    const defaultData = { name: '', birthday: '', gender: '' } // if we create new entry
+    const defaultData = {
+      familyName: '',
+      firstName: '',
+      fatherName: '',
+      birthday: '',
+      gender: ''
+    } // if we create new entry
     const modalData = athlets.find(el => el.id === id) || defaultData
     setModalData(modalData)
     setModalOpen(true)

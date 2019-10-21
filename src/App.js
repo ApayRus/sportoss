@@ -7,7 +7,7 @@ import AthletsPage from './components/athlet/Page'
 import TrainersPage from './components/trainer/Page'
 import TournamentsPage from './components/tournament/Page'
 import TournamentParticipantsPage from './components/tournament/ParticipantsPage'
-import TournamentGridList from './components/grid/ListPageFirebaseContainer'
+import TournamentGridList from './components/tournament/ListPageFirebaseContainer'
 import TournamentGridForm from './components/grid/FormFirebaseContainer'
 
 import CategoriesPage from './components/category/Page'

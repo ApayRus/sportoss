@@ -27,25 +27,19 @@ const styles = {
 export function Page(props) {
   const [isModalOpen, setModalOpen] = useState(false)
   const [modalData, setModalData] = useState({})
-  const [selected, setSelected] = useState(false)
-
   const { athlets, userId, userName, firestoreAdd, firestoreUpdate, firestoreDelete } = props
 
   const openModal = id => {
-    const defaultData = {
+    const defaultFormData = {
       familyName: '',
       firstName: '',
       fatherName: '',
       birthday: '',
       gender: ''
     } // if we create new entry
-    const modalData = athlets.find(el => el.id === id) || defaultData
+    const modalData = athlets.find(el => el.id === id) || defaultFormData
     setModalData(modalData)
     setModalOpen(true)
-  }
-
-  const handleSelect = selected => {
-    setSelected(selected)
   }
 
   const closeModal = () => {
@@ -65,8 +59,6 @@ export function Page(props) {
         columns={columnsAthlets}
         collection='athlets'
         title='Спортсмены'
-        handleSelect={handleSelect}
-        selected={selected}
       />
 
       <Fab style={styles.fab} onClick={() => openModal(null)} color='primary' aria-label='Add'>

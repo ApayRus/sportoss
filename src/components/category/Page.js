@@ -9,15 +9,22 @@ import { categoryName } from '../../config/functions'
 //Table columns or fields of our data model
 const columns = [{ id: 'categoryName', numeric: false, disablePadding: false, label: 'Категория' }]
 
+const fabStyle = {
+  margin: 0,
+  top: 'auto',
+  right: 20,
+  bottom: 20,
+  left: 'auto',
+  position: 'fixed'
+}
+
 function Page(props) {
   const { categories, userId, userName, firestoreAdd, firestoreUpdate, firestoreDelete } = props
-
   const [isModalOpen, setModalOpen] = useState(false)
-
-  const defaultFormData = { gender: '', minAge: '', maxAge: '', weight: '' }
-  const [modalData, setModalData] = useState(defaultFormData)
+  const [modalData, setModalData] = useState({})
 
   const openModal = id => {
+    const defaultFormData = { gender: '', minAge: '', maxAge: '', weight: '' }
     const modalData = categories.find(el => el.id === id) || defaultFormData
     setModalData(modalData)
     setModalOpen(true)
@@ -59,12 +66,3 @@ function Page(props) {
 }
 
 export default Page
-
-const fabStyle = {
-  margin: 0,
-  top: 'auto',
-  right: 20,
-  bottom: 20,
-  left: 'auto',
-  position: 'fixed'
-}

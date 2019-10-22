@@ -17,14 +17,7 @@ import {
 function Form(props) {
   const { isModalOpen, data, closeModal, firestoreAdd, firestoreUpdate, userId, userName } = props
 
-  const [formState, setFormState] = useState({
-    id: '',
-    firstName: '',
-    familyName: '',
-    fatherName: '',
-    birthday: '',
-    gender: ''
-  })
+  const [formState, setFormState] = useState({})
 
   useEffect(() => {
     //component will mount

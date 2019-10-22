@@ -31,7 +31,7 @@ function Page(props) {
   const [modalData, setModalData] = useState({})
 
   const openModal = id => {
-    const defaultFormData = { gender: '', minAge: '', maxAge: '', weight: '' }
+    const defaultFormData = { name: '', date: '', dateAge: '', address: '', categories: [] }
     const modalData = tournaments.find(el => el.id === id) || defaultFormData
     setModalData(modalData)
     setModalOpen(true)
@@ -84,6 +84,7 @@ function Page(props) {
           firestoreUpdate={firestoreUpdate}
           userId={userId}
           userName={userName}
+          categories={categories}
         />
       )}
     </main>

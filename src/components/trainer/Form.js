@@ -1,5 +1,4 @@
-//copy paste-ted from '/athlet'
-import React from "react";
+import React, { useState, useEffect } from 'react'
 
 import {
   Button,
@@ -10,119 +9,109 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle
-} from "@material-ui/core";
-// import { Link, Redirect } from "react-router-dom";
-//import { connect } from "react-redux";
+} from '@material-ui/core'
 
-class Form extends React.Component {
-  state = { id: "", firstName: "", familyName: "", fatherName: "" };
+function Form(props) {
+  const { isModalOpen, data, closeModal, firestoreAdd, firestoreUpdate, userId, userName } = props
 
-  componentDidMount() {
-    const { id, firstName, familyName, fatherName } = this.props.data;
-    this.setState({ id, firstName, familyName, fatherName });
+  const [formState, setFormState] = useState({})
+
+  useEffect(() => {
+    //component will mount
+    setFormState(data)
+    return () => {
+      //component will UNmount
+    }
+  }, [])
+
+  const handleChange = field => e => {
+    setFormState({ ...formState, [field]: e.target.value.trim() })
   }
 
-  handleChange = e => {
-    this.setState({
-      [e.target.id]: e.target.value
-    });
-  };
-
-  handleSubmit = () => {
-    const { id, firstName, familyName, fatherName } = this.state;
-    const createdBy = this.props.user;
+  const handleSubmit = () => {
+    const createdBy = { userId, userName }
     //id is empty when we creates new endtry, and filled when we edit an existen one
-    if (!id) {
-      const firestoreAdd = this.props.firestoreAdd(
-        { collection: "trainers" },
-        { firstName, familyName, fatherName, createdBy }
-      );
-      firestoreAdd.catch(error => {
-        console.log("firestoreAdd error", error);
-      });
+    if (!formState.id) {
+      firestoreAdd({ collection: 'trainers' }, { ...formState, createdBy }).catch(error => {
+        console.log('firestoreAdd error', error)
+      })
     } else {
-      const firestoreUpdate = this.props.firestoreUpdate(
-        { collection: "trainers", doc: id },
-        { firstName, familyName, fatherName, createdBy }
-      );
-      firestoreUpdate.catch(error => {
-        console.log("firestoreUpdate error", error);
-      });
+      firestoreUpdate(
+        { collection: 'trainers', doc: formState.id },
+        { ...formState, createdBy }
+      ).catch(error => {
+        console.log('firestoreUpdate error', error)
+      })
     }
 
-    this.handleCancel();
-  };
-
-  handleCancel = () => {
-    this.props.closeModal();
-  };
-
-  render() {
-    const { id, firstName, familyName, fatherName } = this.state;
-    const formTitle = id ? "Редактирование" : "Добавление";
-    return (
-      <div>
-        <Dialog
-          open={this.props.isModalOpen}
-          onClose={this.handleClose}
-          aria-labelledby="form-dialog-title"
-        >
-          <DialogTitle id="form-dialog-title">
-            <Typography color="primary">{formTitle} тренера</Typography>
-          </DialogTitle>
-          <DialogContent>
-            <form onChange={this.handleChange}>
-              {/* FULLNAME */}
-              <TextField
-                id="familyName"
-                label="Фамилия"
-                type="text"
-                value={familyName}
-                margin="normal"
-                autoFocus
-                fullWidth
-                InputLabelProps={{
-                  shrink: true
-                }}
-              />
-              <TextField
-                id="firstName"
-                label="Имя"
-                type="text"
-                value={firstName}
-                margin="normal"
-                fullWidth
-                InputLabelProps={{
-                  shrink: true
-                }}
-              />
-              <TextField
-                id="fatherName"
-                label="Отчество"
-                type="text"
-                value={fatherName}
-                margin="normal"
-                fullWidth
-                InputLabelProps={{
-                  shrink: true
-                }}
-              />
-            </form>
-            <br />
-            <FormHelperText> {/*THIS IS PLACE FOR ERROR MESSAGE */}</FormHelperText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.handleCancel} color="default">
-              Отмена
-            </Button>
-            <Button onClick={this.handleSubmit} color="primary">
-              Сохранить
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </div>
-    );
+    handleCancel()
   }
+
+  const handleCancel = () => {
+    closeModal()
+  }
+
+  const formTitle = formState.id ? 'Редактирование' : 'Добавление'
+  return (
+    <div>
+      <Dialog open={isModalOpen} onClose={closeModal} aria-labelledby='form-dialog-title'>
+        <DialogTitle id='form-dialog-title'>
+          <Typography color='primary'>{formTitle} тренера</Typography>
+        </DialogTitle>
+        <DialogContent>
+          <form>
+            {/* FULLNAME */}
+            <TextField
+              onChange={handleChange('familyName')}
+              label='Фамилия'
+              type='text'
+              value={formState.familyName}
+              margin='normal'
+              autoFocus
+              fullWidth
+              InputLabelProps={{
+                shrink: true
+              }}
+            />
+            <TextField
+              id='firstName'
+              onChange={handleChange('firstName')}
+              label='Имя'
+              type='text'
+              value={formState.firstName}
+              margin='normal'
+              fullWidth
+              InputLabelProps={{
+                shrink: true
+              }}
+            />
+            <TextField
+              id='fatherName'
+              onChange={handleChange('fatherName')}
+              label='Отчество'
+              type='text'
+              value={formState.fatherName}
+              margin='normal'
+              fullWidth
+              InputLabelProps={{
+                shrink: true
+              }}
+            />
+          </form>
+          <br />
+          <FormHelperText> {/*THIS IS PLACE FOR ERROR MESSAGE */}</FormHelperText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancel} color='default'>
+            Отмена
+          </Button>
+          <Button onClick={handleSubmit} color='primary'>
+            Сохранить
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  )
 }
 
-export default Form;
+export default Form

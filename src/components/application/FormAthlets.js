@@ -1,10 +1,13 @@
 import React from 'react'
 import { ageAtDate } from '../../config/functions'
 import { athletName, categoryName, trainerName } from '../../config/functions'
-import Select from './Select'
+import Select from './FormSelect'
 
-//prepare table with Selects :
-//| id | participantName | CategorySelect | TrainerSelect |
+/**
+ * this function prepares AthletsData to display in Application
+ * | id | participantName | CategorySelect | TrainerSelect |
+ * Categories in Select are personal for each participant, filtered by Age & Gender
+ */
 const athletsWithCategoriesTrainers = (
   athlets,
   categories,
@@ -39,7 +42,7 @@ const athletsWithCategoriesTrainers = (
     const CategorySelect = (
       <Select
         value={categoryId}
-        data={categoriesForSelect}
+        options={categoriesForSelect}
         handleChange={handleChangeCategory(athlet.id)}
         nameFunction={categoryName}
       />
@@ -48,7 +51,7 @@ const athletsWithCategoriesTrainers = (
     const TrainerSelect = (
       <Select
         value={trainerId}
-        data={trainers}
+        options={trainers}
         handleChange={handleChangeTrainer(athlet.id)}
         nameFunction={trainerName}
       />

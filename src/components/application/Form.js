@@ -13,7 +13,7 @@ import {
 } from '@material-ui/core'
 import { tournamentName } from '../../config/functions'
 import AthletTable from '../layouts/table/Table'
-import Select from './Select'
+import Select from './FormSelect'
 import athletsWithCategoriesTrainers from './FormAthlets'
 
 const columns = [
@@ -118,7 +118,7 @@ function Form(props) {
   const TournamentSelect = (
     <Select
       value={tournamentValue}
-      data={tournaments}
+      options={tournaments}
       handleChange={handleChangeTournament}
       nameFunction={tournamentName}
     />

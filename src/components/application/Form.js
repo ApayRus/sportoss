@@ -11,10 +11,10 @@ import {
   DialogContent,
   DialogTitle
 } from '@material-ui/core'
-import { ageAtDate } from '../../config/functions'
-import { athletName, categoryName, trainerName, tournamentName } from '../../config/functions'
+import { tournamentName } from '../../config/functions'
 import AthletTable from '../layouts/table/Table'
 import Select from './Select'
+import athletsWithCategoriesTrainers from './FormAthlets'
 
 const columns = [
   { id: 'participant', numeric: false, disablePadding: false, label: 'Участник' },
@@ -124,57 +124,16 @@ function Form(props) {
     />
   )
 
-  //prepare table with Selects :
-  //| id | participantName | CategorySelect | TrainerSelect |
-  const athletsWithCategories = athlets.map(athlet => {
-    let categoryValue = ''
-    let trainerValue = ''
-    if (formState.participants[athlet.id] !== undefined)
-      categoryValue = formState.participants[athlet.id].categoryId
-    if (formState.participants[athlet.id] !== undefined)
-      trainerValue = formState.participants[athlet.id].trainerId
-    let categoriesForSelect = categories
-    // applies 3 filters to allCategories: 1) selected for tournament, 2) gender, 3) age from [minAge, maxAge]
-    const tournament = tournaments.find(elem => elem.id === formState.tournamentId)
-    if (tournament) {
-      const athletAge = ageAtDate(athlet.birthday, tournament.dateAge || tournament.date)
-      categoriesForSelect = categories.filter(cat => {
-        let { minAge, maxAge } = cat
-        if (!minAge) minAge = 0
-        if (!maxAge) maxAge = 100
-        return (
-          tournament.categories.includes(cat.id) &&
-          athlet.gender === cat.gender &&
-          (athletAge >= +minAge && athletAge <= +maxAge)
-        )
-      })
-    }
-
-    const CategorySelect = (
-      <Select
-        value={categoryValue}
-        data={categoriesForSelect}
-        handleChange={handleChangeCategory(athlet.id)}
-        nameFunction={categoryName}
-      />
-    )
-
-    const TrainerSelect = (
-      <Select
-        value={trainerValue}
-        data={trainers}
-        handleChange={handleChangeTrainer(athlet.id)}
-        nameFunction={trainerName}
-      />
-    )
-
-    return {
-      id: athlet.id,
-      participant: athletName(athlet),
-      category: CategorySelect,
-      trainer: TrainerSelect
-    }
-  })
+  const athletsForTable = athletsWithCategoriesTrainers(
+    athlets,
+    categories,
+    tournaments,
+    trainers,
+    formState.tournamentId,
+    formState.participants,
+    handleChangeCategory,
+    handleChangeTrainer
+  )
 
   return (
     <Dialog open={isModalOpen} onClose={closeModal} aria-labelledby='form-dialog-title'>
@@ -189,7 +148,7 @@ function Form(props) {
           </FormControl>
 
           <AthletTable
-            data={athletsWithCategories}
+            data={athletsForTable}
             // openModal={this.openModal}
             columns={columns}
             title='Участники'

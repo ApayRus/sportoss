@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
-import { Select } from '@material-ui/core'
+import { Select, Button } from '@material-ui/core'
 import { participantsInGrid } from './functionsPlayOff'
 import { categoryName, tournamentName } from '../../config/functions'
 import GridPlayOff from './GridPlayOff'
@@ -98,7 +98,7 @@ function Form(props) {
         </div>
       )}
       {gridType === 'allPlayAll' && (
-        <div style={{ display: 'flex' }}>
+        <div>
           <TopPlacesAllPlayAll grid={grid} participants={participants} />
           <GridAllPlayAll grid={grid} participants={participants} />
         </div>
@@ -126,6 +126,19 @@ function Form(props) {
                     participants={participants}
                     groupIndex={1}
                   />
+                </td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td style={{ textAlign: 'right' }}>
+                  <Button
+                    variant='contained'
+                    color='primary'
+                    onClick={() => createGrid({ gridType: 'group' })}
+                  >
+                    Обновить поединки
+                  </Button>
                 </td>
               </tr>
               <tr>

@@ -1,6 +1,6 @@
-import React from "react";
-import PropTypes from "prop-types";
-import SelectMUI from "@material-ui/core/Select";
+import React from 'react'
+import PropTypes from 'prop-types'
+import SelectMUI from '@material-ui/core/Select'
 
 /**
  * Gets array of data and makes from it Select
@@ -12,27 +12,19 @@ import SelectMUI from "@material-ui/core/Select";
  *
  */
 function Select(props) {
-  const { parentId, value, handleChange, nameFunction, data } = props;
+  const { value, handleChange, nameFunction, data } = props
   return (
-    <SelectMUI
-      native
-      inputProps={{
-        "data-id": parentId
-      }}
-      style={{ fontSize: "0.8125rem" }}
-      onChange={handleChange}
-      value={value}
-    >
-      <option value="" />
+    <SelectMUI native style={{ fontSize: '0.8125rem' }} onChange={handleChange} value={value}>
+      <option value='' />
       {data
         ? data.map(elem => (
             <option value={elem.id} key={elem.id}>
               {nameFunction(elem)}
             </option>
           ))
-        : "..."}
+        : '...'}
     </SelectMUI>
-  );
+  )
 }
 
 Select.propTypes = {
@@ -41,6 +33,6 @@ Select.propTypes = {
   handleChange: PropTypes.func,
   nameFunction: PropTypes.func,
   data: PropTypes.array
-};
+}
 
-export default Select;
+export default Select

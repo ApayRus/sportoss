@@ -11,7 +11,7 @@ import TournamentGridList from './components/tournament/GridListPageFirebaseCont
 import TournamentGridForm from './components/grid/FormFirebaseContainer'
 
 import CategoriesPage from './components/category/PageFirebaseContainer'
-import ApplicationsPage from './components/application/Page'
+import ApplicationsPage from './components/application/PageFirebaseContainer'
 import './index.css'
 
 import Main from './components/main'
@@ -29,7 +29,6 @@ function App(props) {
             path='/grid/tournament/:tournamentId/category/:categoryId'
             component={TournamentGridForm}
           />
-
           <Route path='/tournaments/:tournamentId/grids' component={TournamentGridList} />
           <Route
             path='/tournaments/:tournamentId/participants'

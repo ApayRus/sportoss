@@ -1,25 +1,20 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 
 import {
   Button,
-  FormControl,
-  InputLabel,
   Typography,
   FormHelperText,
+  FormControl,
+  InputLabel,
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle,
-  CircularProgress
+  DialogTitle
 } from '@material-ui/core'
-// import { Link, Redirect } from "react-router-dom";
-import { compose } from 'redux'
-import { connect } from 'react-redux'
-import { firestoreConnect, isLoaded } from 'react-redux-firebase'
-import AthletTable from '../layouts/table/Table'
-import { athletName, categoryName, trainerName, tournamentName } from '../../config/functions'
-import Select from './Select'
 import { ageAtDate } from '../../config/functions'
+import { athletName, categoryName, trainerName, tournamentName } from '../../config/functions'
+import AthletTable from '../layouts/table/Table'
+import Select from './Select'
 
 const columns = [
   { id: 'participant', numeric: false, disablePadding: false, label: 'Участник' },
@@ -27,235 +22,196 @@ const columns = [
   { id: 'trainer', numeric: false, disablePadding: false, label: 'Тренер' }
 ]
 
-class Form extends React.Component {
-  state = { id: '', tournamentId: '', participants: {} }
+function Form(props) {
+  const {
+    data,
+    athlets,
+    categories,
+    tournaments,
+    trainers,
+    isModalOpen,
+    closeModal,
+    firestoreAdd,
+    firestoreUpdate,
+    userId,
+    userName
+  } = props
+  // console.log('data', data)
+  const [formState, setFormState] = useState({ tournamentId: '', participants: {} })
+  const [selected, setSelected] = useState([])
 
-  componentDidMount() {
-    const { id, tournamentId, participants } = this.props.data
-    const selected = Object.keys(participants)
-    this.setState({ id, tournamentId, participants, selected })
-  }
+  useEffect(() => {
+    //component will mount
+    // console.log('setFormState(data)', data)
+    setFormState(data)
+    const selected = Object.keys(data.participants)
+    setSelected(selected)
+    return () => {
+      //component will UNmount
+    }
+  }, [])
 
-  handleChange = e => {
-    this.setState({
-      [e.target.dataset.id]: e.target.value
-    })
-  }
-
-  handleChangeCategory = event => {
-    //participants = { athletId: {categoryId, trainerId} }
-    const athletId = event.target.dataset.id
-    const categoryId = event.target.value
-    const participants = { ...this.state.participants }
-    participants[athletId] = { ...participants[athletId], categoryId, athletId }
-    this.setState({ participants })
-  }
-
-  handleChangeTrainer = event => {
-    const athletId = event.target.dataset.id
-    const trainerId = event.target.value
-    const participants = { ...this.state.participants }
-    participants[athletId] = { ...participants[athletId], trainerId, athletId }
-    this.setState({ participants })
-  }
-
-  handleSelect = selected => {
-    this.setState({ selected })
-  }
-
-  handleSubmit = () => {
-    const { id, tournamentId, participants: oldParticipants, selected } = this.state
-
+  const handleSubmit = () => {
     //only selected participants should enter into the app
-    const participants = { ...oldParticipants }
+    const participants = { ...formState.participants }
+    console.log('participants before delete', participants)
     Object.keys(participants).forEach(key => {
       if (!selected.includes(key)) {
         delete participants[key]
       }
     })
+    console.log('participants after delete', participants)
 
-    const createdBy = {
-      userName: this.props.profile.username,
-      userId: this.props.auth.uid
-    }
+    const newFormState = { ...formState, participants }
+    const createdBy = { userId, userName }
+
     //id is empty when we creates new endtry, and filled when we edit an existen one
-    if (!id) {
-      const firestoreAdd = this.props.firestoreAdd(
-        { collection: 'applications' },
-        { tournamentId, participants, createdBy }
-      )
-      firestoreAdd.catch(error => {
-        console.log('firestoreAdd error', error.message)
+    if (!formState.id) {
+      firestoreAdd({ collection: 'applications' }, { ...newFormState, createdBy }).catch(error => {
+        console.log('firestoreAdd error', error)
       })
     } else {
-      const firestoreUpdate = this.props
-        .firestoreUpdate(
-          { collection: 'applications', doc: id },
-          { id, tournamentId, participants, createdBy }
-        )
-        .then(result => console.log('result', result))
-      firestoreUpdate.catch(error => {
-        console.log('firestoreUpdate error', error.message)
+      firestoreUpdate(
+        { collection: 'applications', doc: formState.id },
+        { ...newFormState, createdBy }
+      ).catch(error => {
+        console.log('firestoreUpdate error', error)
       })
     }
 
-    this.handleCancel()
+    handleCancel()
   }
 
-  handleCancel = () => {
-    this.props.closeModal()
+  const handleCancel = () => {
+    closeModal()
   }
 
-  render() {
-    const { id, tournamentId, participants } = this.state
-    const {
-      athlets,
-      tournaments /* : allTournaments */,
-      categories: allCategories,
-      trainers
-    } = this.props
+  const formTitle = formState.id ? 'Редактирование' : 'Добавление'
 
-    let tournamentValue = ''
-    if (tournamentId !== undefined) tournamentValue = tournamentId
+  const handleChangeTournament = e => {
+    setFormState({ ...formState, tournamentId: e.target.value })
+  }
 
-    /*     
-    const tournaments = allTournaments.filter(elem => {
-      const todayDate = new Date().toISOString().split('T')[0]
-      return elem.date >= todayDate
-    }) 
-    */
+  const handleChangeCategory = athletId => event => {
+    //participants = { athletId: {categoryId, trainerId} }
+    // const athletId = event.target.dataset.id
+    const categoryId = event.target.value
+    const participants = { ...formState.participants }
+    participants[athletId] = { ...participants[athletId], categoryId, athletId }
+    setFormState({ ...formState, participants })
+  }
 
-    const TournamentSelect = (
+  const handleChangeTrainer = athletId => event => {
+    // const athletId = event.target.dataset.id
+    const trainerId = event.target.value
+    const participants = { ...formState.participants }
+    participants[athletId] = { ...participants[athletId], trainerId, athletId }
+    setFormState({ ...formState, participants })
+  }
+
+  const handleSelect = selected => {
+    setSelected(selected)
+  }
+
+  const tournamentValue = formState.tournamentId || ''
+
+  const TournamentSelect = (
+    <Select
+      value={tournamentValue}
+      data={tournaments}
+      handleChange={handleChangeTournament}
+      nameFunction={tournamentName}
+    />
+  )
+
+  //prepare table with Selects :
+  //| id | participantName | CategorySelect | TrainerSelect |
+  const athletsWithCategories = athlets.map(athlet => {
+    let categoryValue = ''
+    let trainerValue = ''
+    if (formState.participants[athlet.id] !== undefined)
+      categoryValue = formState.participants[athlet.id].categoryId
+    if (formState.participants[athlet.id] !== undefined)
+      trainerValue = formState.participants[athlet.id].trainerId
+    let categoriesForSelect = categories
+    // applies 3 filters to allCategories: 1) selected for tournament, 2) gender, 3) age from [minAge, maxAge]
+    const tournament = tournaments.find(elem => elem.id === formState.tournamentId)
+    if (tournament) {
+      const athletAge = ageAtDate(athlet.birthday, tournament.dateAge || tournament.date)
+      categoriesForSelect = categories.filter(cat => {
+        let { minAge, maxAge } = cat
+        if (!minAge) minAge = 0
+        if (!maxAge) maxAge = 100
+        return (
+          tournament.categories.includes(cat.id) &&
+          athlet.gender === cat.gender &&
+          (athletAge >= +minAge && athletAge <= +maxAge)
+        )
+      })
+    }
+
+    const CategorySelect = (
       <Select
-        parentId='tournamentId'
-        value={tournamentValue}
-        data={tournaments}
-        handleChange={this.handleChange}
-        nameFunction={tournamentName}
+        value={categoryValue}
+        data={categoriesForSelect}
+        handleChange={handleChangeCategory(athlet.id)}
+        nameFunction={categoryName}
       />
     )
 
-    const formTitle = id ? 'Редактирование' : 'Добавление'
-
-    const tournament = tournaments.filter(elem => elem.id === tournamentId)[0]
-    console.log('tournament', tournament)
-    //prepare table with Selects :
-    //| id | participantName | CategorySelect | TrainerSelect |
-    const athletsWithCategories = athlets.map(athlet => {
-      let categoryValue = ''
-      let trainerValue = ''
-      if (participants[athlet.id] !== undefined) categoryValue = participants[athlet.id].categoryId
-      if (participants[athlet.id] !== undefined) trainerValue = participants[athlet.id].trainerId
-
-      let categories = allCategories
-      // applies 3 filters to allCategories: 1) selected for tournament, 2) gender, 3) age from [minAge, maxAge]
-      if (tournament) {
-        const athletAge = ageAtDate(athlet.birthday, tournament.dateAge || tournament.date)
-        categories = allCategories.filter(cat => {
-          let { minAge, maxAge } = cat
-          if (!minAge) minAge = 0
-          if (!maxAge) maxAge = 100
-          return (
-            tournament.categories.includes(cat.id) &&
-            athlet.gender === cat.gender &&
-            (athletAge >= +minAge && athletAge <= +maxAge)
-          )
-        })
-      }
-      const CategorySelect = (
-        <Select
-          parentId={athlet.id}
-          value={categoryValue}
-          data={categories}
-          handleChange={this.handleChangeCategory}
-          nameFunction={categoryName}
-        />
-      )
-      const TrainerSelect = isLoaded(trainers) ? (
-        <Select
-          parentId={athlet.id}
-          value={trainerValue}
-          data={trainers}
-          handleChange={this.handleChangeTrainer}
-          nameFunction={trainerName}
-        />
-      ) : (
-        <CircularProgress />
-      )
-      return {
-        id: athlet.id,
-        participant: athletName(athlet),
-        category: CategorySelect,
-        trainer: TrainerSelect
-      }
-    })
-
-    return (
-      <Dialog
-        open={this.props.isModalOpen}
-        onClose={this.handleClose}
-        aria-labelledby='form-dialog-title'
-      >
-        <DialogTitle id='form-dialog-title'>
-          <Typography color='primary'>{formTitle} заявки</Typography>
-        </DialogTitle>
-        <DialogContent>
-          <form>
-            <FormControl fullWidth>
-              <InputLabel htmlFor='tournamentId'>Турнир</InputLabel>
-              {TournamentSelect}
-            </FormControl>
-
-            {isLoaded(athlets) ? (
-              <AthletTable
-                data={athletsWithCategories}
-                openModal={this.openModal}
-                columns={columns}
-                title='Участники'
-                selected={this.state.selected}
-                handleSelect={this.handleSelect}
-                hideToolbar={true}
-                disableRowClick
-              />
-            ) : (
-              <CircularProgress />
-            )}
-          </form>
-          <br />
-          <FormHelperText> {/*THIS IS PLACE FOR ERROR MESSAGE */}</FormHelperText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={this.handleCancel} color='primary'>
-            Cancel
-          </Button>
-          <Button onClick={this.handleSubmit} color='primary'>
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
+    const TrainerSelect = (
+      <Select
+        value={trainerValue}
+        data={trainers}
+        handleChange={handleChangeTrainer(athlet.id)}
+        nameFunction={trainerName}
+      />
     )
-  }
-}
 
-const mapStateToProps = state => {
-  return {
-    auth: state.firebase.auth,
-    profile: state.firebase.profile,
-    athlets: state.firestore.ordered.athlets,
-    trainers: state.firestore.ordered.trainers,
-    categories: state.firestore.ordered.categories,
-    tournaments: state.firestore.ordered.tournaments
-  }
-}
-
-export default compose(
-  connect(mapStateToProps),
-  firestoreConnect(props => {
-    if (props.user.userId)
-      return [
-        { collection: 'athlets', where: [['createdBy.userId', '==', props.user.userId]] },
-        { collection: 'trainers' }
-      ]
-    else return []
+    return {
+      id: athlet.id,
+      participant: athletName(athlet),
+      category: CategorySelect,
+      trainer: TrainerSelect
+    }
   })
-)(Form)
+
+  return (
+    <Dialog open={isModalOpen} onClose={closeModal} aria-labelledby='form-dialog-title'>
+      <DialogTitle id='form-dialog-title'>
+        <Typography color='primary'>{formTitle} заявки</Typography>
+      </DialogTitle>
+      <DialogContent>
+        <form>
+          <FormControl fullWidth>
+            <InputLabel htmlFor='tournamentId'>Турнир</InputLabel>
+            {TournamentSelect}
+          </FormControl>
+
+          <AthletTable
+            data={athletsWithCategories}
+            // openModal={this.openModal}
+            columns={columns}
+            title='Участники'
+            hideToolbar={true}
+            disableRowClick
+            selected={selected}
+            handleSelect={handleSelect}
+          />
+        </form>
+        <br />
+        <FormHelperText> {/*THIS IS PLACE FOR ERROR MESSAGE */}</FormHelperText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleCancel} color='primary'>
+          Cancel
+        </Button>
+        <Button onClick={handleSubmit} color='primary'>
+          Save
+        </Button>
+      </DialogActions>
+    </Dialog>
+  )
+}
+
+export default Form

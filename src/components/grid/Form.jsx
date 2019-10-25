@@ -34,7 +34,7 @@ function Form(props) {
   const useStyles = makeStyles(theme => ({
     page: {
       backgroundImage: `url("/wkf-logo.png")`,
-      backgroundPosition: 'top 30px right 30px',
+      backgroundPosition: 'top 0px right 30px',
       backgroundRepeat: 'no-repeat',
       backgroundSize: 100,
       position: 'relative',

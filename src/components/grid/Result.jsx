@@ -1,0 +1,58 @@
+import React from 'react'
+
+import { withStyles } from '@material-ui/core/styles'
+import { Typography as T } from '@material-ui/core'
+import { EmojiEvents as CupIcon } from '@material-ui/icons'
+
+function TopPlaces(props) {
+  const { classes } = props
+  const rows = [
+    { number: 1, color: 'gold' },
+    { number: 2, color: 'silver' },
+    { number: 3, color: '#cd7f32' },
+    { number: 3, color: '#cd7f32' }
+  ]
+  return (
+    <div className={classes.resultBox}>
+      <div textAlign='center'>
+        <T variant='h6' align='center'>
+          Итог
+        </T>
+      </div>
+      <table className={classes.resultTable}>
+        <tbody>
+          {rows.map(row => (
+            <tr>
+              <td className={`${classes.number} ${classes.td}`}>
+                <T variant='body2'>{row.number}</T>
+              </td>
+              <td className={`${classes.td}`}>
+                <CupIcon style={{ color: row.color }} />
+              </td>
+              <td className={`${classes.td} ${classes.athlet}`}></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+const styles = {
+  resultBox: {
+    position: 'absolute',
+    right: 30,
+    bottom: 30,
+    width: 250,
+    border: '1px solid gray',
+    borderRadius: 5
+  },
+  resultTable: {
+    borderCollapse: 'collapse'
+  },
+  number: { width: 10, padding: 5, color: 'slategray' },
+  td: { borderBottom: '1px solid gray' },
+  athlet: { width: '100%' }
+}
+
+export default withStyles(styles)(TopPlaces)

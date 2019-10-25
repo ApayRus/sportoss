@@ -1,15 +1,17 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, Fragment } from 'react'
 import { connect } from 'react-redux'
-import { Select, Button } from '@material-ui/core'
+import { Select, Button, Typography, Box } from '@material-ui/core'
 import { participantsInGrid } from './functionsPlayOff'
 import { categoryName, tournamentName } from '../../config/functions'
 import GridPlayOff from './GridPlayOff'
 import GridAllPlayAll from './GridAllPlayAll'
-import TopPlaces from './TopPlaces'
 import { setGridParameter, createGrid, createGroups, clearGrid } from '../../store/gridActions'
+// import TopPlaces from './TopPlaces'
+// import TopPlacesAllPlayAll from './TopPlacesAllPlayAll'
 import Participants from './Participants'
-import TopPlacesAllPlayAll from './TopPlacesAllPlayAll'
 import GroupTable from './GroupTable'
+import Result from './Result'
+import { useMediaQuery, makeStyles } from '@material-ui/core'
 
 function Form(props) {
   const {
@@ -26,6 +28,21 @@ function Form(props) {
     createGroups,
     groupParticipants
   } = props
+
+  const matchesPrint = useMediaQuery('print')
+
+  const useStyles = makeStyles(theme => ({
+    page: {
+      backgroundImage: `url("/wkf-logo.png")`,
+      backgroundPosition: 'top 30px right 30px',
+      backgroundRepeat: 'no-repeat',
+      backgroundSize: 100,
+      position: 'relative',
+      margin: 20
+    }
+  }))
+
+  const classes = useStyles()
 
   // Set with participants we want to hide in list
   let participantsToHide = new Set()
@@ -71,22 +88,25 @@ function Form(props) {
   }, [])
 
   return (
-    <div>
-      <h1>Форма категории</h1>
-      <h2>{categoryName(category)}</h2>
-      <h3>{tournamentName(tournament)}</h3>
-      <Select
-        onChange={handleChange}
-        native
-        inputProps={{
-          id: 'gridType'
-        }}
-      >
-        <option value=''></option>
-        <option value='playOff'>Олимпийская</option>
-        <option value='allPlayAll'>Круговая</option>
-        <option value='group'>Групповая</option>
-      </Select>
+    <div className={classes.page} style={matchesPrint ? { width: '297mm', height: '210mm' } : {}}>
+      <div style={{ textAlign: 'center' }}>
+        <Typography variant='h5'>{`${tournamentName(tournament)}`}</Typography>
+        <Typography variant='h6'>{categoryName(category)}</Typography>
+      </div>
+      <Box displayPrint='none'>
+        <Select
+          onChange={handleChange}
+          native
+          inputProps={{
+            id: 'gridType'
+          }}
+        >
+          <option value=''></option>
+          <option value='playOff'>Олимпийская</option>
+          <option value='allPlayAll'>Круговая</option>
+          <option value='group'>Групповая</option>
+        </Select>
+      </Box>
 
       {/* columns: participants | level-0 | level-1 | ... */}
       {!gridType && <Participants {...participantsParams} />}
@@ -94,14 +114,16 @@ function Form(props) {
         <div style={{ display: 'flex' }}>
           <Participants {...participantsParams} />
           <GridPlayOff />
-          <TopPlaces grid={grid} participants={participants} />
+          {/* <TopPlaces grid={grid} participants={participants} /> */}
+          <Result />
         </div>
       )}
       {gridType === 'allPlayAll' && (
-        <div>
-          <TopPlacesAllPlayAll grid={grid} participants={participants} />
+        <Fragment>
+          {/* <TopPlacesAllPlayAll grid={grid} participants={participants} /> */}
           <GridAllPlayAll grid={grid} participants={participants} />
-        </div>
+          <Result />
+        </Fragment>
       )}
       {gridType === 'group' && (
         <div>
@@ -132,13 +154,15 @@ function Form(props) {
                 <td></td>
                 <td></td>
                 <td style={{ textAlign: 'right' }}>
-                  <Button
-                    variant='contained'
-                    color='primary'
-                    onClick={() => createGrid({ gridType: 'group' })}
-                  >
-                    Обновить поединки
-                  </Button>
+                  <Box displayPrint='none'>
+                    <Button
+                      variant='contained'
+                      color='primary'
+                      onClick={() => createGrid({ gridType: 'group' })}
+                    >
+                      Обновить поединки
+                    </Button>
+                  </Box>
                 </td>
               </tr>
               <tr>
@@ -152,6 +176,7 @@ function Form(props) {
               </tr>
             </tbody>
           </table>
+          <Result />
         </div>
       )}
     </div>

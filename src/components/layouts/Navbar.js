@@ -1,6 +1,6 @@
 import React from 'react'
 import { withStyles } from '@material-ui/core/styles'
-import { AppBar, Toolbar, Typography, Button, Hidden } from '@material-ui/core'
+import { AppBar, Toolbar, Typography, Button, Hidden, Box } from '@material-ui/core'
 
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
@@ -32,33 +32,34 @@ const Navbar = props => {
   )
   return (
     <div className={classes.root}>
-      <AppBar position='static'>
-        <Toolbar>
-          <Hidden smUp>
-            <Drawer authLinks={links} />
-          </Hidden>
-
-          <Hidden xsDown>
-            <Typography variant='h6' color='inherit' className={classes.grow} />
-            <Button component={Link} to='/athlets' color='inherit'>
-              Спортсмены
-            </Button>
-            <Button component={Link} to='/trainers' color='inherit'>
-              Тренеры
-            </Button>
-            <Button component={Link} to='/tournaments' color='inherit'>
-              Турниры
-            </Button>
-            <Button component={Link} to='/categories' color='inherit'>
-              Категории
-            </Button>
-            <Button component={Link} to='/applications' color='inherit'>
-              Заявки
-            </Button>
-            {links}
-          </Hidden>
-        </Toolbar>
-      </AppBar>
+      <Box displayPrint='none'>
+        <AppBar position='static'>
+          <Toolbar>
+            <Hidden smUp>
+              <Drawer authLinks={links} />
+            </Hidden>
+            <Hidden xsDown>
+              <Typography variant='h6' color='inherit' className={classes.grow} />
+              <Button component={Link} to='/athlets' color='inherit'>
+                Спортсмены
+              </Button>
+              <Button component={Link} to='/trainers' color='inherit'>
+                Тренеры
+              </Button>
+              <Button component={Link} to='/tournaments' color='inherit'>
+                Турниры
+              </Button>
+              <Button component={Link} to='/categories' color='inherit'>
+                Категории
+              </Button>
+              <Button component={Link} to='/applications' color='inherit'>
+                Заявки
+              </Button>
+              {links}
+            </Hidden>
+          </Toolbar>
+        </AppBar>
+      </Box>
     </div>
   )
 }

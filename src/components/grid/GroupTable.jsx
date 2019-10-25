@@ -1,5 +1,6 @@
 import React from 'react'
 import { withStyles } from '@material-ui/core/styles'
+import { Box } from '@material-ui/core'
 import { find } from 'lodash'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -33,48 +34,50 @@ function GroupTable(props) {
 
   return (
     <div className={classes.levelBox}>
-      <table className={classes.groupTable}>
-        <thead>
-          <tr>
-            <th>Группа - {groupIndex + 1}</th>
-            <th title='Побед'>П</th>
-          </tr>
-        </thead>
-        <tbody>
-          {groupParticipants[groupIndex].map((id, participantIndex) => {
-            const relatedParticipant = find(participants, { athlet: { id } })
-            let participantName, participantTrainerName, trainerColor
-            // console.log('relatedParticipant', relatedParticipant)
-            if (relatedParticipant) {
-              participantName = athletName(relatedParticipant.athlet)
-              participantTrainerName = trainerName(relatedParticipant.trainer)
-              trainerColor = relatedParticipant.trainer.color
-            } else {
-              participantName = ''
-              participantTrainerName = ''
-              trainerColor = 'white'
-            }
-            return (
-              <tr key={`participant-${participantIndex}`}>
-                <td>
-                  <div title='trainer name' style={styles0.coloredTrainer(trainerColor)}></div>
-                  <div style={{ display: 'inline-block' }}>
-                    <input
-                      type='text'
-                      placeholder='участник'
-                      onChange={onParticipantAddedToGroup(participantIndex)}
-                      className={classes.athletInput}
-                      value={participantName}
-                    />
-                    <div className={classes.trainer}>{participantTrainerName}</div>
-                  </div>
-                </td>
-                <td className={classes.number}>0</td>
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
+      <Box displayPrint='none'>
+        <table className={classes.groupTable}>
+          <thead>
+            <tr>
+              <th>Группа - {groupIndex + 1}</th>
+              <th title='Побед'>П</th>
+            </tr>
+          </thead>
+          <tbody>
+            {groupParticipants[groupIndex].map((id, participantIndex) => {
+              const relatedParticipant = find(participants, { athlet: { id } })
+              let participantName, participantTrainerName, trainerColor
+              // console.log('relatedParticipant', relatedParticipant)
+              if (relatedParticipant) {
+                participantName = athletName(relatedParticipant.athlet)
+                participantTrainerName = trainerName(relatedParticipant.trainer)
+                trainerColor = relatedParticipant.trainer.color
+              } else {
+                participantName = ''
+                participantTrainerName = ''
+                trainerColor = 'white'
+              }
+              return (
+                <tr key={`participant-${participantIndex}`}>
+                  <td>
+                    <div title='trainer name' style={styles0.coloredTrainer(trainerColor)}></div>
+                    <div style={{ display: 'inline-block' }}>
+                      <input
+                        type='text'
+                        placeholder='участник'
+                        onChange={onParticipantAddedToGroup(participantIndex)}
+                        className={classes.athletInput}
+                        value={participantName}
+                      />
+                      <div className={classes.trainer}>{participantTrainerName}</div>
+                    </div>
+                  </td>
+                  <td className={classes.number}>0</td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </Box>
     </div>
   )
 }

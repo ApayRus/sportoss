@@ -1,6 +1,6 @@
 import React from 'react'
 import { athletName, trainerName } from '../../config/functions'
-import { Typography } from '@material-ui/core'
+import { Typography, Box } from '@material-ui/core'
 
 const styles = {
   coloredTrainer: color => {
@@ -25,25 +25,27 @@ function Participants(props) {
 
   return (
     <div style={styles.flexColumn}>
-      {participants.map(elem => {
-        return (
-          <div
-            key={`participant-${elem.athlet.id}`}
-            style={{
-              whiteSpace: 'nowrap',
-              visibility: participantsToHide.has(elem.athlet.id) ? 'hidden' : 'visible'
-            }}
-          >
+      <Box displayPrint='none'>
+        {participants.map(elem => {
+          return (
             <div
-              title={trainerName(elem.trainer)}
-              style={styles.coloredTrainer(elem.trainer.color)}
-            ></div>
-            <Typography variant='body1' style={{ display: 'inline-block' }}>
-              {athletName(elem.athlet)}
-            </Typography>
-          </div>
-        )
-      })}
+              key={`participant-${elem.athlet.id}`}
+              style={{
+                whiteSpace: 'nowrap',
+                visibility: participantsToHide.has(elem.athlet.id) ? 'hidden' : 'visible'
+              }}
+            >
+              <div
+                title={trainerName(elem.trainer)}
+                style={styles.coloredTrainer(elem.trainer.color)}
+              ></div>
+              <Typography variant='body1' style={{ display: 'inline-block' }}>
+                {athletName(elem.athlet)}
+              </Typography>
+            </div>
+          )
+        })}
+      </Box>
     </div>
   )
 }

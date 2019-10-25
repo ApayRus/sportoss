@@ -33,7 +33,9 @@ function Grid(props) {
     <div /* style={{ display: 'flex' }} */>
       {Object.keys(gridByLevels).map(key => (
         <div key={key} /* className={classes.levelBox} */>
-          <Typography variant='h6'>Тур {key}</Typography>
+          <Typography variant='subtitle2' color='textSecondary'>
+            Тур {key}
+          </Typography>
           {gridByLevels[key].map(duel => (
             <Duel duelData={duel} participants={participants} key={duel.id} {...eventHandlers} />
           ))}

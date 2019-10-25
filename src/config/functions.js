@@ -23,8 +23,9 @@ export function categoryName(category) {
 
 export function tournamentName(tournament) {
   if (tournament) {
-    const { name, date, address } = tournament
-    return `${name}, ${date}, ${address}`
+    const { name, date /* address */ } = tournament
+    const localDate = new Date(date).toLocaleDateString('ru')
+    return `${name}, ${localDate}`
   } else return ''
 }
 

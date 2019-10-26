@@ -47,6 +47,8 @@ function Form(props) {
   //in playOff-grid we want to hide participants who alredy in greed
   if (gridType === 'playOff') {
     participantsToHide = participantsInGrid(grid)
+    participantsToHide.delete(undefined)
+    participantsToHide.delete('')
   }
   //in group-grid - hide who alredy in group
   if (gridType === 'group') {
@@ -85,6 +87,12 @@ function Form(props) {
     }
   }, [])
 
+  console.log(
+    'participantsToHide.size, participants.length',
+    participantsToHide.size,
+    participants.length
+  )
+  console.log('participantsToHide', participantsToHide)
   return (
     <div className={classes.page}>
       <div style={{ textAlign: 'center' }}>
@@ -110,7 +118,9 @@ function Form(props) {
       {!gridType && <Participants {...participantsParams} />}
       {gridType === 'playOff' && (
         <div style={{ display: 'flex' }}>
-          <Participants {...participantsParams} />
+          {participantsToHide.size !== participants.length && (
+            <Participants {...participantsParams} />
+          )}
           <GridPlayOff />
           {/* <TopPlaces grid={grid} participants={participants} /> */}
           <Result />

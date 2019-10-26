@@ -9,7 +9,8 @@ const styles = {
     /* width: 200, */
     border: '1px solid gray',
     borderRadius: 5,
-    marginBottom: 5
+    marginBottom: 5,
+    borderSpacing: 0
   },
   duelNumber: {
     width: 30,
@@ -20,13 +21,15 @@ const styles = {
   duelLabel: {
     fontSize: 9
   },
-  athletRed: { width: 140, height: 33, borderBottom: '1px solid gray' },
-  athletBlue: { width: 140, height: 33 },
+  athletRed: { width: 140, height: 33, padding: '0 5px', borderBottom: '1px solid gray' },
+  athletBlue: { width: 140, height: 33, padding: '0 5px' },
   athletInput: { width: '100%', border: 'none' },
   winnerRed: { height: 33, borderBottom: '1px solid gray' },
   winnerBlue: {
-    /* height: 33  */
+    height: 33
   },
+  checkboxRed: { width: 7, height: 7, marginTop: 2, color: 'red' },
+  checkboxBlue: { width: 7, height: 7, marginTop: 2, color: 'blue' },
   trainer: { color: 'gray', fontSize: 10 }
 }
 
@@ -75,7 +78,7 @@ function DuelSimple(props) {
               <Checkbox
                 inputProps={{ 'data-winner': fighterRed }}
                 onChange={onWinnerChange(id)}
-                style={{ width: 7, height: 7, color: 'red' }}
+                className={classes.checkboxRed}
                 checked={winner === fighterRed && winner ? true : false}
               />
             </td>
@@ -98,7 +101,7 @@ function DuelSimple(props) {
               <Checkbox
                 inputProps={{ 'data-winner': fighterBlue }}
                 onChange={onWinnerChange(id)}
-                style={{ width: 7, height: 7, color: 'blue' }}
+                className={classes.checkboxBlue}
                 checked={winner === fighterBlue && winner ? true : false}
               />
             </td>

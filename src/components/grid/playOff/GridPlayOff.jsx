@@ -1,11 +1,11 @@
 import React from 'react'
-import Duel from './Duel'
+import Duel from '../Duel'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { find } from 'lodash'
 import { gridByLevels as gridByLevelsFunction } from './functionsPlayOff'
 
-import { updateFighter, setWinner } from '../../store/gridActions'
+import { updateFighter, setWinner } from '../../../store/gridActions'
 import { withStyles } from '@material-ui/core/styles'
 
 function Grid(props) {

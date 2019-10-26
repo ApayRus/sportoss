@@ -6,7 +6,7 @@ import { compose } from 'redux'
 import { CircularProgress } from '@material-ui/core'
 import { participantsGroupedByCategories } from '../../dataFunctions'
 import { map, sortBy, find } from 'lodash'
-import { trainerColors } from './functionsPlayOff'
+import { trainerColors } from '../../config/functions'
 import { setGridParameter } from '../../store/gridActions'
 import Form from './Form'
 

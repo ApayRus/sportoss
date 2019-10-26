@@ -3,7 +3,7 @@ import Duel from './Duel'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { find } from 'lodash'
-import { gridByLevels as gridByLevelsFunction } from './functionsPlayOff'
+import { gridByLevels as gridByLevelsFunction } from './playOff/functionsPlayOff'
 import { Typography } from '@material-ui/core'
 
 import { updateFighter, setWinner } from '../../store/gridActions'

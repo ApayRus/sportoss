@@ -1,4 +1,4 @@
-import { generateGrid } from '../components/grid/functionsPlayOff'
+import { generateGrid } from '../components/grid/playOff/functionsPlayOff'
 import { generateGridAllPlayAll } from '../components/grid/functionsAllPlayAll'
 
 const initState = {

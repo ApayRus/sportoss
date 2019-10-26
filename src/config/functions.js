@@ -1,3 +1,5 @@
+import groupBy from 'lodash/groupBy'
+
 export function athletName(athlet) {
   if (athlet) {
     const { familyName, firstName } = athlet
@@ -53,4 +55,36 @@ export function ageAtDate(birthday, date) {
     if (dateDay <= birthDay) answer--
     return answer
   }
+}
+
+/**
+ * returns table trainerId-color
+ * @param {object[]} participants
+ * @example
+ * returns {trainerId1: "aqua", trainerId2: "teal" }
+ */
+export function trainerColors(participants) {
+  const trainerColorsMap = {}
+  const participantsGroupedByTrainer = groupBy(participants, 'trainerId')
+  const trainerIds = Object.keys(participantsGroupedByTrainer)
+  const commonHtmlColors = [
+    'teal',
+    'aqua',
+    'green',
+    'lime',
+    'olive',
+    'yellow',
+    'maroon',
+    'black',
+    'gray',
+    'silver',
+    'purple',
+    'fuchsia',
+    'navy'
+    /* 'white', 'red', 'blue'*/
+  ]
+  trainerIds.forEach((trainerId, index) => {
+    trainerColorsMap[trainerId] = commonHtmlColors[index]
+  })
+  return trainerColorsMap
 }

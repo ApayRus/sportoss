@@ -4,7 +4,7 @@ import { withStyles } from '@material-ui/core/styles'
 import { Typography as T } from '@material-ui/core'
 import { EmojiEvents as CupIcon } from '@material-ui/icons'
 import { find } from 'lodash'
-import { athletName } from '../../config/functions'
+import { athletName } from '../../../config/functions'
 
 function TopPlaces(props) {
   const { grid, participants, classes } = props

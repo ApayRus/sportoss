@@ -1,6 +1,6 @@
 import React from 'react'
 import { filter, sortBy } from 'lodash'
-import { athletName } from '../../config/functions'
+import { athletName } from '../../../config/functions'
 
 import { withStyles } from '@material-ui/core/styles'
 

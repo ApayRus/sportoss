@@ -1,5 +1,5 @@
 import { generateGrid } from '../components/grid/playOff/functionsPlayOff'
-import { generateGridAllPlayAll } from '../components/grid/functionsAllPlayAll'
+import { generateGridAllPlayAll } from '../components/grid/playAlltoAll/functionsAllPlayAll'
 
 const initState = {
   tournament: '',

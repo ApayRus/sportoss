@@ -10,7 +10,7 @@ import { updateFighter, setWinner } from '../../../store/gridActions'
 import { withStyles } from '@material-ui/core/styles'
 
 function Grid(props) {
-  const { grid, classes, participants, updateFighter, setWinner } = props
+  const { grid, participants, updateFighter, setWinner } = props
 
   const onFighterChange = duelId => e => {
     const { color: fighterColor } = e.target.dataset

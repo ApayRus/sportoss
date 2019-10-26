@@ -11,7 +11,7 @@ import { setGridParameter, createGrid, createGroups, clearGrid } from '../../sto
 import Participants from './Participants'
 import GroupTable from './GroupTable'
 import Result from './Result'
-import { useMediaQuery, makeStyles } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core'
 
 function Form(props) {
   const {
@@ -28,8 +28,6 @@ function Form(props) {
     createGroups,
     groupParticipants
   } = props
-
-  const matchesPrint = useMediaQuery('print')
 
   const useStyles = makeStyles(theme => ({
     page: {
@@ -88,7 +86,7 @@ function Form(props) {
   }, [])
 
   return (
-    <div className={classes.page} style={matchesPrint ? { width: '297mm', height: '210mm' } : {}}>
+    <div className={classes.page}>
       <div style={{ textAlign: 'center' }}>
         <Typography variant='h5'>{`${tournamentName(tournament)}`}</Typography>
         <Typography variant='h6'>{categoryName(category)}</Typography>

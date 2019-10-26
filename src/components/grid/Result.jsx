@@ -40,9 +40,9 @@ function TopPlaces(props) {
 
 const styles = {
   resultBox: {
-    position: 'absolute',
-    right: 30,
-    bottom: 30,
+    position: 'fixed',
+    right: 10,
+    bottom: 10,
     width: 250,
     border: '1px solid gray',
     borderRadius: 5

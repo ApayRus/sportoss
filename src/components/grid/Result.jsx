@@ -14,15 +14,13 @@ function TopPlaces(props) {
   ]
   return (
     <div className={classes.resultBox}>
-      <div textAlign='center'>
-        <T variant='h6' align='center'>
-          Итог
-        </T>
-      </div>
+      <T variant='h6' align='center'>
+        Итог
+      </T>
       <table className={classes.resultTable}>
         <tbody>
-          {rows.map(row => (
-            <tr>
+          {rows.map((row, index) => (
+            <tr key={`resultRow-${index}`}>
               <td className={`${classes.number} ${classes.td}`}>
                 <T variant='body2'>{row.number}</T>
               </td>

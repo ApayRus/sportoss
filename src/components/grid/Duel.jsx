@@ -73,16 +73,16 @@ function DuelSimple(props) {
             />
             <div className={classes.trainer}>{trainerRedName}</div>
           </td>
-          <Box displayPrint='none'>
-            <td className={classes.winnerRed}>
+          <td className={classes.winnerRed}>
+            <Box displayPrint='none'>
               <Checkbox
                 inputProps={{ 'data-winner': fighterRed }}
                 onChange={onWinnerChange(id)}
                 className={classes.checkboxRed}
                 checked={winner === fighterRed && winner ? true : false}
               />
-            </td>
-          </Box>
+            </Box>
+          </td>
         </tr>
         <tr>
           <td className={classes.athletBlue}>
@@ -96,16 +96,16 @@ function DuelSimple(props) {
             />
             <div className={classes.trainer}>{trainerBlueName}</div>
           </td>
-          <Box displayPrint='none'>
-            <td className={classes.winnerBlue}>
+          <td className={classes.winnerBlue}>
+            <Box displayPrint='none'>
               <Checkbox
                 inputProps={{ 'data-winner': fighterBlue }}
                 onChange={onWinnerChange(id)}
                 className={classes.checkboxBlue}
                 checked={winner === fighterBlue && winner ? true : false}
               />
-            </td>
-          </Box>
+            </Box>
+          </td>
         </tr>
       </tbody>
     </table>

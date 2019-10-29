@@ -1,9 +1,10 @@
 import React, { useEffect, Fragment } from 'react'
 import { connect } from 'react-redux'
 import { Select, Button, Typography, Box } from '@material-ui/core'
-import { participantsInGrid } from './playOff/functionsPlayOff'
+import { participantsInGrid, gridInfo } from './playOff/functionsPlayOff'
 import { categoryName, tournamentName } from '../../config/functions'
 import GridPlayOff from './playOff/GridPlayOff'
+import ConsolationDuels from './playOff/ConsolationDuels'
 import GridAllPlayAll from './playAlltoAll/GridAllPlayAll'
 import { setGridParameter, createGrid, createGroups, clearGrid } from '../../store/gridActions'
 // import TopPlaces from './TopPlaces'
@@ -123,6 +124,8 @@ function Form(props) {
           )}
           <GridPlayOff />
           {/* <TopPlaces grid={grid} participants={participants} /> */}
+          {/* gridInfo = {tourCount, mainDuelCount} */}
+          <ConsolationDuels {...gridInfo(grid)} />
           <Result />
         </div>
       )}

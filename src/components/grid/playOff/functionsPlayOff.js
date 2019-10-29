@@ -82,6 +82,12 @@ export function gridByLevels(grid) {
   return groupBy(gridArray, 'level')
 }
 
+export function gridInfo(grid) {
+  const tourCount = Object.keys(gridByLevels(grid)).length
+  const mainDuelCount = Object.keys(grid).length
+  return { tourCount, mainDuelCount }
+}
+
 export function participantsInGrid(grid) {
   const alradyInGridSet = new Set()
   Object.keys(grid).forEach(duelId => {

@@ -12,7 +12,7 @@ import { setGridParameter, createGrid, createGroups, clearGrid } from '../../sto
 import Participants from './Participants'
 import GroupTable from './GroupTable'
 import Result from './Result'
-import { makeStyles } from '@material-ui/core'
+import { makeStyles, useMediaQuery } from '@material-ui/core'
 
 function Form(props) {
   const {
@@ -29,6 +29,8 @@ function Form(props) {
     createGroups,
     groupParticipants
   } = props
+
+  const isForPrintView = useMediaQuery('print')
 
   const useStyles = makeStyles(theme => ({
     page: {
@@ -118,14 +120,16 @@ function Form(props) {
       {/* columns: participants | level-0 | level-1 | ... */}
       {!gridType && <Participants {...participantsParams} />}
       {gridType === 'playOff' && (
-        <div style={{ display: 'flex' }}>
-          {participantsToHide.size !== participants.length && (
-            <Participants {...participantsParams} />
-          )}
-          <GridPlayOff />
-          {/* <TopPlaces grid={grid} participants={participants} /> */}
-          {/* gridInfo = {tourCount, mainDuelCount} */}
-          <ConsolationDuels {...gridInfo(grid)} />
+        <div>
+          <div style={{ display: 'flex' }}>
+            {participantsToHide.size !== participants.length && (
+              <Participants {...participantsParams} />
+            )}
+            <GridPlayOff />
+            {/* <TopPlaces grid={grid} participants={participants} /> */}
+            {/* gridInfo = {tourCount, mainDuelCount} */}
+          </div>
+          <ConsolationDuels {...gridInfo(grid)} position={isForPrintView ? 'fixed' : 'static'} />
           <Result />
         </div>
       )}

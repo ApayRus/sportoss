@@ -5,8 +5,8 @@ import { Typography as T } from '@material-ui/core'
 const styles = {
   consolationBlock: position => ({
     position,
-    bottom: 10,
-    right: 300
+    bottom: 3,
+    right: 350
   })
 }
 /**
@@ -17,7 +17,7 @@ const styles = {
  * @param {number} props.tourCount
  */
 function ConsolationDuels(props) {
-  const { tourCount, mainDuelCount } = props
+  const { tourCount, mainDuelCount, position } = props
   const consolationTourCount = tourCount - 2 //excepted first tour and final
   const columnsRange = new Array(consolationTourCount).fill(0)
   const duelsRow = rowIndex =>
@@ -32,10 +32,12 @@ function ConsolationDuels(props) {
     ))
 
   return (
-    <div style={styles.consolationBlock('static')}>
-      <T variant='subtitle2' align='center'>
-        Утешительные поединки
-      </T>
+    <div style={styles.consolationBlock(position)}>
+      <div>
+        <T variant='subtitle2' align='center'>
+          Утешительные поединки
+        </T>
+      </div>
       <table>
         <tbody>
           <tr>{duelsRow(1)}</tr>

@@ -6,7 +6,8 @@ const styles = {
   consolationBlock: position => ({
     position,
     bottom: 3,
-    right: 350
+    right: 350,
+    display: 'inline-block'
   })
 }
 /**

@@ -51,6 +51,9 @@ export function generateGrid(N) {
   const duelCountTotal = sum(duelCountByTour)
   let grid = {}
 
+  // const fakeDuelsInZeroTour = {}
+
+  console.log('duelCountByTour', duelCountByTour)
   duelCountByTour.forEach((tourDuelCont, tourIndex) => {
     const correction = correctionForTour[tourIndex]
     const tourBeginDuelIndex = correction + 1
@@ -64,7 +67,7 @@ export function generateGrid(N) {
   })
 
   //final
-  grid[duelCountTotal - 1]['next'] = 0
+  grid[duelCountTotal]['next'] = 0
 
   return grid
 }
@@ -80,6 +83,27 @@ export function gridByLevels(grid) {
   })
 
   return groupBy(gridArray, 'level')
+}
+
+export function gridByLevelsWithFakeDuelsInZeroTour(grid) {
+  const gridByLevels0 = { ...gridByLevels(grid) }
+  let zeroTour = [...gridByLevels0[0]]
+  if (zeroTour.length) {
+    const levelCount = Object.keys(gridByLevels0).length
+    const duelCountAll = Math.pow(2, levelCount - 1) // real + fake
+    const duelCountReal = zeroTour.length
+    const fakeDuels = []
+    for (let id = duelCountReal + 1; id <= duelCountAll; id++) {
+      const fakeId = `${id}#`
+      fakeDuels.push({ id: fakeId, status: 'fake', level: 0 })
+    }
+    zeroTour = [...zeroTour, ...fakeDuels]
+    // console.log('new grid with fake duels', { ...gridByLevels0, 0: { ...zeroTour } })
+    const gridWithFakeDuels = { ...gridByLevels0, 0: [...zeroTour] }
+    return gridWithFakeDuels
+  } else {
+    return gridByLevels0
+  }
 }
 
 export function gridInfo(grid) {

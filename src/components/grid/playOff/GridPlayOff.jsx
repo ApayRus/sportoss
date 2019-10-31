@@ -3,7 +3,10 @@ import Duel from '../Duel'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { find } from 'lodash'
-import { gridByLevels as gridByLevelsFunction } from './functionsPlayOff'
+import {
+  gridByLevels as gridByLevelsFunction,
+  gridByLevelsWithFakeDuelsInZeroTour
+} from './functionsPlayOff'
 
 import { updateFighter, setWinner } from '../../../store/gridActions'
 import { withStyles } from '@material-ui/core/styles'
@@ -56,7 +59,13 @@ function Grid(props) {
 
   const eventHandlers = { onWinnerChange, onFighterChange }
 
-  const gridByLevels = gridByLevelsFunction(grid)
+  const gridByLevels = gridByLevelsWithFakeDuelsInZeroTour(grid)
+  // console.log('gridByLevelsFunction(grid)', gridByLevels)
+  console.log(
+    'gridByLevelsWithFakeDuelsInZeroTour(grid)',
+    gridByLevelsWithFakeDuelsInZeroTour(grid)
+  )
+  //gridByLevelsWithFakeDuelsInZeroTour(grid)
   return (
     <div style={{ display: 'flex' }}>
       {Object.keys(gridByLevels).map(key => (

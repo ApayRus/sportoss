@@ -31,6 +31,18 @@ function Form(props) {
   } = props
 
   const isForPrintView = useMediaQuery('print')
+  const landscape = useMediaQuery('print and (orientation: landscape)')
+  const portrait = useMediaQuery('print and (orientation: portrait)')
+
+  console.log('landscape', landscape)
+  console.log('portrait', portrait)
+
+  const printOrientation = () => {
+    if (landscape) return 'landscape'
+    if (portrait) return 'portrait'
+    return ''
+  }
+  console.log('printOrientation', printOrientation())
 
   const useStyles = makeStyles(theme => ({
     page: {

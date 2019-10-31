@@ -5,12 +5,13 @@ import { find } from 'lodash'
 import { athletName, trainerName } from '../../config/functions'
 
 const styles = {
-  duel: {
-    /* width: 200, */
+  duelTable: {
+    /* width: '5cm', */
     border: '1px solid gray',
     borderRadius: 5,
     marginBottom: 5,
-    borderSpacing: 0
+    borderSpacing: 0,
+    tableLayout: 'fixed'
   },
   duelNumber: {
     width: 30,
@@ -24,18 +25,34 @@ const styles = {
   athletRed: { width: 140, height: 33, padding: '0 5px', borderBottom: '1px solid gray' },
   athletBlue: { width: 140, height: 33, padding: '0 5px' },
   athletInput: { width: '100%', border: 'none' },
-  winnerRed: { height: 33, borderBottom: '1px solid gray' },
-  winnerBlue: {
-    height: 33
-  },
+  checkboxColumn: { width: 35, height: 33 },
+  checkboxColumnRed: { borderBottom: '1px solid gray' },
   checkboxRed: { width: 7, height: 7, marginTop: 2, color: 'red' },
   checkboxBlue: { width: 7, height: 7, marginTop: 2, color: 'blue' },
-  trainer: { color: 'gray', fontSize: 10 }
+  trainer: { color: 'gray', fontSize: 10 },
+  athletColorColumn: { width: 5 },
+  athletColorRed: { backgroundColor: 'rgba(255,0,0,0.5)', borderBottom: ' 1px solid gray' },
+  athletColorBlue: { backgroundColor: 'rgba(0,0,255,0.5)' },
+  scoreColumn: { width: 35, borderLeft: ' 1px solid gray' },
+  scoreColumnRed: {
+    '& input': { color: 'rgba(255,0,0,0.5)', fontWeight: 'bold' },
+    borderBottom: ' 1px solid gray'
+  },
+  scoreColumnBlue: { '& input': { color: 'rgba(0,0,255,0.5)', fontWeight: 'bold' } },
+  scoreInput: { border: 'none', width: 31, height: 25, textAlign: 'center' }
 }
 
 function DuelSimple(props) {
-  const { duelData, classes, participants, onFighterChange, onWinnerChange } = props
-  const { id, fighterRed, fighterBlue, winner, label } = duelData
+  const {
+    duelData,
+    classes,
+    participants,
+    onFighterChange,
+    onWinnerChange,
+    showScoreInput,
+    showWinnerCheckbox
+  } = props
+  const { id, fighterRed, fighterBlue, winner, label, scoreRed, scoreBlue } = duelData
   let athletRedName, athletBlueName, trainerRedName, trainerBlueName
 
   //populate fighters data by id
@@ -55,7 +72,7 @@ function DuelSimple(props) {
   }
 
   return (
-    <table className={classes.duel}>
+    <table className={classes.duelTable}>
       <tbody>
         <tr>
           <td className={classes.duelNumber} rowSpan='2'>
@@ -73,16 +90,24 @@ function DuelSimple(props) {
             />
             <div className={classes.trainer}>{trainerRedName}</div>
           </td>
-          <td className={classes.winnerRed}>
-            <Box displayPrint='none'>
-              <Checkbox
-                inputProps={{ 'data-winner': fighterRed }}
-                onChange={onWinnerChange(id)}
-                className={classes.checkboxRed}
-                checked={winner === fighterRed && winner ? true : false}
-              />
-            </Box>
-          </td>
+          {showWinnerCheckbox && (
+            <td className={`${classes.checkboxColumnRed} ${classes.checkboxColumn}`}>
+              <Box displayPrint='none'>
+                <Checkbox
+                  inputProps={{ 'data-winner': fighterRed }}
+                  onChange={onWinnerChange(id)}
+                  className={classes.checkboxRed}
+                  checked={winner === fighterRed && winner ? true : false}
+                />
+              </Box>
+            </td>
+          )}
+          {showScoreInput && (
+            <td className={`${classes.scoreColumn} ${classes.scoreColumnRed}`}>
+              <input className={classes.scoreInput} />
+            </td>
+          )}
+          <td className={`${classes.athletColorRed} ${classes.athletColorColumn}`}></td>
         </tr>
         <tr>
           <td className={classes.athletBlue}>
@@ -96,16 +121,24 @@ function DuelSimple(props) {
             />
             <div className={classes.trainer}>{trainerBlueName}</div>
           </td>
-          <td className={classes.winnerBlue}>
-            <Box displayPrint='none'>
-              <Checkbox
-                inputProps={{ 'data-winner': fighterBlue }}
-                onChange={onWinnerChange(id)}
-                className={classes.checkboxBlue}
-                checked={winner === fighterBlue && winner ? true : false}
-              />
-            </Box>
-          </td>
+          {showWinnerCheckbox && (
+            <td className={`${classes.checkboxColumn}`}>
+              <Box displayPrint='none'>
+                <Checkbox
+                  inputProps={{ 'data-winner': fighterBlue }}
+                  onChange={onWinnerChange(id)}
+                  className={classes.checkboxBlue}
+                  checked={winner === fighterBlue && winner ? true : false}
+                />
+              </Box>
+            </td>
+          )}
+          {showScoreInput && (
+            <td className={`${classes.scoreColumn} ${classes.scoreColumnBlue}`}>
+              <input className={classes.scoreInput} />
+            </td>
+          )}
+          <td className={`${classes.athletColorBlue} ${classes.athletColorColumn}`}></td>
         </tr>
       </tbody>
     </table>

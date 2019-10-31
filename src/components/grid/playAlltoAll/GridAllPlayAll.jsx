@@ -37,7 +37,13 @@ function Grid(props) {
             Тур {key}
           </Typography>
           {gridByLevels[key].map(duel => (
-            <Duel duelData={duel} participants={participants} key={duel.id} {...eventHandlers} />
+            <Duel
+              duelData={duel}
+              participants={participants}
+              key={duel.id}
+              showScoreInput={true}
+              {...eventHandlers}
+            />
           ))}
         </div>
       ))}

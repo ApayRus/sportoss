@@ -62,7 +62,13 @@ function Grid(props) {
       {Object.keys(gridByLevels).map(key => (
         <div key={key} className={classes.levelBox}>
           {gridByLevels[key].map(duel => (
-            <Duel duelData={duel} participants={participants} key={duel.id} {...eventHandlers} />
+            <Duel
+              duelData={duel}
+              participants={participants}
+              key={duel.id}
+              showWinnerCheckbox={true}
+              {...eventHandlers}
+            />
           ))}
         </div>
       ))}

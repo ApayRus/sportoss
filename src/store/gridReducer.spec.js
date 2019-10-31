@@ -5,10 +5,10 @@ test('createGrid action', () => {
 
   const action = {
     type: 'CREATE_GRID',
-    payload: { participantCount: 32 }
+    payload: { participantCount: 32, gridType: 'playOff' }
   }
 
-  const stateAfter = {
+  const stateAfter32 = {
     grid: {
       /* 1st tour */
       1: { next: 17, level: 1 },
@@ -47,8 +47,7 @@ test('createGrid action', () => {
       30: { next: 31, level: 4 },
       /* 5th tour */
 
-      31: { next: 0, level: 5, label: 'Финал' },
-      32: { next: 0, level: 5, label: 'за 3-е место' }
+      31: { next: 0, level: 5 }
     }
   }
 
@@ -58,7 +57,7 @@ test('createGrid action', () => {
 
       */
 
-  expect(gridReducer(stateBefore, action)).toEqual(stateAfter)
+  expect(gridReducer(stateBefore, action)).toEqual(stateAfter32)
 })
 
 test('updateFighter action', () => {
@@ -101,8 +100,7 @@ test('updateFighter action', () => {
       30: { next: 31, level: 4 },
       /* 5th tour */
 
-      31: { next: 0, level: 5, label: 'Финал' },
-      32: { next: 0, level: 5, label: 'за 3-е место' }
+      31: { next: 0, level: 5 }
     }
   }
 
@@ -150,8 +148,7 @@ test('updateFighter action', () => {
       30: { next: 31, level: 4 },
       /* 5th tour */
 
-      31: { next: 0, level: 5, label: 'Финал' },
-      32: { next: 0, level: 5, label: 'за 3-е место' }
+      31: { next: 0, level: 5 }
     }
   }
 

@@ -23,6 +23,7 @@ function DuelSimple(props) {
       marginBottom: 5,
       borderSpacing: 0,
       tableLayout: 'fixed',
+      opacity: props.duelData.status === 'fake' ? 0 : 1,
       visibility: props.duelData.status === 'fake' ? 'hidden' : 'visible'
     }),
     duelNumber: {

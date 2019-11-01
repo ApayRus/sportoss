@@ -6,7 +6,16 @@ import { compose } from 'redux'
 import Page from './Page'
 
 export function PageFirebaseContainer(props) {
-  const { athlets, applications, categories, tournaments, trainers, userId, userName } = props
+  const {
+    athlets,
+    applications,
+    categories,
+    tournaments,
+    trainers,
+    userId,
+    userName,
+    isAdmin
+  } = props
   const { add: firestoreAdd, update: firestoreUpdate, delete: firestoreDelete } = props.firestore
   const loadedProps = {
     athlets,
@@ -16,6 +25,7 @@ export function PageFirebaseContainer(props) {
     trainers,
     userId,
     userName,
+    isAdmin,
     firestoreAdd,
     firestoreUpdate,
     firestoreDelete
@@ -37,21 +47,26 @@ const mapStateToProps = state => {
     tournaments: sfo.tournaments,
     trainers: sfo.trainers,
     userId: state.firebase.auth.uid,
-    userName: state.firebase.profile.username
+    userName: state.firebase.profile.username,
+    isAdmin:
+      isLoaded(state.firebase.profile) && !state.firebase.profile.isEmpty
+        ? state.firebase.profile.roles.admin
+        : false
   }
 }
 
 export default compose(
   connect(mapStateToProps),
   firestoreConnect(props => {
-    if (props.userId)
+    if (props.userId) {
+      const userFilter = props.isAdmin ? {} : { where: [['createdBy.userId', '==', props.userId]] }
       return [
-        { collection: 'athlets', where: [['createdBy.userId', '==', props.userId]] },
-        { collection: 'applications', where: [['createdBy.userId', '==', props.userId]] },
+        { collection: 'athlets', ...userFilter },
+        { collection: 'applications', ...userFilter },
         { collection: 'categories' },
         { collection: 'tournaments' },
         { collection: 'trainers' }
       ]
-    else return []
+    } else return []
   })
 )(PageFirebaseContainer)

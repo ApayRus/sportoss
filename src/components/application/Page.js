@@ -5,7 +5,10 @@ import Table from '../layouts/table/Table'
 import Form from './Form'
 import { tournamentName } from '../../config/functions'
 //Table columns or fields of our data model
-const columns = [{ id: 'name', numeric: false, disablePadding: false, label: 'Турнир' }]
+const columns = [
+  { id: 'name', numeric: false, disablePadding: false, label: 'Турнир' },
+  { id: 'createdBy', numeric: false, disablePadding: false, label: 'Добавил' }
+]
 
 const styles = {
   fab: {
@@ -50,12 +53,20 @@ export function Page(props) {
 
   const tableData = applications.map(app => {
     const tournament = tournaments.filter(elem => elem.id === app.tournamentId)[0]
-    if (tournament) return { ...app, name: tournamentName(tournament) }
-    else return { ...app, name: '' }
+    if (tournament)
+      return { ...app, name: tournamentName(tournament), createdBy: app.createdBy.userName }
+    else return { ...app, name: '', createdBy: app.createdBy.userName }
   })
 
+  //there is 2 variants
+  // admin is open application of other trainer, and list of athlets in form contains from this trainer's athlets
+  // admin or trainer adds new applications, athlets list filtered by current userId
+  const filteredAthlets = modalData.id
+    ? athlets.filter(athlet => modalData.createdBy.userId === athlet.createdBy.userId)
+    : athlets.filter(athlet => userId === athlet.createdBy.userId)
+
   const modalFormProps = {
-    athlets,
+    athlets: filteredAthlets,
     applications,
     categories,
     tournaments,

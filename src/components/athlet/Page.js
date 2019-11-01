@@ -7,7 +7,8 @@ import Form from './Form'
 const columnsAthlets = [
   { id: 'name', numeric: false, disablePadding: false, label: 'ФИО' },
   { id: 'birthday', numeric: false, disablePadding: false, label: 'Родился' },
-  { id: 'gender', numeric: false, disablePadding: false, label: 'Пол' }
+  { id: 'gender', numeric: false, disablePadding: false, label: 'Пол' },
+  { id: 'createdBy', numeric: false, disablePadding: false, label: 'Добавил' }
 ]
 
 const styles = {
@@ -47,7 +48,11 @@ export function Page(props) {
   }
 
   const tableData = athlets.map(athlet => {
-    return { ...athlet, name: `${athlet.familyName} ${athlet.firstName} ${athlet.fatherName}` }
+    return {
+      ...athlet,
+      name: `${athlet.familyName} ${athlet.firstName} ${athlet.fatherName}`,
+      createdBy: athlet.createdBy.userName
+    }
   })
 
   return (

@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { withStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@material-ui/core/styles'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/IconButton'
@@ -15,6 +15,10 @@ import { lighten } from '@material-ui/core/styles/colorManipulator'
 const toolbarStyles = theme => ({
   root: {
     paddingRight: theme.spacing()
+    /*     position: 'sticky',
+    top: '1px',
+    zIndex: 1,
+    backgroundColor: theme.palette.secondary.dark */
   },
   highlight:
     theme.palette.type === 'light'
@@ -37,9 +41,12 @@ const toolbarStyles = theme => ({
   }
 })
 
-const EnhancedTableToolbar = props => {
-  const { numSelected, classes } = props
+const useStyles = makeStyles(toolbarStyles)
 
+const EnhancedTableToolbar = props => {
+  const { numSelected } = props
+
+  const classes = useStyles()
   const handleDelete = () => {
     const { firestoreDelete, selected, collection } = props
     selected.forEach(doc => {
@@ -104,4 +111,4 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired
 }
 
-export default withStyles(toolbarStyles)(EnhancedTableToolbar)
+export default EnhancedTableToolbar

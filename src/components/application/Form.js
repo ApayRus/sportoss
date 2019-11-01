@@ -60,7 +60,6 @@ function Form(props) {
         delete participants[key]
       }
     })
-    console.log('participants after delete', participants)
 
     const newFormState = { ...formState, participants }
     const createdBy = { userId, userName }

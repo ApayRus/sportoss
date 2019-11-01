@@ -9,7 +9,8 @@ export function athletName(athlet) {
 }
 
 export function trainerName(trainer) {
-  if (trainer) {
+  console.log('trainer', trainer)
+  if (trainer.familyName) {
     const { familyName, firstName, fatherName } = trainer
     // const name = `${familyName} ${firstName} ${fatherName}`
     return `${familyName} ${firstName[0]}. ${fatherName[0]}.`

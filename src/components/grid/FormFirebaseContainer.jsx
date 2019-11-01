@@ -35,7 +35,7 @@ function FormFirebaseContainer(props) {
     participants = map(participants).map(elem => {
       const athlet = find(allAthlets, { id: elem.athletId })
       let trainer = find(allTrainers, { id: elem.trainerId })
-      const trainerColor = trainerColorMap[trainer.id]
+      const trainerColor = trainer ? trainerColorMap[trainer.id] : 'white'
       trainer = { ...trainer, color: trainerColor }
       return { athlet, trainer }
     })

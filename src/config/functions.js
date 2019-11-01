@@ -9,7 +9,6 @@ export function athletName(athlet) {
 }
 
 export function trainerName(trainer) {
-  console.log('trainer', trainer)
   if (trainer.familyName) {
     const { familyName, firstName, fatherName } = trainer
     // const name = `${familyName} ${firstName} ${fatherName}`

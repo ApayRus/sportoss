@@ -87,8 +87,8 @@ export function gridByLevels(grid) {
 
 export function gridByLevelsWithFakeDuelsInZeroTour(grid) {
   const gridByLevels0 = { ...gridByLevels(grid) }
-  let zeroTour = [...gridByLevels0[0]]
-  if (zeroTour.length) {
+  let zeroTour = gridByLevels0[0]
+  if (zeroTour) {
     const levelCount = Object.keys(gridByLevels0).length
     const duelCountAll = Math.pow(2, levelCount - 1) // real + fake
     const duelCountReal = zeroTour.length
@@ -98,7 +98,6 @@ export function gridByLevelsWithFakeDuelsInZeroTour(grid) {
       fakeDuels.push({ id: fakeId, status: 'fake', level: 0 })
     }
     zeroTour = [...zeroTour, ...fakeDuels]
-    // console.log('new grid with fake duels', { ...gridByLevels0, 0: { ...zeroTour } })
     const gridWithFakeDuels = { ...gridByLevels0, 0: [...zeroTour] }
     return gridWithFakeDuels
   } else {

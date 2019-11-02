@@ -62,17 +62,17 @@ function Form(props) {
     })
 
     const newFormState = { ...formState, participants }
-    const createdBy = { userId, userName }
-
     //id is empty when we creates new endtry, and filled when we edit an existen one
     if (!formState.id) {
+      const createdBy = { userId, userName }
       firestoreAdd({ collection: 'applications' }, { ...newFormState, createdBy }).catch(error => {
         console.log('firestoreAdd error', error)
       })
     } else {
+      const updatedBy = { userId, userName }
       firestoreUpdate(
         { collection: 'applications', doc: formState.id },
-        { ...newFormState, createdBy }
+        { ...newFormState, updatedBy }
       ).catch(error => {
         console.log('firestoreUpdate error', error)
       })

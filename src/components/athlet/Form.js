@@ -32,16 +32,17 @@ function Form(props) {
   }
 
   const handleSubmit = () => {
-    const createdBy = { userId, userName }
     //id is empty when we creates new endtry, and filled when we edit an existen one
     if (!formState.id) {
+      const createdBy = { userId, userName }
       firestoreAdd({ collection: 'athlets' }, { ...formState, createdBy }).catch(error => {
         console.log('firestoreAdd error', error)
       })
     } else {
+      const updatedBy = { userId, userName }
       firestoreUpdate(
         { collection: 'athlets', doc: formState.id },
-        { ...formState, createdBy }
+        { ...formState, updatedBy }
       ).catch(error => {
         console.log('firestoreUpdate error', error)
       })

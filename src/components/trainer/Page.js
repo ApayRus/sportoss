@@ -4,7 +4,10 @@ import AddIcon from '@material-ui/icons/Add'
 import Table from '../layouts/table/Table'
 import Form from './Form'
 //Table columns or fields of our data model
-const columnsTrainers = [{ id: 'name', numeric: false, disablePadding: false, label: 'ФИО' }]
+const columnsTrainers = [
+  { id: 'name', numeric: false, disablePadding: false, label: 'ФИО' },
+  { id: 'id', numeric: false, disablePadding: false, label: 'id' }
+]
 
 const styles = {
   fab: {

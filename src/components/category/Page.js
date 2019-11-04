@@ -7,7 +7,10 @@ import Form from './Form'
 import { categoryName } from '../../config/functions'
 
 //Table columns or fields of our data model
-const columns = [{ id: 'categoryName', numeric: false, disablePadding: false, label: 'Категория' }]
+const columns = [
+  { id: 'categoryName', numeric: false, disablePadding: false, label: 'Категория' },
+  { id: 'id', numeric: false, disablePadding: false, label: 'id' }
+]
 
 const fabStyle = {
   margin: 0,

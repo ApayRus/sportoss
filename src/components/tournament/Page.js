@@ -14,7 +14,8 @@ const columns = [
   { id: 'date', numeric: false, disablePadding: false, label: 'Дата' },
   { id: 'address', numeric: false, disablePadding: false, label: 'Место' },
   { id: 'grids', numeric: false, disablePadding: false, label: 'Сетки' },
-  { id: 'participants', numeric: false, disablePadding: false, label: 'Участники' }
+  { id: 'participants', numeric: false, disablePadding: false, label: 'Участники' },
+  { id: 'id', numeric: false, disablePadding: false, label: 'id' }
 ]
 
 function Page(props) {

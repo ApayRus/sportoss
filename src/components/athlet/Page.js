@@ -8,7 +8,8 @@ const columnsAthlets = [
   { id: 'name', numeric: false, disablePadding: false, label: 'ФИО' },
   { id: 'birthday', numeric: false, disablePadding: false, label: 'Родился' },
   { id: 'gender', numeric: false, disablePadding: false, label: 'Пол' },
-  { id: 'createdBy', numeric: false, disablePadding: false, label: 'Добавил' }
+  { id: 'createdBy', numeric: false, disablePadding: false, label: 'Добавил' },
+  { id: 'id', numeric: false, disablePadding: false, label: 'id' }
 ]
 
 const styles = {

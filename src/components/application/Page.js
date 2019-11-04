@@ -7,7 +7,8 @@ import { tournamentName } from '../../config/functions'
 //Table columns or fields of our data model
 const columns = [
   { id: 'name', numeric: false, disablePadding: false, label: 'Турнир' },
-  { id: 'createdBy', numeric: false, disablePadding: false, label: 'Добавил' }
+  { id: 'createdBy', numeric: false, disablePadding: false, label: 'Добавил' },
+  { id: 'id', numeric: false, disablePadding: false, label: 'id' }
 ]
 
 const styles = {

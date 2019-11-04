@@ -1,4 +1,4 @@
-import { sum, map, groupBy, sortBy, countBy } from 'lodash'
+import { sum, map, groupBy } from 'lodash'
 
 /**
  *
@@ -116,19 +116,4 @@ export function participantsInGrid(grid) {
     alradyInGridSet.add(fighterBlue)
   })
   return alradyInGridSet
-}
-
-/**
- * trainer with most of participants will be first, then others,
- * it's nesseccery for place participants in the grid far away of each other
- * @param {*} participants
- */
-export function sortParticipantsByTrainerFrequency(participants) {
-  const trainerIds = map(participants, 'trainerId') // ['t1', 't3', 't1', 't2', 't1', 't2']
-  const countsByTrainer = countBy(trainerIds) //{t1: 3, t2: 2, t3: 1}
-  const participantsWithTrainerFrequency = participants.map(elem => {
-    const trainerFrequency = countsByTrainer[elem.trainerId]
-    return { ...elem, trainerFrequency }
-  })
-  return sortBy(participantsWithTrainerFrequency, ['trainerFrequency', 'trainerId']).reverse()
 }

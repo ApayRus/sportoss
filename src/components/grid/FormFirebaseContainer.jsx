@@ -5,7 +5,7 @@ import { firestoreConnect, isLoaded } from 'react-redux-firebase'
 import { compose } from 'redux'
 import { CircularProgress } from '@material-ui/core'
 import { participantsGroupedByCategories } from '../../dataFunctions'
-import { sortParticipantsByTrainerFrequency } from './playOff/functionsPlayOff'
+import { sortParticipantsByTrainerFrequency } from './functions'
 
 import { map, find } from 'lodash'
 import { trainerColors } from '../../config/functions'

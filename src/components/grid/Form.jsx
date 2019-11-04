@@ -7,6 +7,7 @@ import GridPlayOff from './playOff/GridPlayOff'
 import ConsolationDuels from './playOff/ConsolationDuels'
 import GridAllPlayAll from './playAlltoAll/GridAllPlayAll'
 import { setGridParameter, createGrid, createGroups, clearGrid } from '../../store/gridActions'
+import { gridRecommendation } from './functions'
 // import TopPlaces from './TopPlaces'
 // import TopPlacesAllPlayAll from './TopPlacesAllPlayAll'
 import Participants from './Participants'
@@ -90,12 +91,8 @@ function Form(props) {
     }
   }, [])
 
-  console.log(
-    'participantsToHide.size, participants.length',
-    participantsToHide.size,
-    participants.length
-  )
-  console.log('participantsToHide', participantsToHide)
+  const gridRecommendationText = gridRecommendation(participants.length)
+
   return (
     <div className={classes.page}>
       <div style={{ textAlign: 'center' }}>
@@ -103,6 +100,8 @@ function Form(props) {
         <Typography variant='h6'>{categoryName(category)}</Typography>
       </div>
       <Box displayPrint='none'>
+        <Typography variant='body1'>Всего участников: {participants.length}</Typography>
+        <Typography variant='body1'>Рекомендуется: {gridRecommendationText}</Typography>
         <Select
           onChange={handleChange}
           native

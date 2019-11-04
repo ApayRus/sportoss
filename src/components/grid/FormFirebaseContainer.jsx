@@ -5,7 +5,9 @@ import { firestoreConnect, isLoaded } from 'react-redux-firebase'
 import { compose } from 'redux'
 import { CircularProgress } from '@material-ui/core'
 import { participantsGroupedByCategories } from '../../dataFunctions'
-import { map, sortBy, find } from 'lodash'
+import { sortParticipantsByTrainerFrequency } from './playOff/functionsPlayOff'
+
+import { map, find } from 'lodash'
 import { trainerColors } from '../../config/functions'
 import { setGridParameter } from '../../store/gridActions'
 import Form from './Form'
@@ -30,7 +32,9 @@ function FormFirebaseContainer(props) {
 
   if (isLoaded(tournament, category, applications, allAthlets, allTrainers)) {
     participants = participantsGroupedByCategories(applications)[categoryId]
-    participants = sortBy(participants, 'trainerId')
+    console.log('participantsBeforeSort', participants)
+    participants = sortParticipantsByTrainerFrequency(participants)
+    console.log('participantsAfterSort', participants)
     const trainerColorMap = trainerColors(participants)
     participants = map(participants).map(elem => {
       const athlet = find(allAthlets, { id: elem.athletId })

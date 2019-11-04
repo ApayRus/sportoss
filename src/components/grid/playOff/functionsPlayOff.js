@@ -130,5 +130,5 @@ export function sortParticipantsByTrainerFrequency(participants) {
     const trainerFrequency = countsByTrainer[elem.trainerId]
     return { ...elem, trainerFrequency }
   })
-  return sortBy(participantsWithTrainerFrequency, 'trainerFrequency').reverse()
+  return sortBy(participantsWithTrainerFrequency, ['trainerFrequency', 'trainerId']).reverse()
 }

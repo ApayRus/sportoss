@@ -4,7 +4,8 @@ import {
   generateGrid,
   totalCountDuelsBeforeTour,
   gridByLevels,
-  participantsInGrid
+  participantsInGrid,
+  sortParticipantsByTrainerFrequency
 } from './functionsPlayOff'
 
 it('getBaseLog', () => {
@@ -14,9 +15,9 @@ it('getBaseLog', () => {
 })
 
 it('gridTourDuelCount', () => {
-  expect(gridTourDuelCount(10)).toEqual([2, 4, 2, 2])
-  expect(gridTourDuelCount(32)).toEqual([0, 16, 8, 4, 2, 2])
-  expect(gridTourDuelCount(555)).toEqual([43, 256, 128, 64, 32, 16, 8, 4, 2, 2])
+  expect(gridTourDuelCount(10)).toEqual([2, 4, 2, 1])
+  expect(gridTourDuelCount(32)).toEqual([0, 16, 8, 4, 2, 1])
+  expect(gridTourDuelCount(555)).toEqual([43, 256, 128, 64, 32, 16, 8, 4, 2, 1])
 })
 
 it('totalCountDuelsBeforeTour', () => {
@@ -38,8 +39,7 @@ it('generateGrid', () => {
     5: { next: 7, level: 2 },
     6: { next: 7, level: 2 },
     /* 3-rd tour */
-    7: { next: 0, level: 3, label: 'Финал' },
-    8: { next: 0, level: 3, label: 'за 3-е место' }
+    7: { next: 0, level: 3 }
   }
 
   expect(generateGrid(8)).toEqual(trueAnswer8)
@@ -82,8 +82,7 @@ it('generateGrid', () => {
     30: { next: 31, level: 4 },
     /* 5th tour */
 
-    31: { next: 0, level: 5, label: 'Финал' },
-    32: { next: 0, level: 5, label: 'за 3-е место' }
+    31: { next: 0, level: 5 }
   }
   expect(generateGrid(32)).toEqual(trueAnswer32)
 
@@ -106,8 +105,7 @@ it('generateGrid', () => {
     12: { next: 14, level: 2 },
     13: { next: 14, level: 2 },
     //3rd tour - final
-    14: { next: 0, level: 3, label: 'Финал' },
-    15: { next: 0, level: 3, label: 'за 3-е место' }
+    14: { next: 0, level: 3 }
   }
 
   expect(generateGrid(15)).toEqual(trueAnswer15)
@@ -165,7 +163,8 @@ it('participantsInGrid', () => {
     'QieoVtFAIDHUbNJ1IImt',
     'gqEU6ME2bAf9YRP1N0Zb',
     'JRjMBmBc4P0Oq8C19ebx',
-    '1SvvQDlXWJNACTZigeDP'
+    '1SvvQDlXWJNACTZigeDP',
+    undefined
   ])
 
   expect(participantsInGrid(gridInput)).toEqual(setOutput)

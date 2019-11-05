@@ -6,7 +6,7 @@ import { compose } from 'redux'
 import Page from './Page'
 
 export function PageFirebaseContainer(props) {
-  const { athlets, userId, userName, isAdmin } = props
+  const { athlets, userId, userName /* isAdmin */ } = props
   const { add: firestoreAdd, update: firestoreUpdate, delete: firestoreDelete } = props.firestore
   const loadedProps = { athlets, userId, userName, firestoreAdd, firestoreUpdate, firestoreDelete }
 

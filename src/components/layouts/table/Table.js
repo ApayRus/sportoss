@@ -116,6 +116,7 @@ class EnhancedTable extends React.Component {
             firestoreDelete={this.props.firestoreDelete}
             collection={this.props.collection}
             openModal={this.props.openModal}
+            showToolbarButtons={this.props.showToolbarButtons}
             title={this.props.title}
           />
         )}

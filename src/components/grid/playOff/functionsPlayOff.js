@@ -41,6 +41,74 @@ export function totalCountDuelsBeforeTour(inputArray) {
   return correctionArray
 }
 
+const distributeDuelsInZeroTour = (duelCountIdeal, duelCountReal) => {
+  const distributeTo8 = duelCount => {
+    switch (duelCount) {
+      case 1:
+        return [1, 0, 0, 0, 0, 0, 0, 0]
+      case 2:
+        return [1, 0, 0, 0, 1, 0, 0, 0]
+      case 3:
+        return [1, 0, 1, 0, 1, 0, 0, 0]
+      case 4:
+        return [1, 0, 1, 0, 1, 0, 1, 0]
+      case 5:
+        return [1, 1, 1, 0, 1, 0, 1, 0]
+      case 6:
+        return [1, 1, 1, 0, 1, 1, 1, 0]
+      case 7:
+        return [1, 1, 1, 1, 1, 1, 1, 0]
+      default:
+        return []
+    }
+  }
+
+  const distributeTo16 = duelCount => {
+    switch (duelCount) {
+      case 1:
+        return [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+      case 2:
+        return [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
+      case 3:
+        return [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
+      case 4:
+        return [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0]
+      case 5:
+        return [1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0]
+      case 6:
+        return [1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0]
+      case 7:
+        return [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0]
+      case 8:
+        return [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
+      case 9:
+        return [1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
+      case 10:
+        return [1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0]
+      case 11:
+        return [1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0]
+      case 12:
+        return [1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0]
+      case 13:
+        return [1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0]
+      case 14:
+        return [1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0]
+      case 15:
+        return [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0]
+      default:
+        return []
+    }
+  }
+  switch (duelCountIdeal) {
+    case 8:
+      return distributeTo8(duelCountReal)
+    case 16:
+      return distributeTo16(duelCountReal)
+    default:
+      return []
+  }
+}
+
 /**
  * @param {number} N - number of participants
  * @return {object} grid - Duel objects with relations (witch is next)
@@ -51,20 +119,55 @@ export function generateGrid(N) {
   const duelCountTotal = sum(duelCountByTour)
   let grid = {}
 
-  duelCountByTour.forEach((tourDuelCont, tourIndex) => {
+  const generateTourDuels = (tourDuelCont, tourIndex) => {
     const correction = correctionForTour[tourIndex]
     const tourBeginDuelIndex = correction + 1
     const tourEndDuelIndex = correction + tourDuelCont
-
+    const tourDuels = {}
     for (let i = tourBeginDuelIndex; i <= tourEndDuelIndex; i++) {
       const next = +((i - correction) / 2).toFixed(0) + correction + tourDuelCont
       const level = tourIndex
-      Object.assign(grid, { [i]: { next, level } })
+      const positionInTour = i - tourBeginDuelIndex //we need position for Zero tour, to handle empty spaces
+      tourDuels[i] = { next, level, positionInTour }
     }
-  })
+    return tourDuels
+  }
 
+  duelCountByTour.forEach((tourDuelCont, tourIndex) => {
+    const tourDuels = generateTourDuels(tourDuelCont, tourIndex)
+    Object.assign(grid, tourDuels)
+  })
   //final
   grid[duelCountTotal]['next'] = 0
+
+  //if there is Zero tour, we should fill it with  fake duels to it's ideal size
+  //and we should provide grid with fake duels to fill empty spaces
+  //we must evenly distribute real duels among fake ones
+  const zeroTourRealCount = duelCountByTour[0]
+  if (zeroTourRealCount > 0) {
+    const rewriteZeroTourWithFakeDuels = () => {
+      const distributedZeroTour = () => {
+        const tourCount = duelCountByTour.length
+        const zeroTourIdealCount = Math.pow(2, tourCount - 1)
+        const zeroTourFakeCount = zeroTourIdealCount - zeroTourRealCount
+        const idealZeroTour = generateTourDuels(zeroTourIdealCount, 0)
+        const distributeMask = distributeDuelsInZeroTour(zeroTourIdealCount, zeroTourRealCount)
+        const realZeroTour = {}
+        let duelId = 1
+        distributeMask.forEach((elem, index) => {
+          if (elem) {
+            const idealDuel = idealZeroTour[index + 1]
+            const next = idealDuel.next - zeroTourFakeCount
+            realZeroTour[duelId] = { ...idealDuel, next }
+            duelId++
+          }
+        })
+        return realZeroTour
+      }
+      Object.assign(grid, distributedZeroTour())
+    }
+    rewriteZeroTourWithFakeDuels()
+  }
 
   return grid
 }
@@ -85,16 +188,19 @@ export function gridByLevels(grid) {
 export function gridByLevelsWithFakeDuelsInZeroTour(grid) {
   const gridByLevels0 = { ...gridByLevels(grid) }
   let zeroTour = gridByLevels0[0]
+  const realDuelPositions = map(zeroTour, 'positionInTour')
   if (zeroTour) {
     const levelCount = Object.keys(gridByLevels0).length
     const duelCountAll = Math.pow(2, levelCount - 1) // real + fake
-    const duelCountReal = zeroTour.length
     const fakeDuels = []
-    for (let id = duelCountReal + 1; id <= duelCountAll; id++) {
+    for (let id = 1; id <= duelCountAll; id++) {
       const fakeId = `${id}#`
-      fakeDuels.push({ id: fakeId, status: 'fake', level: 0 })
+      fakeDuels.push({ id: fakeId, status: 'fake', level: 0, positionInTour: id - 1 })
     }
-    zeroTour = [...zeroTour, ...fakeDuels]
+    realDuelPositions.forEach(elem => {
+      fakeDuels[elem] = zeroTour.shift()
+    })
+    zeroTour = fakeDuels
     const gridWithFakeDuels = { ...gridByLevels0, 0: [...zeroTour] }
     return gridWithFakeDuels
   } else {

@@ -45,6 +45,7 @@ function Page(props) {
         data={tableData}
         // handleSelected={this.getSelected}
         openModal={openModal}
+        showToolbarButtons={{ edit: true, clone: true }}
         firestoreDelete={firestoreDelete}
         columns={columns}
         collection='categories'

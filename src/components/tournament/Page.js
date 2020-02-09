@@ -65,7 +65,7 @@ function Page(props) {
   return (
     <main>
       <Table
-        data={extendedTournaments}
+        data={extendedTournaments} showToolbarButtons={{ edit: true, clone:true }}
         // handleSelected={this.getSelected}
         openModal={openModal}
         firestoreDelete={firestoreDelete}

@@ -37,19 +37,16 @@ function EnhancedTableToolbar(props) {
   const { numSelected, showToolbarButtons } = props
   // console.log('showToolbarButtons', showToolbarButtons)
   const classes = useStyles()
-  const { openModal, selected } = props
-  const collection = 'applications'
+  const { openModal, selected, collection } = props
   const forClone = useSelector(state => {
-    const docs = state.firestore.ordered[collection]
-    const lastSelectedElem = selected[selected.length - 1]
-    const forClone = docs.filter(elem => elem.id === lastSelectedElem)[0]
-    // delete forClone.id
+    const id = selected[selected.length - 1]
+    const forClone = state.firestore.data[collection][id]
     return forClone
   })
   const firestore = useFirestore()
 
   const handleDelete = () => {
-    const { firestoreDelete, selected, collection } = props
+    const { firestoreDelete, collection } = props
     selected.forEach(doc => {
       firestoreDelete({ collection, doc })
     })
@@ -60,11 +57,9 @@ function EnhancedTableToolbar(props) {
   }
 
   const handleClone = () => {
-    const forClone0 = forClone
-    delete forClone0.id
     firestore
       .collection(collection)
-      .add(forClone0)
+      .add(forClone)
       .then(ref => {
         props.setSelection([ref.id])
       })

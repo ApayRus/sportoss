@@ -10,12 +10,14 @@ import { sortParticipantsByTrainerFrequency } from './functions'
 import { map, find } from 'lodash'
 import { trainerColors } from '../../config/functions'
 import { setGridParameter } from '../../store/gridActions'
+import { participantsInGrid } from './playOff/functionsPlayOff'
 import Form from './Form'
 
 function FormFirebaseContainer(props) {
   const {
     tournament,
     category,
+    grid,
     applications,
     allAthlets,
     allTrainers,
@@ -26,7 +28,7 @@ function FormFirebaseContainer(props) {
     userRoles
      grid */
   } = props
-  const { categoryId } = props.match.params
+  const { categoryId, tournamentId } = props.match.params
 
   let participants = []
 
@@ -46,6 +48,27 @@ function FormFirebaseContainer(props) {
     setGridParameter({ participants })
     setGridParameter({ tournament })
     setGridParameter({ category })
+    setGridParameter({ categoryId })
+    setGridParameter({ tournamentId })
+    console.log('grid', grid)
+    if (grid && grid[categoryId]) {
+      const { gridType } = grid[categoryId]
+      setGridParameter({ gridType })
+      if (gridType === 'group') {
+        const { group1grid, group2grid } = grid[categoryId]
+
+        setGridParameter({ group1grid })
+        setGridParameter({ group2grid })
+        setGridParameter({
+          groupParticipants: [
+            [...participantsInGrid(group1grid)],
+            [...participantsInGrid(group2grid)]
+          ]
+        })
+      } else {
+        setGridParameter({ grid: grid[categoryId]['grid'] })
+      }
+    }
 
     return <Form />
   } else return <CircularProgress />
@@ -56,12 +79,13 @@ const mapStateToProps = state => {
   const userName = state.firebase.profile.username
   const userRoles = state.firebase.profile.roles
 
-  const { tournament, category } = state.firestore.data
+  const { tournament, category, grid } = state.firestore.data
   const { allAthlets, allTrainers, applications } = state.firestore.ordered
 
   return {
     tournament,
     category,
+    grid,
     allAthlets,
     allTrainers,
     applications,
@@ -76,15 +100,13 @@ const mapDispatchToProps = dispatch => ({
 })
 
 export default compose(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  ),
+  connect(mapStateToProps, mapDispatchToProps),
   firestoreConnect(props => {
     const { tournamentId, categoryId } = props.match.params
     return [
       { collection: 'tournaments', doc: tournamentId, storeAs: 'tournament' },
       { collection: 'categories', doc: categoryId, storeAs: 'category' },
+      { collection: 'grids', doc: `${tournamentId}`, storeAs: 'grid' },
       { collection: 'applications', where: [['tournamentId', '==', tournamentId]] },
       { collection: 'athlets', storeAs: 'allAthlets' },
       { collection: 'trainers', storeAs: 'allTrainers' }

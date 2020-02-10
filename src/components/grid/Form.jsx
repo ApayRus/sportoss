@@ -1,5 +1,6 @@
 import React, { useEffect, Fragment } from 'react'
 import { connect } from 'react-redux'
+import { useFirestore } from 'react-redux-firebase'
 import { Select, Button, Typography, Box } from '@material-ui/core'
 import { participantsInGrid, gridInfo } from './playOff/functionsPlayOff'
 import { categoryName, tournamentName } from '../../config/functions'
@@ -28,7 +29,9 @@ function Form(props) {
     createGrid,
     clearGrid,
     createGroups,
-    groupParticipants
+    groupParticipants,
+    categoryId,
+    tournamentId
   } = props
 
   const isForPrintView = useMediaQuery('print')
@@ -45,7 +48,7 @@ function Form(props) {
   }))
 
   const classes = useStyles()
-
+  const firestore = useFirestore()
   // Set with participants we want to hide in list
   let participantsToHide = new Set()
   //in playOff-grid we want to hide participants who alredy in greed
@@ -83,6 +86,20 @@ function Form(props) {
     }
   }
 
+  const handleSubmit = () => {
+    let gridForSave = {}
+    if (gridType === 'group') {
+      gridForSave = { group1grid, group2grid }
+    } else {
+      gridForSave = { grid }
+    }
+    firestore.set(
+      `grids/${tournamentId}`,
+      { [categoryId]: { ...gridForSave, gridType } },
+      { merge: true }
+    )
+  }
+
   useEffect(() => {
     //component will mount
     return () => {
@@ -99,12 +116,13 @@ function Form(props) {
         <Typography variant='h5'>{`${tournamentName(tournament)}`}</Typography>
         <Typography variant='h6'>{categoryName(category)}</Typography>
       </div>
-      <Box displayPrint='none'>
+      <Box style={{ marginBottom: 10 }} displayPrint='none'>
         <Typography variant='body1'>Всего участников: {participants.length}</Typography>
         <Typography variant='body1'>Рекомендуется: {gridRecommendationText}</Typography>
         <Select
           onChange={handleChange}
           native
+          value={gridType}
           inputProps={{
             id: 'gridType'
           }}
@@ -114,6 +132,9 @@ function Form(props) {
           <option value='allPlayAll'>Круговая</option>
           <option value='group'>Групповая</option>
         </Select>
+        <Button style={{ marginLeft: 20 }} variant='outlined' onClick={handleSubmit}>
+          Save
+        </Button>
       </Box>
 
       {/* columns: participants | level-0 | level-1 | ... */}
@@ -206,7 +227,9 @@ const mapStateToProps = state => {
     gridType,
     groupParticipants,
     group1grid,
-    group2grid
+    group2grid,
+    categoryId,
+    tournamentId
   } = state.grid
   return {
     tournament,
@@ -216,7 +239,9 @@ const mapStateToProps = state => {
     grid,
     group1grid,
     group2grid,
-    groupParticipants
+    groupParticipants,
+    categoryId,
+    tournamentId
   }
 }
 
@@ -227,7 +252,4 @@ const mapDispatchToProps = dispatch => ({
   createGroups: payload => dispatch(createGroups(payload))
 })
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Form)
+export default connect(mapStateToProps, mapDispatchToProps)(Form)

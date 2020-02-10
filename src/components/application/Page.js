@@ -85,7 +85,8 @@ export function Page(props) {
       <Table
         data={tableData}
         openModal={openModal}
-        firestoreDelete={firestoreDelete} showToolbarButtons={{ edit: true, clone:true }}
+        firestoreDelete={firestoreDelete}
+        showToolbarButtons={{ edit: true, clone: true }}
         columns={columns}
         collection='applications'
         title='Заявки'

@@ -3,6 +3,7 @@ import { CircularProgress } from '@material-ui/core'
 import { connect } from 'react-redux'
 import { firestoreConnect, isLoaded } from 'react-redux-firebase'
 import { compose } from 'redux'
+import { map } from 'lodash'
 import Page from './Page'
 
 export function PageFirebaseContainer(props) {
@@ -40,9 +41,10 @@ export function PageFirebaseContainer(props) {
 
 const mapStateToProps = state => {
   const sfo = state.firestore.ordered
+  const applications = map(state.firestore.data.applications, (elem, key) => ({ ...elem, id: key }))
   return {
     athlets: sfo.athlets,
-    applications: sfo.applications,
+    applications,
     categories: sfo.categories,
     tournaments: sfo.tournaments,
     trainers: sfo.trainers,
@@ -59,7 +61,8 @@ export default compose(
   connect(mapStateToProps),
   firestoreConnect(props => {
     if (props.userId) {
-      const userFilter = props.isAdmin ? {} : { where: [['createdBy.userId', '==', props.userId]] }
+      // const userFilter = props.isAdmin ? {} : { where: [['createdBy.userId', '==', props.userId]] }
+      const userFilter = { where: [['createdBy.userId', '==', props.userId]] }
       return [
         { collection: 'athlets', ...userFilter },
         { collection: 'applications', ...userFilter },

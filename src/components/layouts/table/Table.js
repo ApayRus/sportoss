@@ -101,6 +101,10 @@ class EnhancedTable extends React.Component {
     this.setState({ selected: newSelected })
   }
 
+  setSelection = selected => {
+    this.setState({ selected })
+  }
+
   isSelected = id => this.state.selected.indexOf(id) !== -1
 
   render() {
@@ -113,6 +117,7 @@ class EnhancedTable extends React.Component {
           <EnhancedTableToolbar
             numSelected={selected.length}
             selected={selected}
+            setSelection={this.setSelection}
             firestoreDelete={this.props.firestoreDelete}
             collection={this.props.collection}
             openModal={this.props.openModal}

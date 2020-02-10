@@ -7,9 +7,10 @@ import Tooltip from '@material-ui/core/Tooltip'
 import DeleteIcon from '@material-ui/icons/Delete'
 import CopyIcon from '@material-ui/icons/FileCopy'
 import EditIcon from '@material-ui/icons/Edit'
+import { useFirestore } from 'react-redux-firebase'
+import { useSelector } from 'react-redux'
 
 import FilterListIcon from '@material-ui/icons/FilterList'
-import { lighten } from '@material-ui/core/styles/colorManipulator'
 
 const toolbarStyles = theme => ({
   root: {
@@ -32,10 +33,20 @@ const toolbarStyles = theme => ({
 
 const useStyles = makeStyles(toolbarStyles)
 
-const EnhancedTableToolbar = props => {
+function EnhancedTableToolbar(props) {
   const { numSelected, showToolbarButtons } = props
-  console.log('showToolbarButtons', showToolbarButtons)
+  // console.log('showToolbarButtons', showToolbarButtons)
   const classes = useStyles()
+  const { openModal, selected } = props
+  const collection = 'applications'
+  const forClone = useSelector(state => {
+    const docs = state.firestore.ordered[collection]
+    const lastSelectedElem = selected[selected.length - 1]
+    const forClone = docs.filter(elem => elem.id === lastSelectedElem)[0]
+    // delete forClone.id
+    return forClone
+  })
+  const firestore = useFirestore()
 
   const handleDelete = () => {
     const { firestoreDelete, selected, collection } = props
@@ -45,11 +56,19 @@ const EnhancedTableToolbar = props => {
   }
 
   const handleEdit = () => {
-    const { openModal, selected } = props
     openModal(selected[selected.length - 1])
   }
 
-  const handleClone = () => {}
+  const handleClone = () => {
+    const forClone0 = forClone
+    delete forClone0.id
+    firestore
+      .collection(collection)
+      .add(forClone0)
+      .then(ref => {
+        props.setSelection([ref.id])
+      })
+  }
 
   const { title } = props
 

@@ -41,74 +41,6 @@ export function totalCountDuelsBeforeTour(inputArray) {
   return correctionArray
 }
 
-const distributeDuelsInZeroTour = (duelCountIdeal, duelCountReal) => {
-  const distributeTo8 = duelCount => {
-    switch (duelCount) {
-      case 1:
-        return [1, 0, 0, 0, 0, 0, 0, 0]
-      case 2:
-        return [1, 0, 0, 0, 1, 0, 0, 0]
-      case 3:
-        return [1, 0, 1, 0, 1, 0, 0, 0]
-      case 4:
-        return [1, 0, 1, 0, 1, 0, 1, 0]
-      case 5:
-        return [1, 1, 1, 0, 1, 0, 1, 0]
-      case 6:
-        return [1, 1, 1, 0, 1, 1, 1, 0]
-      case 7:
-        return [1, 1, 1, 1, 1, 1, 1, 0]
-      default:
-        return []
-    }
-  }
-
-  const distributeTo16 = duelCount => {
-    switch (duelCount) {
-      case 1:
-        return [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-      case 2:
-        return [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
-      case 3:
-        return [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
-      case 4:
-        return [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0]
-      case 5:
-        return [1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0]
-      case 6:
-        return [1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0]
-      case 7:
-        return [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0]
-      case 8:
-        return [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
-      case 9:
-        return [1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
-      case 10:
-        return [1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0]
-      case 11:
-        return [1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0]
-      case 12:
-        return [1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0]
-      case 13:
-        return [1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0]
-      case 14:
-        return [1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0]
-      case 15:
-        return [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0]
-      default:
-        return []
-    }
-  }
-  switch (duelCountIdeal) {
-    case 8:
-      return distributeTo8(duelCountReal)
-    case 16:
-      return distributeTo16(duelCountReal)
-    default:
-      return []
-  }
-}
-
 /**
  * @param {number} N - number of participants
  * @return {object} grid - Duel objects with relations (witch is next)
@@ -151,7 +83,7 @@ export function generateGrid(N) {
         const zeroTourIdealCount = Math.pow(2, tourCount - 1)
         const zeroTourFakeCount = zeroTourIdealCount - zeroTourRealCount
         const idealZeroTour = generateTourDuels(zeroTourIdealCount, 0)
-        const distributeMask = distributeDuelsInZeroTour(zeroTourIdealCount, zeroTourRealCount)
+        const distributeMask = spreadEvenly(zeroTourRealCount, zeroTourIdealCount)
         const realZeroTour = {}
         let duelId = 1
         distributeMask.forEach((elem, index) => {
@@ -222,4 +154,63 @@ export function participantsInGrid(grid) {
     alradyInGridSet.add(fighterBlue)
   })
   return alradyInGridSet
+}
+
+// spread evenly
+/**
+ *
+ * @param {number} count - any integer number
+ * @param {number} positions - 2^N
+ * @param {number[]} mask - accumulator array for recursive function
+ * @example
+ * spreadEvenly(2, 8) // [1, 0, 0, 0, 1, 0, 0, 0]
+ * spreadEvenly(3, 8) // [1, 0, 1, 0, 1, 0, 0, 0]
+ * spreadEvenly(4, 8) // [1, 0, 1, 0, 1, 0, 1, 0]
+ * spreadEvenly(5, 8) // [1, 1, 1, 0, 1, 0, 1, 0]
+ * spreadEvenly(6, 8) // [1, 1, 1, 0, 1, 1, 1, 0]
+ */
+export function spreadEvenly(count, positions, mask = []) {
+  if (count === 1 || getBaseLog(2, count) % 1 === 0) {
+    const newMask = standartDistributeMask(count, positions)
+    mask.push(...newMask)
+  } else {
+    const newCounts = divide2(count)
+    const newPositions = positions / 2
+    spreadEvenly(newCounts[0], newPositions, mask)
+    spreadEvenly(newCounts[1], newPositions, mask)
+  }
+  return mask
+}
+
+/**
+ *
+ * @param {number} count
+ * @returns {number[]}
+ * @example
+ * divide2(7) // [3, 4]
+ * divide2(13) // [6, 7]
+ */
+function divide2(count) {
+  const result = []
+  result[0] = Math.ceil(count / 2)
+  result[1] = count - result[0]
+  return result
+}
+
+/**
+ * Spreads evenly 2^N elements in array with 2^M positions
+ * @param {number} count - 2^N elements
+ * @param {number[]} positions
+ * @returns{number[]}
+ * @example
+ * standartDistributeMask(1, 8) // [1, 0, 0, 0, 0, 0, 0, 0]
+ * standartDistributeMask(2, 8) // [1, 0, 0, 0, 1, 0, 0, 0]
+ * standartDistributeMask(4, 8) // [1, 0, 1, 0, 1, 0, 1, 0]
+ */
+function standartDistributeMask(count, positions) {
+  const maskArray = new Array(positions).fill(0)
+  const step = positions / count
+  return maskArray.map((elem, index) => {
+    return index % step ? 0 : 1
+  })
 }

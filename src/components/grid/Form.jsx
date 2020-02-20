@@ -108,8 +108,71 @@ function Form(props) {
 
   const gridRecommendationText = gridRecommendation(participants.length)
 
-  return (
-    <div className={classes.page}>
+  const groupGrid = () => (
+    <div>
+      <table>
+        <tbody>
+          <tr>
+            <td>
+              {participantsToHide.size !== participants.length && (
+                <Participants {...participantsParams} />
+              )}
+            </td>
+            <td>
+              <GroupTable
+                groupParticipants={groupParticipants}
+                participants={participants}
+                groupIndex={0}
+              />
+            </td>
+            <td>
+              <GroupTable
+                groupParticipants={groupParticipants}
+                participants={participants}
+                groupIndex={1}
+              />
+            </td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td style={{ textAlign: 'right' }}>
+              <Box displayPrint='none'>
+                <Button
+                  variant='contained'
+                  color='primary'
+                  onClick={() => dispatch(createGrid({ gridType: 'group' }))}
+                >
+                  Обновить поединки
+                </Button>
+              </Box>
+            </td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>
+              <GridAllPlayAll grid={group1grid} participants={participants} />
+            </td>
+            <td>
+              <GridAllPlayAll grid={group2grid} participants={participants} />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <Result />
+    </div>
+  )
+
+  const allPlayAllGrid = () => (
+    <Fragment>
+      {/* <TopPlacesAllPlayAll grid={grid} participants={participants} /> */}
+      <GridAllPlayAll grid={grid} participants={participants} />
+      <Result />
+    </Fragment>
+  )
+
+  const gridSettingsAndInfo = () => (
+    <div>
       <div style={{ textAlign: 'center' }}>
         <Typography variant='h5'>{`${tournamentName(tournament)}`}</Typography>
         <Typography variant='h6'>{categoryName(category)}</Typography>
@@ -134,84 +197,33 @@ function Form(props) {
           Save
         </Button>
       </Box>
+    </div>
+  )
+
+  const playOffGrid = () => (
+    <div>
+      <div style={{ display: 'flex' }}>
+        {participantsToHide.size !== participants.length && (
+          <Participants {...participantsParams} />
+        )}
+        <GridPlayOff />
+        {/* <TopPlaces grid={grid} participants={participants} /> */}
+        {/* gridInfo = {tourCount, mainDuelCount} */}
+      </div>
+      <ConsolationDuels {...gridInfo(grid)} position={isForPrintView ? 'fixed' : 'static'} />
+      <Result />
+    </div>
+  )
+
+  return (
+    <div className={classes.page}>
+      {gridSettingsAndInfo()}
 
       {/* columns: participants | level-0 | level-1 | ... */}
       {!gridType && <Participants {...participantsParams} />}
-      {gridType === 'playOff' && (
-        <div>
-          <div style={{ display: 'flex' }}>
-            {participantsToHide.size !== participants.length && (
-              <Participants {...participantsParams} />
-            )}
-            <GridPlayOff />
-            {/* <TopPlaces grid={grid} participants={participants} /> */}
-            {/* gridInfo = {tourCount, mainDuelCount} */}
-          </div>
-          <ConsolationDuels {...gridInfo(grid)} position={isForPrintView ? 'fixed' : 'static'} />
-          <Result />
-        </div>
-      )}
-      {gridType === 'allPlayAll' && (
-        <Fragment>
-          {/* <TopPlacesAllPlayAll grid={grid} participants={participants} /> */}
-          <GridAllPlayAll grid={grid} participants={participants} />
-          <Result />
-        </Fragment>
-      )}
-      {gridType === 'group' && (
-        <div>
-          <table>
-            <tbody>
-              <tr>
-                <td>
-                  {participantsToHide.size !== participants.length && (
-                    <Participants {...participantsParams} />
-                  )}
-                </td>
-                <td>
-                  <GroupTable
-                    groupParticipants={groupParticipants}
-                    participants={participants}
-                    groupIndex={0}
-                  />
-                </td>
-                <td>
-                  <GroupTable
-                    groupParticipants={groupParticipants}
-                    participants={participants}
-                    groupIndex={1}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td></td>
-                <td></td>
-                <td style={{ textAlign: 'right' }}>
-                  <Box displayPrint='none'>
-                    <Button
-                      variant='contained'
-                      color='primary'
-                      onClick={() => dispatch(createGrid({ gridType: 'group' }))}
-                    >
-                      Обновить поединки
-                    </Button>
-                  </Box>
-                </td>
-              </tr>
-              <tr>
-                <td></td>
-                <td>
-                  <GridAllPlayAll grid={group1grid} participants={participants} />
-                </td>
-                <td>
-                  <GridAllPlayAll grid={group2grid} participants={participants} />
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <Result />
-        </div>
-      )}
+      {gridType === 'playOff' && playOffGrid()}
+      {gridType === 'allPlayAll' && allPlayAllGrid()}
+      {gridType === 'group' && groupGrid()}
     </div>
   )
 }

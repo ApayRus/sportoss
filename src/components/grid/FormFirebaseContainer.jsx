@@ -34,9 +34,7 @@ function FormFirebaseContainer(props) {
 
   if (isLoaded(tournament, category, applications, allAthlets, allTrainers)) {
     participants = participantsGroupedByCategories(applications)[categoryId]
-    console.log('participantsBeforeSort', participants)
     participants = sortParticipantsByTrainerFrequency(participants)
-    console.log('participantsAfterSort', participants)
     const trainerColorMap = trainerColors(participants)
     participants = map(participants).map(elem => {
       const athlet = find(allAthlets, { id: elem.athletId })
@@ -50,7 +48,6 @@ function FormFirebaseContainer(props) {
     setGridParameter({ category })
     setGridParameter({ categoryId })
     setGridParameter({ tournamentId })
-    console.log('grid', grid)
     if (grid && grid[categoryId]) {
       const { gridType } = grid[categoryId]
       setGridParameter({ gridType })

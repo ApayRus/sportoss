@@ -1,5 +1,5 @@
 import React, { useEffect, Fragment } from 'react'
-import { connect } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { useFirestore } from 'react-redux-firebase'
 import { Select, Button, Typography, Box } from '@material-ui/core'
 import { participantsInGrid, gridInfo } from './playOff/functionsPlayOff'
@@ -21,18 +21,16 @@ function Form(props) {
     tournament,
     category,
     participants,
-    gridType,
     grid,
+    gridType,
+    groupParticipants,
     group1grid,
     group2grid,
-    setGridParameter,
-    createGrid,
-    clearGrid,
-    createGroups,
-    groupParticipants,
     categoryId,
     tournamentId
-  } = props
+  } = useSelector(state => state.grid)
+
+  const dispatch = useDispatch()
 
   const isForPrintView = useMediaQuery('print')
 
@@ -70,19 +68,19 @@ function Form(props) {
 
   const handleChange = e => {
     const gridType = e.target.value
-    setGridParameter({ gridType })
+    dispatch(setGridParameter({ gridType }))
     if (gridType === 'playOff') {
       const participantCount = participants.length
-      createGrid({ gridType, participantCount })
+      dispatch(createGrid({ gridType, participantCount }))
     }
     if (gridType === 'allPlayAll') {
       const participantIds = participants.map(elem => elem.athlet.id)
-      createGrid({ gridType, participantIds })
+      dispatch(createGrid({ gridType, participantIds }))
     }
     if (gridType === 'group') {
       //const participantIds = participants.map(elem => elem.athlet.id)
       const participantCount = participants.length
-      createGroups({ participantCount })
+      dispatch(createGroups({ participantCount }))
     }
   }
 
@@ -104,7 +102,7 @@ function Form(props) {
     //component will mount
     return () => {
       //component will UNmount
-      clearGrid()
+      dispatch(clearGrid())
     }
   }, [])
 
@@ -193,7 +191,7 @@ function Form(props) {
                     <Button
                       variant='contained'
                       color='primary'
-                      onClick={() => createGrid({ gridType: 'group' })}
+                      onClick={() => dispatch(createGrid({ gridType: 'group' }))}
                     >
                       Обновить поединки
                     </Button>
@@ -218,38 +216,4 @@ function Form(props) {
   )
 }
 
-const mapStateToProps = state => {
-  const {
-    tournament,
-    category,
-    participants,
-    grid,
-    gridType,
-    groupParticipants,
-    group1grid,
-    group2grid,
-    categoryId,
-    tournamentId
-  } = state.grid
-  return {
-    tournament,
-    category,
-    participants,
-    gridType,
-    grid,
-    group1grid,
-    group2grid,
-    groupParticipants,
-    categoryId,
-    tournamentId
-  }
-}
-
-const mapDispatchToProps = dispatch => ({
-  setGridParameter: payload => dispatch(setGridParameter(payload)),
-  createGrid: payload => dispatch(createGrid(payload)),
-  clearGrid: () => dispatch(clearGrid()),
-  createGroups: payload => dispatch(createGroups(payload))
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(Form)
+export default Form

@@ -1,7 +1,8 @@
 import React, { useEffect, Fragment } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useFirestore } from 'react-redux-firebase'
+import { useFirestore, useFirebase } from 'react-redux-firebase'
 import { Select, Button, Typography, Box } from '@material-ui/core'
+import { Save as SaveIcon, Delete as DeleteIcon } from '@material-ui/icons'
 import { participantsInGrid, gridInfo } from './playOff/functionsPlayOff'
 import { categoryName, tournamentName } from '../../config/functions'
 import GridPlayOff from './playOff/GridPlayOff'
@@ -47,6 +48,7 @@ function Form(props) {
 
   const classes = useStyles()
   const firestore = useFirestore()
+  const firebase = useFirebase()
   // Set with participants we want to hide in list
   let participantsToHide = new Set()
   //in playOff-grid we want to hide participants who alredy in greed
@@ -96,6 +98,17 @@ function Form(props) {
       { [categoryId]: { ...gridForSave, gridType } },
       { merge: true }
     )
+  }
+
+  const handleDelete = () => {
+    //delete
+    firestore
+      .set(
+        `grids/${tournamentId}`,
+        { [categoryId]: firebase.firestore.FieldValue.delete() },
+        { merge: true }
+      )
+      .then(dispatch(clearGrid()))
   }
 
   useEffect(() => {
@@ -193,8 +206,21 @@ function Form(props) {
           <option value='allPlayAll'>Круговая</option>
           <option value='group'>Групповая</option>
         </Select>
-        <Button style={{ marginLeft: 20 }} variant='outlined' onClick={handleSubmit}>
+        <Button
+          style={{ marginLeft: 20 }}
+          endIcon={<SaveIcon />}
+          variant='outlined'
+          onClick={handleSubmit}
+        >
           Save
+        </Button>
+        <Button
+          style={{ marginLeft: 20 }}
+          endIcon={<DeleteIcon />}
+          variant='outlined'
+          onClick={handleDelete}
+        >
+          Delete
         </Button>
       </Box>
     </div>

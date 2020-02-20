@@ -7,6 +7,7 @@ import { participantsInGrid, gridInfo } from './playOff/functionsPlayOff'
 import { categoryName, tournamentName } from '../../config/functions'
 import GridPlayOff from './playOff/GridPlayOff'
 import ConsolationDuels from './playOff/ConsolationDuels'
+import GroupFinal from './group/FinalDuel'
 import GridAllPlayAll from './playAlltoAll/GridAllPlayAll'
 import { setGridParameter, createGrid, createGroups, clearGrid } from '../../store/gridActions'
 import { gridRecommendation } from './functions'
@@ -123,55 +124,62 @@ function Form(props) {
 
   const groupGrid = () => (
     <div>
-      <table>
-        <tbody>
-          <tr>
-            <td>
-              {participantsToHide.size !== participants.length && (
-                <Participants {...participantsParams} />
-              )}
-            </td>
-            <td>
-              <GroupTable
-                groupParticipants={groupParticipants}
-                participants={participants}
-                groupIndex={0}
-              />
-            </td>
-            <td>
-              <GroupTable
-                groupParticipants={groupParticipants}
-                participants={participants}
-                groupIndex={1}
-              />
-            </td>
-          </tr>
-          <tr>
-            <td></td>
-            <td></td>
-            <td style={{ textAlign: 'right' }}>
-              <Box displayPrint='none'>
-                <Button
-                  variant='contained'
-                  color='primary'
-                  onClick={() => dispatch(createGrid({ gridType: 'group' }))}
-                >
-                  Обновить поединки
-                </Button>
-              </Box>
-            </td>
-          </tr>
-          <tr>
-            <td></td>
-            <td>
-              <GridAllPlayAll grid={group1grid} participants={participants} />
-            </td>
-            <td>
-              <GridAllPlayAll grid={group2grid} participants={participants} />
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div style={{ display: 'inline-block' }}>
+        <table>
+          <tbody>
+            <tr>
+              <td>
+                {participantsToHide.size !== participants.length && (
+                  <Participants {...participantsParams} />
+                )}
+              </td>
+              <td>
+                <GroupTable
+                  groupParticipants={groupParticipants}
+                  participants={participants}
+                  groupIndex={0}
+                />
+              </td>
+              <td>
+                <GroupTable
+                  groupParticipants={groupParticipants}
+                  participants={participants}
+                  groupIndex={1}
+                />
+              </td>
+            </tr>
+            <tr>
+              <td></td>
+              <td></td>
+              <td style={{ textAlign: 'right' }}>
+                <Box displayPrint='none'>
+                  <Button
+                    variant='contained'
+                    color='primary'
+                    onClick={() => dispatch(createGrid({ gridType: 'group' }))}
+                  >
+                    Обновить поединки
+                  </Button>
+                </Box>
+              </td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>
+                <GridAllPlayAll grid={group1grid} participants={participants} />
+              </td>
+              <td>
+                <GridAllPlayAll grid={group2grid} participants={participants} />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        {Object.keys({ ...group1grid, ...group2grid }).length > 0 && (
+          <div style={{ textAlign: 'center' }}>
+            <GroupFinal />
+          </div>
+        )}
+      </div>
       <Result />
     </div>
   )

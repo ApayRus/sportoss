@@ -1,5 +1,6 @@
 import { generateGrid } from '../components/grid/playOff/functionsPlayOff'
 import { generateGridAllPlayAll } from '../components/grid/playAlltoAll/functionsAllPlayAll'
+import { divide2 } from '../components/grid/playOff/functionsPlayOff'
 
 const initState = {
   tournament: '',
@@ -53,9 +54,10 @@ const gridReducer = (state = initState, action) => {
 
     case 'CREATE_GROUPS': {
       const { participantCount } = action.payload
-      const groupParticipantCount = participantCount / 2
-      const emptyArray = new Array(groupParticipantCount).fill('')
-      const groupParticipants = [emptyArray, [...emptyArray]]
+      const groupParticipantCount = divide2(participantCount)
+      const emptyArray1 = new Array(groupParticipantCount[0]).fill('')
+      const emptyArray2 = new Array(groupParticipantCount[1]).fill('')
+      const groupParticipants = [emptyArray1, [...emptyArray2]]
       return { ...state, groupParticipants }
     }
 

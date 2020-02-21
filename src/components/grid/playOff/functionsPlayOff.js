@@ -190,7 +190,7 @@ export function spreadEvenly(count, positions, mask = []) {
  * divide2(7) // [3, 4]
  * divide2(13) // [6, 7]
  */
-function divide2(count) {
+export function divide2(count) {
   const result = []
   result[0] = Math.ceil(count / 2)
   result[1] = count - result[0]

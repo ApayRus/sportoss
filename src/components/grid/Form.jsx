@@ -2,8 +2,9 @@ import React, { useEffect, Fragment } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useFirestore, useFirebase } from 'react-redux-firebase'
 import { Select, Button, Typography, Box } from '@material-ui/core'
-import { Save as SaveIcon, Delete as DeleteIcon } from '@material-ui/icons'
+import { Save as SaveIcon, Delete as DeleteIcon, Casino as TossIcon } from '@material-ui/icons'
 import { participantsInGrid, gridInfo } from './playOff/functionsPlayOff'
+import { toss } from './playOff/functionsToss'
 import { categoryName, tournamentName } from '../../config/functions'
 import GridPlayOff from './playOff/GridPlayOff'
 import ConsolationDuels from './playOff/ConsolationDuels'
@@ -110,6 +111,12 @@ function Form(props) {
         { merge: true }
       )
       .then(dispatch(clearGrid()))
+  }
+
+  const handleToss = () => {
+    const participantCount = participants.length
+    dispatch(createGrid({ gridType, participantCount }))
+    toss()
   }
 
   useEffect(() => {
@@ -229,6 +236,14 @@ function Form(props) {
           onClick={handleDelete}
         >
           Delete
+        </Button>
+        <Button
+          style={{ marginLeft: 20 }}
+          endIcon={<TossIcon />}
+          variant='outlined'
+          onClick={handleToss}
+        >
+          Toss
         </Button>
       </Box>
     </div>

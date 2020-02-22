@@ -7,7 +7,9 @@
  */
 
 import { map, groupBy, sortBy } from 'lodash'
-
+import { getBaseLog, spreadEvenly } from './functionsPlayOff'
+import store from '../../../store/rootReducer'
+import { updateFighter } from '../../../store/gridActions'
 /**
  *
  * @param {string[]} array
@@ -47,39 +49,11 @@ function participantIdsGroupedByTrainer(participants) {
 function gridIntoArrayWithNBlocks(grid, n) {
   let gridArray = map(grid, (elem, key) => ({ ...elem, id: key }))
   gridArray = sortBy(gridArray, 'positionInTour')
-  const firstTour = gridArray.filter(elem => elem.level === 1)
-  const splitedArray = splitArrayIntoNBlocks(firstTour, 4)
-  return splitedArray
+  let firstTour = gridArray.filter(elem => elem.level === 1)
+  firstTour = map(firstTour, 'id')
+  const splittedArray = splitArrayIntoNBlocks(firstTour, n)
+  return splittedArray
 }
-// console.log("gridIntoArrayWithNBlocks");
-// console.log(gridIntoArrayWithNBlocks(gridRoot, 4));
-
-/**
- *
- * returns array of duel ids , with empty places for fighter
- * @example
- * emptyDuelsInBlock( [
- * {id:'1', fighterRed:'xxx', fighterBlue:'yyy'},
- * {id:'2'},
- * {id:'3', fighterBlue="zzz"},
- * {id:'4'} ] )
- * // [1, 2, 3]
- * returns [1, 2, 3], because there is free space for placing fighter
- * in [0] there is no free space
- */
-function emptyDuelsInBlock(block) {
-  const emptyDuels = []
-  block.forEach((duel, index) => {
-    if (!(duel.fighterRed && duel.fighterBlue)) {
-      emptyDuels.push(index)
-    }
-  })
-  return emptyDuels
-}
-
-// const block = gridIntoArrayWithNBlocks(gridRoot, 4)[2];
-// console.log("emptyDuelsInBlock");
-// console.log(emptyDuelsInBlock(block));
 
 // auto-placing participants into grid
 
@@ -89,47 +63,61 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min //Максимум не включается, минимум включается
 }
 
-/**
- *
- * @param {string[]} gridBlock - IDs of duels
- * @example
- * randomDuelFromGridBlock(['a', 'b', 'c', 'd']) // 'c'
- * randomDuelFromGridBlock(['a', 'b', 'c', 'd']) // 'a'
- */
-function randomDuelFromGridBlock(gridBlock) {
-  const randomIndex = getRandomInt(0, gridBlock.length)
-  return gridBlock[randomIndex]
-}
-
-/**
- * 
- * @param {Object.<Object>} grid 
- * @example
-  const grid = {
-      '1': {
-        next: 9,
-        level: 1
-      },
-      '2': {
-        next: 9,
-        level: 1
-      }
-    }
-    gridFirstLevelDuelIds(grid) // ['1', '2']
- */
-function gridLevelDuelIds(grid, level) {
-  const gridArray = map(grid, (elem, key) => {
-    return { id: key, ...elem }
-  })
-  const gridFirstLevelDuels = gridArray.filter(elem => elem.level === level)
-  const gridFirstLevelDuelIds = map(gridFirstLevelDuels, 'id')
-  return gridFirstLevelDuelIds
+export function getRandomElementFromArray(array) {
+  const index = getRandomInt(0, array.length)
+  return array[index]
 }
 
 function emptyPlacesInDuel(grid, duelId) {
   const { fighterRed, fighterBlue } = grid[duelId]
   const emptyPlaces = []
-  if (fighterRed === '') emptyPlaces.push('Red')
-  if (fighterBlue === '') emptyPlaces.push('Blue')
+  if (!fighterRed) emptyPlaces.push('Red')
+  if (!fighterBlue) emptyPlaces.push('Blue')
   return emptyPlaces
+}
+
+export function toss() {
+  const { grid, participants } = store.getState().grid
+  // const gridBeginning = gridLevelDuelIds(grid, 1)
+  const participantsByTrainer = participantIdsGroupedByTrainer(participants)
+  console.log('participantsByTrainer', participantsByTrainer)
+  //ONE TRAINER
+  participantsByTrainer.forEach(participantsGroup => {
+    const participantsCountByOneTrainer = participantsGroup.length
+    //if there is 5, 6, 7 participants from one trainer and 8 duels in 1st tour,
+    //we should place them into 8 places, we split 1-st tour (8 places) into 8 equal parts
+    //in general we split grid beginning (1st tour) into nearest 2^N number
+    const nearest2toPowN = num => {
+      const log = getBaseLog(2, participantsCountByOneTrainer)
+      const pow = Math.ceil(log)
+      const result = Math.pow(2, pow)
+      return result
+    }
+
+    const gridBlockCount = nearest2toPowN(participantsCountByOneTrainer)
+    let gridBlocks = gridIntoArrayWithNBlocks(grid, gridBlockCount)
+    const distributeMask = spreadEvenly(participantsCountByOneTrainer, gridBlockCount, [], 'random')
+    gridBlocks = gridBlocks.filter((elem, index) => distributeMask[index])
+    //ONE ATHLETE
+    participantsGroup.forEach(athletId => {
+      //1) get random block and delete it from list
+      const randomBlockIndex = getRandomInt(0, gridBlocks.length)
+      const randomBlock = gridBlocks.splice(randomBlockIndex, 1)[0]
+      //2) get random duel from block and delete it from list
+      const randomBlockEmptyPlaces = randomBlock.map(duelId => {
+        const { grid } = store.getState().grid
+        const emptyPlaces = emptyPlacesInDuel(grid, duelId)
+        return { duelId, emptyPlaces }
+      })
+      const availableDuelsWithEmptyPlaces = randomBlockEmptyPlaces.filter(
+        duel => duel.emptyPlaces.length > 0
+      )
+      const randomDuel = getRandomElementFromArray(availableDuelsWithEmptyPlaces)
+      if (randomDuel) {
+        const { duelId } = randomDuel
+        const fighterColor = getRandomElementFromArray(randomDuel.emptyPlaces)
+        store.dispatch(updateFighter({ duelId, fighterColor, athletId }))
+      }
+    })
+  })
 }

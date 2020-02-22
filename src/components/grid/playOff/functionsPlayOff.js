@@ -1,4 +1,5 @@
 import { sum, map, groupBy } from 'lodash'
+import { getRandomElementFromArray } from './functionsToss'
 
 /**
  *
@@ -83,7 +84,7 @@ export function generateGrid(N) {
         const zeroTourIdealCount = Math.pow(2, tourCount - 1)
         const zeroTourFakeCount = zeroTourIdealCount - zeroTourRealCount
         const idealZeroTour = generateTourDuels(zeroTourIdealCount, 0)
-        const distributeMask = spreadEvenly(zeroTourRealCount, zeroTourIdealCount)
+        const distributeMask = spreadEvenly(zeroTourRealCount, zeroTourIdealCount, [], 'random')
         const realZeroTour = {}
         let duelId = 1
         distributeMask.forEach((elem, index) => {
@@ -162,6 +163,7 @@ export function participantsInGrid(grid) {
  * @param {number} count - any integer number
  * @param {number} positions - 2^N
  * @param {number[]} mask - accumulator array for recursive function
+ * @param {string} optionForExtra - "extraTop", "extraBottom", "random" - where will be placed extra values
  * @example
  * spreadEvenly(2, 8) // [1, 0, 0, 0, 1, 0, 0, 0]
  * spreadEvenly(3, 8) // [1, 0, 1, 0, 1, 0, 0, 0]
@@ -169,15 +171,15 @@ export function participantsInGrid(grid) {
  * spreadEvenly(5, 8) // [1, 1, 1, 0, 1, 0, 1, 0]
  * spreadEvenly(6, 8) // [1, 1, 1, 0, 1, 1, 1, 0]
  */
-export function spreadEvenly(count, positions, mask = []) {
+export function spreadEvenly(count, positions, mask = [], optionForExtra = 'extraTop') {
   if (count === 1 || getBaseLog(2, count) % 1 === 0) {
     const newMask = standartDistributeMask(count, positions)
     mask.push(...newMask)
   } else {
-    const newCounts = divide2(count)
+    const newCounts = divide2(count, optionForExtra)
     const newPositions = positions / 2
-    spreadEvenly(newCounts[0], newPositions, mask)
-    spreadEvenly(newCounts[1], newPositions, mask)
+    spreadEvenly(newCounts[0], newPositions, mask, optionForExtra)
+    spreadEvenly(newCounts[1], newPositions, mask, optionForExtra)
   }
   return mask
 }
@@ -185,14 +187,23 @@ export function spreadEvenly(count, positions, mask = []) {
 /**
  *
  * @param {number} count
+ * @param {string} option - "extraTop" (larger first), "extraBottom" (lower first), "random" - where will be placed extra values
  * @returns {number[]}
  * @example
- * divide2(7) // [3, 4]
- * divide2(13) // [6, 7]
+ * divide2(7, 'extraBottom) // [3, 4]
+ * divide2(7, 'extraTop) // [4, 3]
+ * divide2(13, 'extraBottom) // [6, 7]
+ * divide2(13, 'extraTop) // [7, 6]
  */
-export function divide2(count) {
+export function divide2(count, option = 'extraTop') {
   const result = []
-  result[0] = Math.ceil(count / 2)
+  const operations = {
+    extraTop: 'ceil',
+    extraBottom: 'floor',
+    random: getRandomElementFromArray(['ceil', 'floor'])
+  }
+  const operation = operations[option]
+  result[0] = Math[operation](count / 2)
   result[1] = count - result[0]
   return result
 }

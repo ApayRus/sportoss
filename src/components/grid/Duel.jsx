@@ -61,16 +61,20 @@ function DuelSimple(props) {
 
   let athletRedName, athletBlueName, trainerRedName, trainerBlueName
 
+  const emptyAthlet = { athlet: {}, trainer: {} }
+
   //populate fighters data by id
   if (fighterRed) {
-    const participantRedPopulated = find(participants, { athlet: { id: fighterRed } })
+    const participantRedPopulated =
+      find(participants, { athlet: { id: fighterRed } }) || emptyAthlet
     athletRedName = athletName(participantRedPopulated.athlet)
     trainerRedName = trainerName(participantRedPopulated.trainer)
   } else {
     athletRedName = ''
   }
   if (fighterBlue) {
-    const participantBluePopulated = find(participants, { athlet: { id: fighterBlue } })
+    const participantBluePopulated =
+      find(participants, { athlet: { id: fighterBlue } }) || emptyAthlet
     athletBlueName = athletName(participantBluePopulated.athlet)
     trainerBlueName = trainerName(participantBluePopulated.trainer)
   } else {

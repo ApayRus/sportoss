@@ -172,7 +172,7 @@ export function participantsInGrid(grid) {
  * spreadEvenly(6, 8) // [1, 1, 1, 0, 1, 1, 1, 0]
  */
 export function spreadEvenly(count, positions, mask = [], optionForExtra = 'extraTop') {
-  if (count === 1 || getBaseLog(2, count) % 1 === 0) {
+  if (getBaseLog(2, count) % 1 === 0) {
     const newMask = standartDistributeMask(count, positions)
     mask.push(...newMask)
   } else {

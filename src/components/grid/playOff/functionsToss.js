@@ -19,6 +19,9 @@ import { updateFighter } from '../../../store/gridActions'
  * splitArrayIntoNBlocks([1, 2, 3, 4, 5, 6, 7, 8], 2) // [ [1, 2, 3, 4], [5, 6, 7, 8] ]
  */
 function splitArrayIntoNBlocks(array, n) {
+  if (n >= array.length) {
+    n = array.length
+  }
   const blocks = []
   const blockSize = array.length / n
   while (array.length > 0) {
@@ -51,6 +54,14 @@ function gridIntoArrayWithNBlocks(grid, n) {
   gridArray = sortBy(gridArray, 'positionInTour')
   let firstTour = gridArray.filter(elem => elem.level === 1)
   firstTour = map(firstTour, 'id')
+  //if count of fighters larger than duels, we dive into single duels and
+  // and use their Red and Blue positions like free places for fighters
+  if (firstTour.length < n) {
+    const oldFirstTour = [...firstTour]
+    firstTour = []
+    oldFirstTour.forEach(elem => firstTour.push(elem, elem))
+    // [7, 8, 9, 10] => [7, 7, 8, 8, 9, 9, 10, 10]
+  }
   const splittedArray = splitArrayIntoNBlocks(firstTour, n)
   return splittedArray
 }
@@ -80,24 +91,69 @@ export function toss() {
   const { grid, participants } = store.getState().grid
   // const gridBeginning = gridLevelDuelIds(grid, 1)
   const participantsByTrainer = participantIdsGroupedByTrainer(participants)
-  console.log('participantsByTrainer', participantsByTrainer)
+
   //ONE TRAINER
   participantsByTrainer.forEach(participantsGroup => {
     const participantsCountByOneTrainer = participantsGroup.length
-    //if there is 5, 6, 7 participants from one trainer and 8 duels in 1st tour,
-    //we should place them into 8 places, we split 1-st tour (8 places) into 8 equal parts
-    //in general we split grid beginning (1st tour) into nearest 2^N number
+    /*  if there is 5, 6, 7 participants from one trainer and 8 duels in 1st tour,
+    we should place them into 8 places, we split 1-st tour (8 places) into 8 equal parts
+    in general we split grid beginning (1st tour) into nearest 2^N number */
     const nearest2toPowN = num => {
       const log = getBaseLog(2, participantsCountByOneTrainer)
       const pow = Math.ceil(log)
       const result = Math.pow(2, pow)
       return result
     }
-
     const gridBlockCount = nearest2toPowN(participantsCountByOneTrainer)
     let gridBlocks = gridIntoArrayWithNBlocks(grid, gridBlockCount)
     const distributeMask = spreadEvenly(participantsCountByOneTrainer, gridBlockCount, [], 'random')
+
     gridBlocks = gridBlocks.filter((elem, index) => distributeMask[index])
+    /* we did gridBlocks from 1st level duels (1st level means 2^n), 
+    that means there are ideally dividable into 2 on any step 
+    after that whe should include into this ideal blocks duels from 0tour, their count is any int number
+    after we add duel from 0 tour, we should take place in it's next duel (in 1st tour)
+    because this place will be taken by winner in 0 tour duel.*/
+    const zeroTourDuels = map(grid, (elem, key) => ({
+      duelId: key,
+      next: elem.next,
+      level: elem.level
+    })).filter(elem => elem.level === 0)
+
+    const addZeroTourDuelsAndFakeAthletsTo1stTour = () => {
+      zeroTourDuels.forEach(zeroDuel => {
+        const { grid } = store.getState().grid
+        const nextDuelId = zeroDuel.next
+        const fighterColor = grid[nextDuelId]['fighterRed'] ? 'Blue' : 'Red'
+        const athletId = 'fakeAthletId' //fake placeholder
+
+        gridBlocks.forEach((gridBlock, index) => {
+          if (gridBlock.includes(String(nextDuelId))) {
+            gridBlocks[index].push(zeroDuel.duelId)
+            store.dispatch(updateFighter({ duelId: nextDuelId, fighterColor, athletId }))
+            return
+          }
+        })
+      })
+    }
+    addZeroTourDuelsAndFakeAthletsTo1stTour()
+
+    //we'll clean all fake athlets after we finished with trainer block
+
+    const clearFakeAthlets = () => {
+      const { grid } = store.getState().grid
+      const gridDuelIds = Object.keys(grid)
+      gridDuelIds.forEach(duelId => {
+        const duel = grid[duelId]
+        if (duel.fighterRed === 'fakeAthletId') {
+          store.dispatch(updateFighter({ duelId, fighterColor: 'Red', athletId: '' }))
+        }
+        if (duel.fighterBlue === 'fakeAthletId') {
+          store.dispatch(updateFighter({ duelId, fighterColor: 'Blue', athletId: '' }))
+        }
+      })
+    }
+
     //ONE ATHLETE
     participantsGroup.forEach(athletId => {
       //1) get random block and delete it from list
@@ -119,5 +175,7 @@ export function toss() {
         store.dispatch(updateFighter({ duelId, fighterColor, athletId }))
       }
     })
+
+    clearFakeAthlets()
   })
 }

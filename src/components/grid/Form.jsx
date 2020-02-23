@@ -4,7 +4,8 @@ import { useFirestore, useFirebase } from 'react-redux-firebase'
 import { Select, Button, Typography, Box } from '@material-ui/core'
 import { Save as SaveIcon, Delete as DeleteIcon, Casino as TossIcon } from '@material-ui/icons'
 import { participantsInGrid, gridInfo } from './playOff/functionsPlayOff'
-import { toss } from './playOff/functionsToss'
+import { tossPlayOff } from './playOff/functionsToss'
+import { tossGroup } from './group/functionsToss'
 import { categoryName, tournamentName } from '../../config/functions'
 import GridPlayOff from './playOff/GridPlayOff'
 import ConsolationDuels from './playOff/ConsolationDuels'
@@ -114,9 +115,17 @@ function Form(props) {
   }
 
   const handleToss = () => {
+    if (gridType === 'allPlayAll') return
     const participantCount = participants.length
-    dispatch(createGrid({ gridType, participantCount }))
-    toss()
+
+    if (gridType === 'playOff') {
+      dispatch(createGrid({ gridType, participantCount }))
+      tossPlayOff()
+    }
+    if (gridType === 'group') {
+      tossGroup()
+      dispatch(createGrid({ gridType }))
+    }
   }
 
   useEffect(() => {

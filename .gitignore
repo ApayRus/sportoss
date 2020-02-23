@@ -9,6 +9,7 @@ launch.json
 
 #config
 src/config/firebase.js
+src/config/firebaseAdminKey.json
 /.firebase
 # testing
 /coverage

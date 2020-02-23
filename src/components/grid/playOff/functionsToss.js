@@ -6,10 +6,16 @@
  * 3) place Participants into Grid in random way
  */
 
-import { map, groupBy, sortBy } from 'lodash'
+import { map, sortBy } from 'lodash'
 import { getBaseLog, spreadEvenly } from './functionsPlayOff'
 import store from '../../../store/rootReducer'
 import { updateFighter } from '../../../store/gridActions'
+import {
+  participantIdsGroupedByTrainer,
+  getRandomInt,
+  getRandomElementFromArray
+} from '../functions'
+
 /**
  *
  * @param {string[]} array
@@ -30,20 +36,6 @@ function splitArrayIntoNBlocks(array, n) {
   }
   return blocks
 }
-
-/**
- * gets array of objects [{athlet:{id:"id1"}, trainer}, ...]
- * and returns array of arrays with ids [['id1', 'id2',...], [...]]
- *
- */
-function participantIdsGroupedByTrainer(participants) {
-  const groupedByTrainer = groupBy(participants, 'trainer.id')
-  const resultArray = map(groupedByTrainer, elem => {
-    return map(elem, 'athlet.id')
-  })
-  return resultArray
-}
-// participantIdsGroupedByTrainer(participants)
 
 /**
  * splits grid into N pieces . N = 2, 4, 8, 16,...
@@ -68,17 +60,6 @@ function gridIntoArrayWithNBlocks(grid, n) {
 
 // auto-placing participants into grid
 
-function getRandomInt(min, max) {
-  min = Math.ceil(min)
-  max = Math.floor(max)
-  return Math.floor(Math.random() * (max - min)) + min //Максимум не включается, минимум включается
-}
-
-export function getRandomElementFromArray(array) {
-  const index = getRandomInt(0, array.length)
-  return array[index]
-}
-
 function emptyPlacesInDuel(grid, duelId) {
   const { fighterRed, fighterBlue } = grid[duelId]
   const emptyPlaces = []
@@ -87,7 +68,7 @@ function emptyPlacesInDuel(grid, duelId) {
   return emptyPlaces
 }
 
-export function toss() {
+export function tossPlayOff() {
   const { grid, participants } = store.getState().grid
   // const gridBeginning = gridLevelDuelIds(grid, 1)
   const participantsByTrainer = participantIdsGroupedByTrainer(participants)

@@ -1,5 +1,5 @@
 import { sum, map, groupBy } from 'lodash'
-import { getRandomElementFromArray } from './functionsToss'
+import { getRandomElementFromArray } from '../functions'
 
 /**
  *

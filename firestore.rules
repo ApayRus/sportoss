@@ -33,6 +33,11 @@ service cloud.firestore {
       allow read: if isAuthorized()
       allow create, update: if haveRole("admin")
     }
+    
+      match /grids/{document} {
+      allow read: if isAuthorized()
+      allow create, update: if haveRole("admin")
+    }
 
     // athlets, applications 
 

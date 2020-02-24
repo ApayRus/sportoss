@@ -28,8 +28,7 @@ const mapStateToProps = state => {
 export default compose(
   connect(mapStateToProps),
   firestoreConnect(props => {
-    if (props.userId)
-      return [{ collection: 'trainers', where: [['createdBy.userId', '==', props.userId]] }]
+    if (props.userId) return [{ collection: 'trainers' }]
     else return []
   })
 )(PageFirebaseContainer)

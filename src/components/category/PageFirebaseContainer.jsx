@@ -7,14 +7,13 @@ import { map } from 'lodash'
 
 function PageFirebaseContainer(props) {
   const { categories: categoriesDoc } = useSelector(state => state.firestore.data)
-  const { auth, profile } = useSelector(state => state.firebase)
-  const { club } = profile
-  useFirestoreConnect([{ collection: 'categories', doc: club, storeAs: 'categories' }])
-  if (isLoaded(categoriesDoc, auth, profile)) {
+  const { profile } = useSelector(state => state.firebase)
+  useFirestoreConnect([{ collection: 'categories', doc: profile.club, storeAs: 'categories' }])
+  if (isLoaded(categoriesDoc, profile)) {
     const categories = map(categoriesDoc, (elem, key) => ({ id: key, ...elem })) || []
     const loadedProps = {
       categories,
-      club
+      profile
     }
 
     return <Page {...loadedProps} />

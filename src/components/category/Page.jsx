@@ -21,7 +21,7 @@ const fabStyle = {
 }
 
 function Page(props) {
-  const { categories, club } = props
+  const { categories, profile } = props
   const [isModalOpen, setModalOpen] = useState(false)
   const [modalData, setModalData] = useState({})
 
@@ -52,7 +52,7 @@ function Page(props) {
         showToolbarButtons={{ edit: true, delete: true, clone: true }}
         columns={columns}
         collection='categories'
-        doc={club}
+        doc={profile.club}
         title='Категории'
       />
       <Fab style={fabStyle} onClick={() => openModal(null)} color='primary' aria-label='Add'>
@@ -64,7 +64,7 @@ function Page(props) {
           data={modalData}
           closeModal={closeModal}
           collection='categories'
-          doc={club}
+          doc={profile.club}
         />
       )}
     </main>

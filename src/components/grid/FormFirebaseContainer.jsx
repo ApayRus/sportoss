@@ -71,16 +71,19 @@ function FormFirebaseContainer(props) {
   } else return <CircularProgress />
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, props) => {
   const userId = state.firebase.auth.uid
   const userName = state.firebase.profile.username
   const userRoles = state.firebase.profile.roles
-
-  const { tournament, category, grids } = state.firestore.data
+  const club = state.firebase.profile.club
+  const { categoryId } = props.match.params
+  const { tournament, categories, grids } = state.firestore.data
+  const category = categories[categoryId]
   const { allAthlets, allTrainers, applications } = state.firestore.ordered
 
   return {
     tournament,
+    club,
     category,
     grids,
     allAthlets,
@@ -99,10 +102,10 @@ const mapDispatchToProps = dispatch => ({
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),
   firestoreConnect(props => {
-    const { tournamentId, categoryId } = props.match.params
+    const { tournamentId } = props.match.params
     return [
       { collection: 'tournaments', doc: tournamentId, storeAs: 'tournament' },
-      { collection: 'categories', doc: categoryId, storeAs: 'category' },
+      { collection: 'categories', doc: props.club, storeAs: 'categories' },
       { collection: 'grids', doc: `${tournamentId}`, storeAs: 'grids' },
       { collection: 'applications', where: [['tournamentId', '==', tournamentId]] },
       { collection: 'athlets', storeAs: 'allAthlets' },

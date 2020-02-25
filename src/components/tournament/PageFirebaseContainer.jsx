@@ -1,4 +1,5 @@
 import React from 'react'
+import { map } from 'lodash'
 import { CircularProgress } from '@material-ui/core'
 import { connect } from 'react-redux'
 import { firestoreConnect, isLoaded } from 'react-redux-firebase'
@@ -26,15 +27,22 @@ function PageFirebaseContainer(props) {
 }
 
 const mapStateToProps = state => {
+  const categories = map(state.firestore.data.categories, (elem, key) => ({ id: key, ...elem }))
   return {
-    categories: state.firestore.ordered.categories,
+    categories,
     tournaments: state.firestore.ordered.tournaments,
     userId: state.firebase.auth.uid,
-    userName: state.firebase.profile.username
+    userName: state.firebase.profile.username,
+    club: state.firebase.profile.club
   }
 }
 
 export default compose(
   connect(mapStateToProps),
-  firestoreConnect([{ collection: 'categories' }, { collection: 'tournaments' }])
+  firestoreConnect(props => {
+    return [
+      { collection: 'categories', doc: props.club, storeAs: 'categories' },
+      { collection: 'tournaments' }
+    ]
+  })
 )(PageFirebaseContainer)

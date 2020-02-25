@@ -7,6 +7,9 @@
 
 launch.json
 
+#backup
+src/backupData
+
 #config
 src/config/firebase.js
 src/config/firebaseAdminKey.json

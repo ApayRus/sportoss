@@ -35,6 +35,21 @@ const printCollection = collection => {
     })
 }
 
+const deleteCollection = collection => {
+  db.collection(collection)
+    .get()
+    .then(querySnapshot => {
+      querySnapshot.forEach(doc => {
+        if (doc.id !== 'sibir') {
+          doc.ref.delete()
+        }
+      })
+    })
+    .catch(error => {
+      console.log('Error getting documents: ', error)
+    })
+}
+
 const readTrainersIntoOneDoc = () => {
   const trainers = {}
   db.collection('trainers')
@@ -74,7 +89,8 @@ const deleteField = (collection, doc, fieldId) => {
     })
 }
 
-readCategoriesIntoOneDoc()
+deleteCollection('categories')
+// readCategoriesIntoOneDoc()
 // printCollection('categories')
 // deleteField('categories', 'sibir', 'EjIWtBg4c6')
 // showCategoriesForClub('sibir')

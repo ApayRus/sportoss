@@ -118,8 +118,8 @@ class EnhancedTable extends React.Component {
             numSelected={selected.length}
             selected={selected}
             setSelection={this.setSelection}
-            editMode={this.props.editMode}
             collection={this.props.collection}
+            doc={this.props.doc}
             openModal={this.props.openModal}
             showToolbarButtons={this.props.showToolbarButtons}
             title={this.props.title}

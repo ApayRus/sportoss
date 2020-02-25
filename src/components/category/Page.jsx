@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { Fab } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'
-import DeletedIcon from '@material-ui/icons/Close'
 import Table from '../layouts/table/Table'
 import Form from './Form'
 import { categoryName } from '../../config/functions'
@@ -22,7 +21,7 @@ const fabStyle = {
 }
 
 function Page(props) {
-  const { categories, firestoreSet, club } = props
+  const { categories, club } = props
   const [isModalOpen, setModalOpen] = useState(false)
   const [modalData, setModalData] = useState({})
 
@@ -51,9 +50,9 @@ function Page(props) {
         data={tableData}
         openModal={openModal}
         showToolbarButtons={{ edit: true, delete: true, clone: true }}
-        editMode='doc'
         columns={columns}
         collection='categories'
+        doc={club}
         title='Категории'
       />
       <Fab style={fabStyle} onClick={() => openModal(null)} color='primary' aria-label='Add'>
@@ -64,8 +63,8 @@ function Page(props) {
           isModalOpen={isModalOpen}
           data={modalData}
           closeModal={closeModal}
-          firestoreSet={firestoreSet}
-          club={club}
+          collection='categories'
+          doc={club}
         />
       )}
     </main>

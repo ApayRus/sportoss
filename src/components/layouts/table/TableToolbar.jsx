@@ -14,12 +14,12 @@ import FilterListIcon from '@material-ui/icons/FilterList'
 
 /**
  * Table toolbar contain a custom set of actions: Delete, Clone, Edit
- * There is 2 main editMode for Table: doc and collection
  * table can represent:
- *  1) whole collection (row = doc)
- *  2) a single document (row = 1 key from object/map)
+ *  1) whole collection (row = doc), props.collection is set, props.doc is undefined
+ *  2) a single document (row = 1 key from object/map), props.collection and props.doc both are set
  *  depending on this, cloning and deletion will be different,
- *  and before we do this operations, we check editMode (doc or collection)
+ *  and before we do this operations, we check props.doc,
+ *  and either: rewrite only one key in object, or whole document
  */
 
 const toolbarStyles = theme => ({
@@ -44,20 +44,19 @@ const toolbarStyles = theme => ({
 const useStyles = makeStyles(toolbarStyles)
 
 function EnhancedTableToolbar(props) {
-  const { numSelected, showToolbarButtons, editMode } = props
+  const { numSelected, showToolbarButtons } = props
   const classes = useStyles()
-  const { openModal, selected = [], collection } = props
-  const { profile } = useSelector(state => state.firebase)
+  const { openModal, selected = [], collection, doc } = props
   const lastSelectedId = selected[selected.length - 1]
   const collectionData = useSelector(state => state.firestore.data[collection])
   const forClone = collectionData ? collectionData[lastSelectedId] : {}
   const firestore = useFirestore()
 
   const handleDelete = () => {
-    if (editMode === 'doc') {
+    if (doc) {
       selected.forEach(id => {
         const deleted = collectionData[id]['deleted'] ? false : true
-        firestore.set({ collection, doc: profile.club }, { [id]: { deleted } }, { merge: true })
+        firestore.set({ collection, doc }, { [id]: { deleted } }, { merge: true })
       })
     } else {
       selected.forEach(doc => {
@@ -71,15 +70,12 @@ function EnhancedTableToolbar(props) {
   }
 
   const handleClone = () => {
-    if (editMode === 'doc') {
+    if (doc) {
       const id = nanoid(10)
-      firestore
-        .set({ collection, doc: profile.club }, { [id]: forClone }, { merge: true })
-        .then(ref => {
-          props.setSelection([id])
-        })
+      firestore.set({ collection, doc }, { [id]: forClone }, { merge: true }).then(ref => {
+        props.setSelection([id])
+      })
     } else {
-      console.log('editMode', editMode)
       firestore
         .collection(collection)
         .add(forClone)

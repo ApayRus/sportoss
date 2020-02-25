@@ -29,7 +29,7 @@ const styles = {
 }
 
 function Form(props) {
-  const { isModalOpen, data, closeModal, club } = props
+  const { isModalOpen, data, closeModal, collection, doc } = props
   const firestore = useFirestore()
   const [formState, setFormState] = useState({})
 
@@ -48,11 +48,9 @@ function Form(props) {
   const handleSubmit = () => {
     //id is empty when we creates new entry, and id is filled when we edit an existent one
     const id = formState.id ? formState.id : nanoid(10)
-    firestore
-      .set({ collection: 'categories', doc: club }, { [id]: formState }, { merge: true })
-      .catch(error => {
-        console.log('firestoreSet error', error.message)
-      })
+    firestore.set({ collection, doc }, { [id]: formState }, { merge: true }).catch(error => {
+      console.log('firestoreSet error', error.message)
+    })
     handleCancel()
   }
 

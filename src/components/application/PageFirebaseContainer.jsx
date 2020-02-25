@@ -44,12 +44,13 @@ const mapStateToProps = state => {
   const sfo = state.firestore.ordered
   const applications = map(state.firestore.data.applications, (elem, key) => ({ ...elem, id: key }))
   const categories = map(state.firestore.data.categories, (elem, key) => ({ ...elem, id: key }))
+  const trainers = map(state.firestore.data.trainers, (elem, key) => ({ ...elem, id: key }))
   return {
     athlets: sfo.athlets,
     applications,
     categories,
     tournaments: sfo.tournaments,
-    trainers: sfo.trainers,
+    trainers,
     userId: state.firebase.auth.uid,
     userName: state.firebase.profile.username,
     club: state.firebase.profile.club,
@@ -70,8 +71,8 @@ export default compose(
         { collection: 'athlets', ...userFilter },
         { collection: 'applications', ...userFilter },
         { collection: 'categories', doc: props.club, storeAs: 'categories' },
-        { collection: 'tournaments' },
-        { collection: 'trainers' }
+        { collection: 'trainers', doc: props.club, storeAs: 'trainers' },
+        { collection: 'tournaments' }
       ]
     } else return []
   })

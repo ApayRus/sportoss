@@ -16,11 +16,11 @@ import Form from './Form'
 function FormFirebaseContainer(props) {
   const {
     tournament,
-    category,
+    categories,
     grids,
     applications,
     allAthlets,
-    allTrainers,
+    trainers,
     setGridParameter
     /*
     userId,
@@ -32,9 +32,11 @@ function FormFirebaseContainer(props) {
 
   let participants = []
 
-  if (isLoaded(tournament, category, applications, allAthlets, allTrainers)) {
+  if (isLoaded(tournament, categories, applications, allAthlets, trainers)) {
     participants = participantsGroupedByCategories(applications)[categoryId]
     participants = sortParticipantsByTrainerFrequency(participants)
+    const allTrainers = map(trainers, (elem, key) => ({ ...elem, id: key }))
+    const category = categories[categoryId]
     const trainerColorMap = trainerColors(participants)
     participants = map(participants).map(elem => {
       const athlet = find(allAthlets, { id: elem.athletId })
@@ -73,21 +75,17 @@ function FormFirebaseContainer(props) {
 
 const mapStateToProps = (state, props) => {
   const userId = state.firebase.auth.uid
-  const userName = state.firebase.profile.username
-  const userRoles = state.firebase.profile.roles
-  const club = state.firebase.profile.club
-  const { categoryId } = props.match.params
-  const { tournament, categories, grids } = state.firestore.data
-  const category = categories[categoryId]
-  const { allAthlets, allTrainers, applications } = state.firestore.ordered
+  const { username: userName, userRoles, club } = state.firebase.profile
+  const { tournament, categories, grids, trainers } = state.firestore.data
+  const { allAthlets, applications } = state.firestore.ordered
 
   return {
     tournament,
     club,
-    category,
+    categories,
     grids,
     allAthlets,
-    allTrainers,
+    trainers,
     applications,
     userId,
     userName,
@@ -106,10 +104,10 @@ export default compose(
     return [
       { collection: 'tournaments', doc: tournamentId, storeAs: 'tournament' },
       { collection: 'categories', doc: props.club, storeAs: 'categories' },
+      { collection: 'trainers', doc: props.club, storeAs: 'trainers' },
       { collection: 'grids', doc: `${tournamentId}`, storeAs: 'grids' },
       { collection: 'applications', where: [['tournamentId', '==', tournamentId]] },
-      { collection: 'athlets', storeAs: 'allAthlets' },
-      { collection: 'trainers', storeAs: 'allTrainers' }
+      { collection: 'athlets', storeAs: 'allAthlets' }
     ]
   })
 )(FormFirebaseContainer)

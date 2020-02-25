@@ -78,14 +78,13 @@ export class Page extends Component {
 }
 
 const mapStateToProps = state => {
-  const categories = map(state.firestore.data.categories, (elem, key) => ({
-    id: key,
-    ...elem
-  }))
+  const { categories, trainers } = state.firestore.data
+  const allCategories = map(categories, (elem, key) => ({ id: key, ...elem }))
+  const allTrainers = map(trainers, (elem, key) => ({ ...elem, id: key }))
   return {
     tournament: state.firestore.data.tournament,
-    allCategories: categories,
-    allTrainers: state.firestore.ordered.allTrainers,
+    allCategories,
+    allTrainers,
     allAthlets: state.firestore.ordered.allAthlets,
     applications: state.firestore.ordered.applications,
     club: state.firebase.profile.club
@@ -99,8 +98,8 @@ export default compose(
     return [
       { collection: 'tournaments', doc: tournamentId, storeAs: 'tournament' },
       { collection: 'categories', doc: props.club, storeAs: 'categories' },
+      { collection: 'trainers', doc: props.club, storeAs: 'trainers' },
       { collection: 'athlets', storeAs: 'allAthlets' },
-      { collection: 'trainers', storeAs: 'allTrainers' },
       { collection: 'applications', where: [['tournamentId', '==', tournamentId]] }
     ]
   })

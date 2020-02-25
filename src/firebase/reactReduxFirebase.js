@@ -5,7 +5,14 @@ import { createFirestoreInstance } from 'redux-firestore'
 // react-redux-firebase config
 const rrfConfig = {
   userProfile: 'users',
-  useFirestoreForProfile: true // Firestore for Profile instead of Realtime DB
+  useFirestoreForProfile: true,
+  profileFactory: (userData, profileData) => {
+    return {
+      ...profileData,
+      userId: userData.user.uid,
+      email: userData.user.email
+    }
+  }
 }
 
 const rrfProps = {

@@ -23,7 +23,7 @@ const styles = {
 export function Page(props) {
   const [isModalOpen, setModalOpen] = useState(false)
   const [modalData, setModalData] = useState({})
-  const { trainers, userId, userName, firestoreAdd, firestoreUpdate, firestoreDelete } = props
+  const { trainers, profile } = props
 
   const openModal = id => {
     const defaultFormData = {
@@ -41,9 +41,10 @@ export function Page(props) {
   }
 
   const tableData = trainers.map(trainer => {
+    const isDeleted = trainer.deleted ? '(x) ' : ''
     return {
       ...trainer,
-      name: `${trainer.familyName} ${trainer.firstName} ${trainer.fatherName}`
+      name: `${isDeleted} ${trainer.familyName} ${trainer.firstName} ${trainer.fatherName}`
     }
   })
 
@@ -52,9 +53,10 @@ export function Page(props) {
       <Table
         data={tableData}
         openModal={openModal}
-        firestoreDelete={firestoreDelete} showToolbarButtons={{ edit: true, clone:true }}
+        showToolbarButtons={{ edit: true, clone: true, delete: true }}
         columns={columnsTrainers}
         collection='trainers'
+        doc={profile.club}
         title='Спортсмены'
       />
 
@@ -66,10 +68,8 @@ export function Page(props) {
           isModalOpen={isModalOpen}
           data={modalData}
           closeModal={closeModal}
-          firestoreAdd={firestoreAdd}
-          firestoreUpdate={firestoreUpdate}
-          userId={userId}
-          userName={userName}
+          collection='trainers'
+          doc={profile.club}
         />
       )}
     </div>

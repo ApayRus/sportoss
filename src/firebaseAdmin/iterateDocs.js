@@ -89,7 +89,7 @@ const deleteField = (collection, doc, fieldId) => {
     })
 }
 
-deleteCollection('categories')
+deleteCollection('trainers')
 // readCategoriesIntoOneDoc()
 // printCollection('categories')
 // deleteField('categories', 'sibir', 'EjIWtBg4c6')

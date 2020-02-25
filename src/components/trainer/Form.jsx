@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-
+import nanoid from 'nanoid'
+import { useFirestore } from 'react-redux-firebase'
 import {
   Button,
   TextField,
@@ -12,8 +13,8 @@ import {
 } from '@material-ui/core'
 
 function Form(props) {
-  const { isModalOpen, data, closeModal, firestoreAdd, firestoreUpdate, userId, userName } = props
-
+  const { isModalOpen, data, closeModal, collection, doc } = props
+  const firestore = useFirestore()
   const [formState, setFormState] = useState({})
 
   useEffect(() => {
@@ -27,23 +28,12 @@ function Form(props) {
   const handleChange = field => e => {
     setFormState({ ...formState, [field]: e.target.value.trim() })
   }
-
   const handleSubmit = () => {
-    const createdBy = { userId, userName }
-    //id is empty when we creates new endtry, and filled when we edit an existen one
-    if (!formState.id) {
-      firestoreAdd({ collection: 'trainers' }, { ...formState, createdBy }).catch(error => {
-        console.log('firestoreAdd error', error)
-      })
-    } else {
-      firestoreUpdate(
-        { collection: 'trainers', doc: formState.id },
-        { ...formState, createdBy }
-      ).catch(error => {
-        console.log('firestoreUpdate error', error)
-      })
-    }
-
+    //id is empty when we creates new entry, and id is filled when we edit an existent one
+    const id = formState.id ? formState.id : nanoid(10)
+    firestore.set({ collection, doc }, { [id]: formState }, { merge: true }).catch(error => {
+      console.log('firestoreSet error', error.message)
+    })
     handleCancel()
   }
 

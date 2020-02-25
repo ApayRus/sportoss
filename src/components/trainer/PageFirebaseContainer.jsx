@@ -1,34 +1,22 @@
 import React from 'react'
 import { CircularProgress } from '@material-ui/core'
-import { connect } from 'react-redux'
-import { firestoreConnect, isLoaded } from 'react-redux-firebase'
-import { compose } from 'redux'
+import { useSelector } from 'react-redux'
+import { useFirestoreConnect, isLoaded } from 'react-redux-firebase'
 import Page from './Page'
+import { map } from 'lodash'
 
 export function PageFirebaseContainer(props) {
-  const { trainers, userId, userName } = props
-  const { add: firestoreAdd, update: firestoreUpdate, delete: firestoreDelete } = props.firestore
-  const loadedProps = { trainers, userId, userName, firestoreAdd, firestoreUpdate, firestoreDelete }
+  const { profile } = useSelector(state => state.firebase)
+  const { trainers: trainersDoc } = useSelector(state => state.firestore.data)
+  useFirestoreConnect([{ collection: 'trainers', doc: profile.club, storeAs: 'trainers' }])
 
-  if (isLoaded(trainers)) {
+  if (isLoaded(trainersDoc, profile)) {
+    const trainers = map(trainersDoc, (elem, key) => ({ id: key, ...elem })) || []
+    const loadedProps = { trainers, profile }
     return <Page {...loadedProps} />
   } else {
     return <CircularProgress />
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    trainers: state.firestore.ordered.trainers,
-    userId: state.firebase.auth.uid,
-    userName: state.firebase.profile.username
-  }
-}
-
-export default compose(
-  connect(mapStateToProps),
-  firestoreConnect(props => {
-    if (props.userId) return [{ collection: 'trainers' }]
-    else return []
-  })
-)(PageFirebaseContainer)
+export default PageFirebaseContainer

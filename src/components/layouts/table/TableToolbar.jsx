@@ -9,8 +9,18 @@ import CopyIcon from '@material-ui/icons/FileCopy'
 import EditIcon from '@material-ui/icons/Edit'
 import { useFirestore } from 'react-redux-firebase'
 import { useSelector } from 'react-redux'
-
+import nanoid from 'nanoid'
 import FilterListIcon from '@material-ui/icons/FilterList'
+
+/**
+ * Table toolbar contain a custom set of actions: Delete, Clone, Edit
+ * There is 2 main editMode for Table: doc and collection
+ * table can represent:
+ *  1) whole collection (row = doc)
+ *  2) a single document (row = 1 key from object/map)
+ *  depending on this, cloning and deletion will be different,
+ *  and before we do this operations, we check editMode (doc or collection)
+ */
 
 const toolbarStyles = theme => ({
   root: {
@@ -34,35 +44,49 @@ const toolbarStyles = theme => ({
 const useStyles = makeStyles(toolbarStyles)
 
 function EnhancedTableToolbar(props) {
-  const { numSelected, showToolbarButtons } = props
-  // console.log('showToolbarButtons', showToolbarButtons)
+  const { numSelected, showToolbarButtons, editMode } = props
   const classes = useStyles()
-  const { openModal, selected, collection } = props
-  const forClone = useSelector(state => {
-    const id = selected[selected.length - 1]
-    const forClone = state.firestore.data[collection][id]
-    return forClone
-  })
+  const { openModal, selected = [], collection } = props
+  const { profile } = useSelector(state => state.firebase)
+  const lastSelectedId = selected[selected.length - 1]
+  const collectionData = useSelector(state => state.firestore.data[collection])
+  const forClone = collectionData ? collectionData[lastSelectedId] : {}
   const firestore = useFirestore()
 
   const handleDelete = () => {
-    const { firestoreDelete, collection } = props
-    selected.forEach(doc => {
-      firestoreDelete({ collection, doc })
-    })
+    if (editMode === 'doc') {
+      selected.forEach(id => {
+        const deleted = collectionData[id]['deleted'] ? false : true
+        firestore.set({ collection, doc: profile.club }, { [id]: { deleted } }, { merge: true })
+      })
+    } else {
+      selected.forEach(doc => {
+        firestore.delete({ collection, doc })
+      })
+    }
   }
 
   const handleEdit = () => {
-    openModal(selected[selected.length - 1])
+    openModal(lastSelectedId)
   }
 
   const handleClone = () => {
-    firestore
-      .collection(collection)
-      .add(forClone)
-      .then(ref => {
-        props.setSelection([ref.id])
-      })
+    if (editMode === 'doc') {
+      const id = nanoid(10)
+      firestore
+        .set({ collection, doc: profile.club }, { [id]: forClone }, { merge: true })
+        .then(ref => {
+          props.setSelection([id])
+        })
+    } else {
+      console.log('editMode', editMode)
+      firestore
+        .collection(collection)
+        .add(forClone)
+        .then(ref => {
+          props.setSelection([ref.id])
+        })
+    }
   }
 
   const { title } = props

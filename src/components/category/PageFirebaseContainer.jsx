@@ -1,26 +1,22 @@
 import React from 'react'
 import { CircularProgress } from '@material-ui/core'
 import { useSelector } from 'react-redux'
-import { isLoaded, useFirestoreConnect, useFirestore } from 'react-redux-firebase'
+import { isLoaded, useFirestoreConnect } from 'react-redux-firebase'
 import Page from './Page'
+import { map } from 'lodash'
 
 function PageFirebaseContainer(props) {
-  useFirestoreConnect([{ collection: 'categories' }])
-  const firestore = useFirestore()
-  const { add: firestoreAdd, update: firestoreUpdate, delete: firestoreDelete } = firestore
-  const { categories } = useSelector(state => state.firestore.ordered)
-  const { uid: userId } = useSelector(state => state.firebase.auth)
-  const { username: userName } = useSelector(state => state.firebase.profile)
-  const loadedProps = {
-    categories,
-    userId,
-    userName,
-    firestoreAdd,
-    firestoreUpdate,
-    firestoreDelete
-  }
+  const { categories: categoriesDoc } = useSelector(state => state.firestore.data)
+  const { auth, profile } = useSelector(state => state.firebase)
+  const { club } = profile
+  useFirestoreConnect([{ collection: 'categories', doc: club, storeAs: 'categories' }])
+  if (isLoaded(categoriesDoc, auth, profile)) {
+    const categories = map(categoriesDoc, (elem, key) => ({ id: key, ...elem })) || []
+    const loadedProps = {
+      categories,
+      club
+    }
 
-  if (isLoaded(categories)) {
     return <Page {...loadedProps} />
   } else {
     return <CircularProgress />

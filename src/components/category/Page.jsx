@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Fab } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'
-
+import DeletedIcon from '@material-ui/icons/Close'
 import Table from '../layouts/table/Table'
 import Form from './Form'
 import { categoryName } from '../../config/functions'
@@ -22,7 +22,7 @@ const fabStyle = {
 }
 
 function Page(props) {
-  const { categories, userId, userName, firestoreAdd, firestoreUpdate, firestoreDelete } = props
+  const { categories, firestoreSet, club } = props
   const [isModalOpen, setModalOpen] = useState(false)
   const [modalData, setModalData] = useState({})
 
@@ -37,16 +37,21 @@ function Page(props) {
     setModalOpen(false)
   }
 
-  const tableData = categories.map(cat => ({ id: cat.id, categoryName: categoryName(cat) }))
+  const tableData = categories.map(cat => {
+    const isDeleted = cat.deleted ? '(x) ' : ''
+    return {
+      id: cat.id,
+      categoryName: isDeleted + categoryName(cat)
+    }
+  })
 
   return (
     <main>
       <Table
         data={tableData}
-        // handleSelected={this.getSelected}
         openModal={openModal}
-        showToolbarButtons={{ edit: true, clone: true }}
-        firestoreDelete={firestoreDelete}
+        showToolbarButtons={{ edit: true, delete: true, clone: true }}
+        editMode='doc'
         columns={columns}
         collection='categories'
         title='Категории'
@@ -59,10 +64,8 @@ function Page(props) {
           isModalOpen={isModalOpen}
           data={modalData}
           closeModal={closeModal}
-          firestoreAdd={firestoreAdd}
-          firestoreUpdate={firestoreUpdate}
-          userId={userId}
-          userName={userName}
+          firestoreSet={firestoreSet}
+          club={club}
         />
       )}
     </main>

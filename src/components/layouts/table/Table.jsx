@@ -118,7 +118,7 @@ class EnhancedTable extends React.Component {
             numSelected={selected.length}
             selected={selected}
             setSelection={this.setSelection}
-            firestoreDelete={this.props.firestoreDelete}
+            editMode={this.props.editMode}
             collection={this.props.collection}
             openModal={this.props.openModal}
             showToolbarButtons={this.props.showToolbarButtons}

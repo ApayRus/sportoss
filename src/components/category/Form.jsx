@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-
+import nanoid from 'nanoid'
+import { useFirestore } from 'react-redux-firebase'
 import {
   Button,
   TextField,
@@ -28,8 +29,8 @@ const styles = {
 }
 
 function Form(props) {
-  const { isModalOpen, data, closeModal, firestoreAdd, firestoreUpdate, userId, userName } = props
-
+  const { isModalOpen, data, closeModal, club } = props
+  const firestore = useFirestore()
   const [formState, setFormState] = useState({})
 
   useEffect(() => {
@@ -45,25 +46,13 @@ function Form(props) {
   }
 
   const handleSubmit = () => {
-    // category = { id, gender, minAge, maxAge, weight }
-    const createdBy = {
-      userName,
-      userId
-    }
-    //id is empty when we creates new endtry, and filled when we edit an existen one
-    if (!formState.id) {
-      firestoreAdd({ collection: 'categories' }, { ...formState, createdBy }).catch(error => {
-        console.log('firestoreAdd error', error.message)
+    //id is empty when we creates new entry, and id is filled when we edit an existent one
+    const id = formState.id ? formState.id : nanoid(10)
+    firestore
+      .set({ collection: 'categories', doc: club }, { [id]: formState }, { merge: true })
+      .catch(error => {
+        console.log('firestoreSet error', error.message)
       })
-    } else {
-      firestoreUpdate(
-        { collection: 'categories', doc: formState.id },
-        { ...formState, createdBy }
-      ).catch(error => {
-        console.log('firestoreUpdate error', error.message)
-      })
-    }
-
     handleCancel()
   }
 

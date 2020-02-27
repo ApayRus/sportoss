@@ -8,8 +8,8 @@ import ListPage from './GridListPage'
 import { CircularProgress } from '@material-ui/core'
 
 export function Page(props) {
-  const { tournament, allCategories, applications, grids } = props
-  const loadedProps = { tournament, allCategories, applications, grids }
+  const { tournament, allCategories, applications, grids, profile } = props
+  const loadedProps = { tournament, allCategories, applications, grids, profile }
   if (isLoaded(allCategories, tournament, applications, grids)) {
     return <ListPage {...loadedProps} />
   } else {
@@ -27,7 +27,7 @@ const mapStateToProps = state => {
     allCategories: categories,
     applications: state.firestore.ordered.applications,
     grids: state.firestore.data.grids,
-    club: state.firebase.profile.club
+    profile: state.firebase.profile
   }
 }
 
@@ -38,7 +38,7 @@ export default compose(
     return [
       { collection: 'tournaments', doc: tournamentId, storeAs: 'tournament' },
       { collection: 'grids', doc: `${tournamentId}`, storeAs: 'grids' },
-      { collection: 'categories', doc: props.club, storeAs: 'categories' },
+      { collection: 'categories', doc: props.profile.club, storeAs: 'categories' },
       { collection: 'applications', where: [['tournamentId', '==', tournamentId]] }
     ]
   })

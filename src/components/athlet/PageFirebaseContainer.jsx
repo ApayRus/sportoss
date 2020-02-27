@@ -1,40 +1,27 @@
 import React from 'react'
 import { CircularProgress } from '@material-ui/core'
-import { connect } from 'react-redux'
-import { firestoreConnect, isLoaded } from 'react-redux-firebase'
-import { compose } from 'redux'
+import { useSelector } from 'react-redux'
+import { isLoaded, useFirestoreConnect } from 'react-redux-firebase'
 import Page from './Page'
+import { map } from 'lodash'
 
-export function PageFirebaseContainer(props) {
-  const { athlets, userId, userName /* isAdmin */ } = props
-  const { add: firestoreAdd, update: firestoreUpdate, delete: firestoreDelete } = props.firestore
-  const loadedProps = { athlets, userId, userName, firestoreAdd, firestoreUpdate, firestoreDelete }
+function PageFirebaseContainer(props) {
+  const { athletes: athletsDoc } = useSelector(state => state.firestore.data)
+  const { profile } = useSelector(state => state.firebase)
+  useFirestoreConnect([{ collection: 'athletes', doc: profile.userId, storeAs: 'athletes' }])
+  if (isLoaded(athletsDoc, profile)) {
+    let athlets = map(athletsDoc, (elem, key) => ({ id: key, ...elem })) || []
+    athlets = athlets.filter(elem => elem.id !== 'club')
+    //we store club near by athletes then we should remove it before show athletes
+    const loadedProps = {
+      athlets,
+      profile
+    }
 
-  if (isLoaded(athlets)) {
     return <Page {...loadedProps} />
   } else {
     return <CircularProgress />
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    athlets: state.firestore.ordered.athlets,
-    userId: state.firebase.auth.uid,
-    userName: state.firebase.profile.username,
-    isAdmin:
-      isLoaded(state.firebase.profile) && !state.firebase.profile.isEmpty
-        ? state.firebase.profile.roles.admin
-        : false
-  }
-}
-
-export default compose(
-  connect(mapStateToProps),
-  firestoreConnect(props => {
-    if (props.userId) {
-      const userFilter = props.isAdmin ? {} : { where: [['createdBy.userId', '==', props.userId]] }
-      return [{ collection: 'athlets', ...userFilter }]
-    } else return []
-  })
-)(PageFirebaseContainer)
+export default PageFirebaseContainer

@@ -46,6 +46,11 @@ service cloud.firestore {
       allow update: if isOwner() || haveRole("admin")
     }
 
+    match /athletes/{trainerId} {
+      allow read: if isAuthorized() //should be from the same club
+      allow create, update: if request.auth.uid == trainerId || haveRole("admin");
+    }
+
       match /applications/{document} {
       allow read, create: if isAuthorized()
       allow update: if isOwner() || haveRole("admin")

@@ -11,12 +11,14 @@ import { ageAtDate } from '../../config/functions'
 
 export class Page extends Component {
   render() {
-    const { tournament, allCategories, allTrainers, allAthlets, applications } = this.props
+    const { tournament, categories, trainers, athletes, applications } = this.props
     let participantsCount = 0
     let participants = []
-    if (isLoaded(allCategories, allTrainers, allAthlets, tournament, applications)) {
+    if (isLoaded(categories, trainers, athletes, tournament, applications)) {
       const tournamentParticipantsInfo = summarizeTournamentParticipants(applications)
-
+      const allCategories = map(categories, (elem, key) => ({ id: key, ...elem }))
+      const allTrainers = map(trainers, (elem, key) => ({ ...elem, id: key }))
+      const allAthlets = map(athletes, (elem, key) => ({ ...elem, id: key }))
       const { participants: rawParticipants } = tournamentParticipantsInfo // {athletId, categoryId, trainerId}
       participants = map(rawParticipants).map(elem => {
         const athlet = find(allAthlets, { id: elem.athletId })
@@ -78,16 +80,15 @@ export class Page extends Component {
 }
 
 const mapStateToProps = state => {
-  const { categories, trainers } = state.firestore.data
-  const allCategories = map(categories, (elem, key) => ({ id: key, ...elem }))
-  const allTrainers = map(trainers, (elem, key) => ({ ...elem, id: key }))
+  const { categories, trainers, athletes } = state.firestore.data
   return {
     tournament: state.firestore.data.tournament,
-    allCategories,
-    allTrainers,
-    allAthlets: state.firestore.ordered.allAthlets,
+    categories,
+    trainers,
+    athletes,
     applications: state.firestore.ordered.applications,
-    club: state.firebase.profile.club
+    club: state.firebase.profile.club,
+    userId: state.firebase.profile.userId
   }
 }
 
@@ -99,7 +100,7 @@ export default compose(
       { collection: 'tournaments', doc: tournamentId, storeAs: 'tournament' },
       { collection: 'categories', doc: props.club, storeAs: 'categories' },
       { collection: 'trainers', doc: props.club, storeAs: 'trainers' },
-      { collection: 'athlets', storeAs: 'allAthlets' },
+      { collection: 'athletes', doc: props.userId, storeAs: 'athletes' },
       { collection: 'applications', where: [['tournamentId', '==', tournamentId]] }
     ]
   })

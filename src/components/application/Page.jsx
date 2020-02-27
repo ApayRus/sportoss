@@ -25,19 +25,8 @@ const styles = {
 export function Page(props) {
   const [isModalOpen, setModalOpen] = useState(false)
   const [modalData, setModalData] = useState({})
-  const {
-    athlets,
-    applications,
-    categories,
-    tournaments,
-    trainers,
-    userId,
-    userName,
-    firestoreAdd,
-    firestoreUpdate,
-    firestoreDelete
-  } = props
-
+  const { athlets, applications, categories, tournaments, trainers, profile } = props
+  const { userId } = profile
   const openModal = id => {
     const defaultFormData = {
       tournamentId: '',
@@ -63,8 +52,13 @@ export function Page(props) {
   // admin is open application of other trainer, and list of athlets in form contains from this trainer's athlets
   // admin or trainer adds new applications, athlets list filtered by current userId
   const filteredAthlets = modalData.id
-    ? athlets.filter(athlet => modalData.createdBy.userId === athlet.createdBy.userId)
-    : athlets.filter(athlet => userId === athlet.createdBy.userId)
+    ? athlets.filter(athlet => {
+        return modalData.createdBy.userId === athlet.created.userId
+      })
+    : athlets.filter(athlet => {
+        console.log('athlet', athlet)
+        return userId === athlet.created.userId
+      })
 
   const modalFormProps = {
     athlets: filteredAthlets,
@@ -74,10 +68,8 @@ export function Page(props) {
     trainers,
     isModalOpen,
     closeModal,
-    firestoreAdd,
-    firestoreUpdate,
-    userId,
-    userName
+    profile,
+    collection: 'applications'
   }
 
   return (
@@ -85,7 +77,6 @@ export function Page(props) {
       <Table
         data={tableData}
         openModal={openModal}
-        firestoreDelete={firestoreDelete}
         showToolbarButtons={{ edit: true, clone: true }}
         columns={columns}
         collection='applications'

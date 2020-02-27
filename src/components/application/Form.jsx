@@ -15,6 +15,7 @@ import { tournamentName } from '../../config/functions'
 import AthletTable from '../layouts/table/Table'
 import Select from './FormSelect'
 import athletsWithCategoriesTrainers from './FormAthlets'
+import { useFirestore } from 'react-redux-firebase'
 
 const columns = [
   { id: 'participant', numeric: false, disablePadding: false, label: 'Участник' },
@@ -31,15 +32,13 @@ function Form(props) {
     trainers,
     isModalOpen,
     closeModal,
-    firestoreAdd,
-    firestoreUpdate,
-    userId,
-    userName
+    profile
   } = props
-  // console.log('data', data)
+
+  const { userId, userName } = profile
   const [formState, setFormState] = useState({ tournamentId: '', participants: {} })
   const [selected, setSelected] = useState([])
-
+  const firestore = useFirestore()
   useEffect(() => {
     //component will mount
     // console.log('setFormState(data)', data)
@@ -54,7 +53,6 @@ function Form(props) {
   const handleSubmit = () => {
     //only selected participants should enter into the app
     const participants = { ...formState.participants }
-    console.log('participants before delete', participants)
     Object.keys(participants).forEach(key => {
       if (!selected.includes(key)) {
         delete participants[key]
@@ -65,17 +63,16 @@ function Form(props) {
     //id is empty when we creates new endtry, and filled when we edit an existen one
     if (!formState.id) {
       const createdBy = { userId, userName }
-      firestoreAdd({ collection: 'applications' }, { ...newFormState, createdBy }).catch(error => {
+      firestore.add({ collection: 'applications' }, { ...newFormState, createdBy }).catch(error => {
         console.log('firestoreAdd error', error)
       })
     } else {
       const updatedBy = { userId, userName }
-      firestoreUpdate(
-        { collection: 'applications', doc: formState.id },
-        { ...newFormState, updatedBy }
-      ).catch(error => {
-        console.log('firestoreUpdate error', error)
-      })
+      firestore
+        .set({ collection: 'applications', doc: formState.id }, { ...newFormState, updatedBy })
+        .catch(error => {
+          console.log('firestoreUpdate error', error)
+        })
     }
 
     handleCancel()

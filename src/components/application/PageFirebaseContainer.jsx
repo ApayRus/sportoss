@@ -8,32 +8,28 @@ import Page from './Page'
 
 export function PageFirebaseContainer(props) {
   const {
-    athlets,
-    applications,
-    categories,
+    athletes: athletesDoc,
+    applications: applicationsDoc,
+    categories: categoriesDoc,
+    trainers: trainersDoc,
     tournaments,
-    trainers,
-    userId,
-    userName,
-    isAdmin
+    profile
   } = props
-  const { add: firestoreAdd, update: firestoreUpdate, delete: firestoreDelete } = props.firestore
-  const loadedProps = {
-    athlets,
-    applications,
-    categories,
-    tournaments,
-    trainers,
-    userId,
-    userName,
-    isAdmin,
-    firestoreAdd,
-    firestoreUpdate,
-    firestoreDelete
-  }
 
-  if (isLoaded(athlets, applications, categories, tournaments, trainers)) {
-    console.log('categories', categories)
+  if (isLoaded(athletesDoc, applicationsDoc, categoriesDoc, trainersDoc, tournaments, profile)) {
+    const applications = map(applicationsDoc, (elem, key) => ({ ...elem, id: key }))
+    const categories = map(categoriesDoc, (elem, key) => ({ ...elem, id: key }))
+    const trainers = map(trainersDoc, (elem, key) => ({ ...elem, id: key }))
+    let athlets = map(athletesDoc, (elem, key) => ({ ...elem, id: key }))
+    athlets = athlets.filter(elem => elem.id !== 'club')
+    const loadedProps = {
+      athlets,
+      applications,
+      categories,
+      tournaments,
+      trainers,
+      profile
+    }
     return <Page {...loadedProps} />
   } else {
     return <CircularProgress />
@@ -41,37 +37,29 @@ export function PageFirebaseContainer(props) {
 }
 
 const mapStateToProps = state => {
-  const sfo = state.firestore.ordered
-  const applications = map(state.firestore.data.applications, (elem, key) => ({ ...elem, id: key }))
-  const categories = map(state.firestore.data.categories, (elem, key) => ({ ...elem, id: key }))
-  const trainers = map(state.firestore.data.trainers, (elem, key) => ({ ...elem, id: key }))
+  const { athletes, applications, categories, trainers } = state.firestore.data
   return {
-    athlets: sfo.athlets,
+    athletes,
     applications,
     categories,
-    tournaments: sfo.tournaments,
     trainers,
-    userId: state.firebase.auth.uid,
-    userName: state.firebase.profile.username,
-    club: state.firebase.profile.club,
-    isAdmin:
-      isLoaded(state.firebase.profile) && !state.firebase.profile.isEmpty
-        ? state.firebase.profile.roles.admin
-        : false
+    tournaments: state.firestore.ordered.tournaments,
+    profile: state.firebase.profile
   }
 }
 
 export default compose(
   connect(mapStateToProps),
   firestoreConnect(props => {
-    if (props.userId) {
+    const { userId, club } = props.profile
+    if (userId) {
       // const userFilter = props.isAdmin ? {} : { where: [['createdBy.userId', '==', props.userId]] }
-      const userFilter = { where: [['createdBy.userId', '==', props.userId]] }
+      const userFilter = { where: [['createdBy.userId', '==', userId]] }
       return [
-        { collection: 'athlets', ...userFilter },
+        { collection: 'athletes', doc: userId, storeAs: 'athletes' },
         { collection: 'applications', ...userFilter },
-        { collection: 'categories', doc: props.club, storeAs: 'categories' },
-        { collection: 'trainers', doc: props.club, storeAs: 'trainers' },
+        { collection: 'categories', doc: club, storeAs: 'categories' },
+        { collection: 'trainers', doc: club, storeAs: 'trainers' },
         { collection: 'tournaments' }
       ]
     } else return []

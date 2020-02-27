@@ -8,7 +8,6 @@ const columnsAthlets = [
   { id: 'name', numeric: false, disablePadding: false, label: 'ФИО' },
   { id: 'birthday', numeric: false, disablePadding: false, label: 'Родился' },
   { id: 'gender', numeric: false, disablePadding: false, label: 'Пол' },
-  { id: 'createdBy', numeric: false, disablePadding: false, label: 'Добавил' },
   { id: 'id', numeric: false, disablePadding: false, label: 'id' }
 ]
 
@@ -27,9 +26,10 @@ const styles = {
 }
 
 export function Page(props) {
+  const { athlets, profile } = props
+  const { userId, userName } = profile
   const [isModalOpen, setModalOpen] = useState(false)
   const [modalData, setModalData] = useState({})
-  const { athlets, userId, userName, firestoreAdd, firestoreUpdate, firestoreDelete } = props
 
   const openModal = id => {
     const defaultFormData = {
@@ -49,10 +49,10 @@ export function Page(props) {
   }
 
   const tableData = athlets.map(athlet => {
+    const isDeleted = athlet.deleted ? '(x) ' : ''
     return {
       ...athlet,
-      name: `${athlet.familyName} ${athlet.firstName} ${athlet.fatherName}`,
-      createdBy: athlet.createdBy.userName
+      name: isDeleted + `${athlet.familyName} ${athlet.firstName} ${athlet.fatherName}`
     }
   })
 
@@ -61,12 +61,12 @@ export function Page(props) {
       <Table
         data={tableData}
         openModal={openModal}
-        firestoreDelete={firestoreDelete} showToolbarButtons={{ edit: true, clone:true }}
+        showToolbarButtons={{ edit: true, clone: true }}
         columns={columnsAthlets}
-        collection='athlets'
+        collection='athletes'
+        doc={userId}
         title='Спортсмены'
       />
-
       <Fab style={styles.fab} onClick={() => openModal(null)} color='primary' aria-label='Add'>
         <AddIcon />
       </Fab>
@@ -75,8 +75,8 @@ export function Page(props) {
           isModalOpen={isModalOpen}
           data={modalData}
           closeModal={closeModal}
-          firestoreAdd={firestoreAdd}
-          firestoreUpdate={firestoreUpdate}
+          collection='athletes'
+          doc={userId}
           userId={userId}
           userName={userName}
         />

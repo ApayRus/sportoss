@@ -22,7 +22,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export function Page(props) {
-  const { tournament, allCategories, applications, grids } = props
+  const { tournament, allCategories, applications, grids, profile } = props
   const categories = allCategories.filter(cat => tournament.categories.includes(cat.id))
   const tournamentParticipantsInfo = summarizeTournamentParticipants(applications)
   const participantsByCategories = tournamentParticipantsInfo.byCategories
@@ -31,7 +31,10 @@ export function Page(props) {
   const classes = useStyles()
 
   const categoryGridLink = (tournamentId, categoryId) => (
-    <IconButton component={Link} to={`/grid/tournament/${tournamentId}/category/${categoryId}/`}>
+    <IconButton
+      component={Link}
+      to={`/grid/club/${profile.club}/tournament/${tournamentId}/category/${categoryId}/`}
+    >
       <GridIcon className={clsx({ [classes.existingGrid]: grids[categoryId] })} />
     </IconButton>
   )

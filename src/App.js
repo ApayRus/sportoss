@@ -26,7 +26,7 @@ function App(props) {
           <Route path='/athlets' component={AthletsPage} />
           <Route path='/trainers' component={TrainersPage} />
           <Route
-            path='/grid/tournament/:tournamentId/category/:categoryId'
+            path='/grid/club/:club/tournament/:tournamentId/category/:categoryId'
             component={TournamentGridForm}
           />
           <Route path='/tournaments/:tournamentId/grids' component={TournamentGridList} />

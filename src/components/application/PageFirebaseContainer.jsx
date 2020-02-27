@@ -57,10 +57,10 @@ export default compose(
       const userFilter = { where: [['createdBy.userId', '==', userId]] }
       return [
         { collection: 'athletes', doc: userId, storeAs: 'athletes' },
-        { collection: 'applications', ...userFilter },
+        { collection: 'applications', ...userFilter, storeAs: 'applications' },
         { collection: 'categories', doc: club, storeAs: 'categories' },
         { collection: 'trainers', doc: club, storeAs: 'trainers' },
-        { collection: 'tournaments' }
+        { collection: 'tournaments', storeAs: 'tournaments' }
       ]
     } else return []
   })

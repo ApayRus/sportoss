@@ -20,14 +20,14 @@ function FormFirebaseContainer(props) {
 
   useFirestoreConnect(() => [
     { collection: 'tournaments', doc: tournamentId, storeAs: 'tournament' },
-    { collection: 'categories', doc: profile.club, storeAs: 'categories' },
-    { collection: 'trainers', doc: profile.club, storeAs: 'trainers' },
+    { collection: 'categories', doc: club, storeAs: 'categories' },
+    { collection: 'trainers', doc: club, storeAs: 'trainers' },
     { collection: 'grids', doc: `${tournamentId}`, storeAs: 'grids' },
     { collection: 'applications', where: [['tournamentId', '==', tournamentId]] },
-    { collection: 'athletes', where: [['club', '==', club]], storeAs: 'athletes' }
+    { collection: 'athletes', where: [['club', '==', club]], storeAs: 'allAthletes' }
   ])
 
-  const { tournament, categories, grids, trainers, athletes } = useSelector(
+  const { tournament, categories, grids, trainers, allAthletes } = useSelector(
     state => state.firestore.data
   )
   const { applications } = useSelector(state => state.firestore.ordered)
@@ -66,10 +66,10 @@ function FormFirebaseContainer(props) {
   }
 
   useEffect(() => {
-    if (isLoaded(tournament, categories, applications, athletes, trainers, profile, grids)) {
+    if (isLoaded(tournament, categories, applications, allAthletes, trainers, profile, grids)) {
       participants = participantsGroupedByCategories(applications)[categoryId]
       participants = sortParticipantsByTrainerFrequency(participants)
-      let allAthlets = map(athletes, oneTrainerAthletes =>
+      let allAthlets = map(allAthletes, oneTrainerAthletes =>
         map(oneTrainerAthletes, (elem, key) => ({ id: key, ...elem }))
       )
       allAthlets = allAthlets.flat()
@@ -90,7 +90,7 @@ function FormFirebaseContainer(props) {
     return () => {
       // cleanup
     }
-  }, [tournament, categories, applications, athletes, trainers, profile, grids])
+  }, [tournament, categories, applications, allAthletes, trainers, profile, grids])
 
   return isAllDataLoaded ? <Form /> : <CircularProgress />
 }

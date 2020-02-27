@@ -42,7 +42,7 @@ export default compose(
   firestoreConnect(props => {
     return [
       { collection: 'categories', doc: props.club, storeAs: 'categories' },
-      { collection: 'tournaments' }
+      { collection: 'tournaments', storeAs: 'tournaments' }
     ]
   })
 )(PageFirebaseContainer)

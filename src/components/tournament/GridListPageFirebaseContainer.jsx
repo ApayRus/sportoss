@@ -39,7 +39,11 @@ export default compose(
       { collection: 'tournaments', doc: tournamentId, storeAs: 'tournament' },
       { collection: 'grids', doc: `${tournamentId}`, storeAs: 'grids' },
       { collection: 'categories', doc: props.profile.club, storeAs: 'categories' },
-      { collection: 'applications', where: [['tournamentId', '==', tournamentId]] }
+      {
+        collection: 'applications',
+        where: [['tournamentId', '==', tournamentId]],
+        storeAs: 'applications'
+      }
     ]
   })
 )(Page)

@@ -26,7 +26,6 @@ export function Page(props) {
   const [isModalOpen, setModalOpen] = useState(false)
   const [modalData, setModalData] = useState({})
   const { athlets, applications, categories, tournaments, trainers, profile } = props
-  const { userId } = profile
   const openModal = id => {
     const defaultFormData = {
       tournamentId: '',
@@ -48,20 +47,8 @@ export function Page(props) {
     else return { ...app, name: '', createdBy: app.createdBy.userName }
   })
 
-  //there is 2 variants
-  // admin is open application of other trainer, and list of athlets in form contains from this trainer's athlets
-  // admin or trainer adds new applications, athlets list filtered by current userId
-  const filteredAthlets = modalData.id
-    ? athlets.filter(athlet => {
-        return modalData.createdBy.userId === athlet.created.userId
-      })
-    : athlets.filter(athlet => {
-        console.log('athlet', athlet)
-        return userId === athlet.created.userId
-      })
-
   const modalFormProps = {
-    athlets: filteredAthlets,
+    athlets,
     applications,
     categories,
     tournaments,

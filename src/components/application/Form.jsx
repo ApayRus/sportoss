@@ -132,7 +132,12 @@ function Form(props) {
   )
 
   return (
-    <Dialog open={isModalOpen} onClose={closeModal} aria-labelledby='form-dialog-title'>
+    <Dialog
+      maxWidth={false}
+      open={isModalOpen}
+      onClose={closeModal}
+      aria-labelledby='form-dialog-title'
+    >
       <DialogTitle id='form-dialog-title'>
         <Typography color='primary'>{formTitle} заявки</Typography>
       </DialogTitle>

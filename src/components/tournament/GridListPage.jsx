@@ -4,6 +4,7 @@ import { IconButton, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { categoryName } from '../../config/functions'
 import { summarizeTournamentParticipants } from '../../dataFunctions'
+import { participantCountByAges } from '../../dataFunctions'
 import CategoriesTable from '../layouts/table/Table'
 import GridIcon from '@material-ui/icons/GridOn'
 import { Link } from 'react-router-dom'
@@ -27,6 +28,7 @@ export function Page(props) {
   const tournamentParticipantsInfo = summarizeTournamentParticipants(applications)
   const participantsByCategories = tournamentParticipantsInfo.byCategories
   const participantsCount = tournamentParticipantsInfo.count
+  const participantsByAges = participantCountByAges(applications, allCategories)
 
   const classes = useStyles()
 
@@ -48,8 +50,15 @@ export function Page(props) {
 
   return (
     <div>
-      <h1>{`${tournament.name}, ${tournament.address}, ${tournament.date}`}</h1>
-      <Typography variant='body1'>Всего участников: {participantsCount}</Typography>
+      <div style={{ marginLeft: 20 }}>
+        <h1>{`${tournament.name}, ${tournament.address}, ${tournament.date}`}</h1>
+        <Typography variant='body1'>Всего участников: {participantsCount}</Typography>
+        {participantsByAges.map(elem => (
+          <Typography key={`participant-by-age-${elem.age}`} variant='body2'>
+            от {elem.age} лет - {elem.count}
+          </Typography>
+        ))}
+      </div>
       <CategoriesTable
         data={categoriesTableData}
         columns={columns}

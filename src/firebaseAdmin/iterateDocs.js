@@ -50,6 +50,47 @@ const deleteCollection = collection => {
     })
 }
 
+const deleteDocs = collection => {
+  db.collection(collection)
+    .where('tournamentId', '==', 'HygcLVxYaW4570oAcRWg')
+    .get()
+    .then(querySnapshot => {
+      querySnapshot.forEach(doc => {
+        doc.ref.delete()
+      })
+    })
+    .catch(error => {
+      console.log('Error getting documents: ', error)
+    })
+}
+
+const iterateDocs = collection => {
+  db.collection(collection)
+    .get()
+    .then(querySnapshot => {
+      querySnapshot.forEach(doc => {
+        const doForEachDoc = doc => {
+          const { createdBy } = doc.data()
+          const { userId, userName } = createdBy
+          const created = { userId, userName, time: '1568984400000' }
+          doc.ref.set(
+            {
+              fromUserId: userId,
+              created,
+              createdBy: adminSDK.firestore.FieldValue.delete(),
+              updatedBy: adminSDK.firestore.FieldValue.delete()
+            },
+            { merge: true }
+          )
+        }
+        doForEachDoc(doc)
+      })
+    })
+    .catch(error => {
+      console.log('Error getting documents: ', error)
+    })
+}
+
 const readTrainersIntoOneDoc = () => {
   const trainers = {}
   db.collection('trainers')
@@ -3312,11 +3353,13 @@ const writeAthletesOneDocForOneTrainer = () => {
   })
 }
 
-writeAthletesOneDocForOneTrainer()
+// iterateDocs('applications')
+// writeAthletesOneDocForOneTrainer()
 // readAthletsIntoDocByTrainer()
 // deleteCollection('trainers')
+// deleteDocs('applications')
 // readCategoriesIntoOneDoc()
-// printCollection('categories')
+// printCollection('applications')
 // deleteField('categories', 'sibir', 'EjIWtBg4c6')
 // showCategoriesForClub('sibir')
 // readTrainersIntoOneDoc()

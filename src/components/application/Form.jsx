@@ -16,6 +16,7 @@ import AthletTable from '../layouts/table/Table'
 import Select from './FormSelect'
 import athletsWithCategoriesTrainers from './FormAthlets'
 import { useFirestore } from 'react-redux-firebase'
+import { useSelector } from 'react-redux'
 
 const columns = [
   { id: 'participant', numeric: false, disablePadding: false, label: 'Участник' },
@@ -24,17 +25,11 @@ const columns = [
 ]
 
 function Form(props) {
-  const {
-    data,
-    athlets,
-    categories,
-    tournaments,
-    trainers,
-    isModalOpen,
-    closeModal,
-    profile
-  } = props
-
+  const { data, isModalOpen, closeModal } = props
+  const { profile } = useSelector(state => state.firebase)
+  const { athlets, categories, tournaments, trainers, fromUserId } = useSelector(
+    state => state.pageContent
+  )
   const { userId, userName } = profile
   const [formState, setFormState] = useState({ tournamentId: '', participants: {} })
   const [selected, setSelected] = useState([])
@@ -62,14 +57,19 @@ function Form(props) {
     const newFormState = { ...formState, participants }
     //id is empty when we creates new endtry, and filled when we edit an existen one
     if (!formState.id) {
-      const createdBy = { userId, userName }
-      firestore.add({ collection: 'applications' }, { ...newFormState, createdBy }).catch(error => {
-        console.log('firestoreAdd error', error)
-      })
-    } else {
-      const updatedBy = { userId, userName }
+      const created = { userId, userName, time: Date.now() }
       firestore
-        .set({ collection: 'applications', doc: formState.id }, { ...newFormState, updatedBy })
+        .add({ collection: 'applications' }, { ...newFormState, created, fromUserId })
+        .catch(error => {
+          console.log('firestoreAdd error', error)
+        })
+    } else {
+      const updated = { userId, userName, time: Date.now() }
+      firestore
+        .set(
+          { collection: 'applications', doc: formState.id },
+          { ...newFormState, updated, fromUserId }
+        )
         .catch(error => {
           console.log('firestoreUpdate error', error)
         })

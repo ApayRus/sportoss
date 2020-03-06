@@ -48,7 +48,10 @@ function EnhancedTableToolbar(props) {
   const classes = useStyles()
   const { openModal, selected = [], collection, doc } = props
   const lastSelectedId = selected[selected.length - 1]
-  const collectionData = useSelector(state => state.firestore.data[collection])
+  const { fromUserId } = useSelector(state => state.pageContent)
+  // admin can change current user, 'fromUserId', and make editing for him
+  // in that case data stored in format: collectionName + forUserId
+  const collectionData = useSelector(state => state.firestore.data[collection + fromUserId])
   const forClone = collectionData ? collectionData[lastSelectedId] : {}
   const firestore = useFirestore()
 

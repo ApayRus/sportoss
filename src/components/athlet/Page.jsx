@@ -62,7 +62,7 @@ export function Page(props) {
       <Table
         data={tableData}
         openModal={openModal}
-        showToolbarButtons={{ edit: true, clone: true }}
+        showToolbarButtons={{ edit: true, clone: true, delete: true }}
         columns={columnsAthlets}
         collection='athletes'
         doc={fromUserId}

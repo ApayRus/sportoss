@@ -30,13 +30,15 @@ export function PageFirebaseContainer(props) {
     if (fromUserId) {
       // const userFilter = props.isAdmin ? {} : { where: [['createdBy.userId', '==', props.userId]] }
       const userFilter = { where: [['fromUserId', '==', fromUserId]] }
-      return [
+      const load = [
         { collection: 'athletes', doc: fromUserId, storeAs: 'athletes' + fromUserId },
         { collection: 'applications', ...userFilter, storeAs: 'applications' + fromUserId },
         { collection: 'categories', doc: club, storeAs: 'categories' },
-        { collection: 'trainers', doc: club, storeAs: 'trainers' },
         { collection: 'tournaments', storeAs: 'tournaments' }
       ]
+      if (profile.userId && profile.roles.admin)
+        load.push({ collection: 'trainers', doc: club, storeAs: 'trainers' })
+      return load
     } else return []
   })
 
@@ -84,12 +86,10 @@ export function PageFirebaseContainer(props) {
 
   return (
     <div>
-      {isLoadedTrainersInfo ? (
+      {isLoadedTrainersInfo && profile.userId && profile.roles.admin && (
         <Tabs tabs={trainers} activeTabIndex={activeTabIndex} onTabClick={onTabClick} />
-      ) : (
-        <CircularProgress />
       )}
-      {isLoadedTableData && isLoadedTrainersInfo ? <ApplicationsTable /> : <CircularProgress />}
+      {isLoadedTableData ? <ApplicationsTable /> : <CircularProgress />}
     </div>
   )
 }

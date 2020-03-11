@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import nanoid from 'nanoid'
 import { useFirestore } from 'react-redux-firebase'
+import { useSelector } from 'react-redux'
 import {
   Button,
   TextField,
@@ -16,7 +17,9 @@ import {
 } from '@material-ui/core'
 
 function Form(props) {
-  const { isModalOpen, data, closeModal, collection, doc, userId, userName } = props
+  const { isModalOpen, data, closeModal, collection, doc } = props
+  const { profile } = useSelector(state => state.firebase)
+  const { userId, userName } = profile
   const firestore = useFirestore()
   const [formState, setFormState] = useState({})
 

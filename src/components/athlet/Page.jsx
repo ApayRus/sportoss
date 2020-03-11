@@ -3,6 +3,8 @@ import { Fab } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'
 import Table from '../layouts/table/Table'
 import Form from './Form'
+import { useSelector } from 'react-redux'
+
 //Table columns or fields of our data model
 const columnsAthlets = [
   { id: 'name', numeric: false, disablePadding: false, label: 'ФИО' },
@@ -26,8 +28,7 @@ const styles = {
 }
 
 export function Page(props) {
-  const { athlets, profile } = props
-  const { userId, userName } = profile
+  const { athlets, fromUserId } = useSelector(state => state.pageContent)
   const [isModalOpen, setModalOpen] = useState(false)
   const [modalData, setModalData] = useState({})
 
@@ -64,7 +65,7 @@ export function Page(props) {
         showToolbarButtons={{ edit: true, clone: true }}
         columns={columnsAthlets}
         collection='athletes'
-        doc={userId}
+        doc={fromUserId}
         title='Спортсмены'
       />
       <Fab style={styles.fab} onClick={() => openModal(null)} color='primary' aria-label='Add'>
@@ -76,9 +77,7 @@ export function Page(props) {
           data={modalData}
           closeModal={closeModal}
           collection='athletes'
-          doc={userId}
-          userId={userId}
-          userName={userName}
+          doc={fromUserId}
         />
       )}
     </div>

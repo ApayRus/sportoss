@@ -15,7 +15,7 @@ function DuelSimple(props) {
   } = props
   const { id, fighterRed, fighterBlue, winner, label /* scoreRed, scoreBlue  */ } = duelData
 
-  const styles = {
+  const useStyles = makeStyles(theme => ({
     duelTable: props => ({
       /* width: '5cm', */
       border: '1px solid gray',
@@ -40,8 +40,8 @@ function DuelSimple(props) {
     athletInput: { width: '100%', border: 'none' },
     checkboxColumn: { width: 35, height: 33 },
     checkboxColumnRed: { borderBottom: '1px solid gray' },
-    checkboxRed: { width: 7, height: 7, marginTop: 2, color: 'red' },
-    checkboxBlue: { width: 7, height: 7, marginTop: 2, color: 'blue' },
+    checkboxRed: { width: 7, height: 7, marginTop: 2, color: theme.palette.secondary.main },
+    checkboxBlue: { width: 7, height: 7, marginTop: 2, color: theme.palette.primary.main },
     trainer: { color: 'gray', fontSize: 10 },
     athletColorColumn: { width: 5 },
     athletColorRed: { backgroundColor: 'rgba(255,0,0,0.5)', borderBottom: ' 1px solid gray' },
@@ -53,9 +53,7 @@ function DuelSimple(props) {
     },
     scoreColumnBlue: { '& input': { color: 'rgba(0,0,255,0.5)', fontWeight: 'bold' } },
     scoreInput: { border: 'none', width: 31, height: 25, textAlign: 'center' }
-  }
-
-  const useStyles = makeStyles(theme => styles)
+  }))
 
   const classes = useStyles(props)
 
@@ -107,6 +105,7 @@ function DuelSimple(props) {
                   inputProps={{ 'data-winner': fighterRed }}
                   onChange={onWinnerChange(id)}
                   className={classes.checkboxRed}
+                  color='secondary'
                   checked={winner === fighterRed && winner ? true : false}
                 />
               </Box>
@@ -138,6 +137,7 @@ function DuelSimple(props) {
                   inputProps={{ 'data-winner': fighterBlue }}
                   onChange={onWinnerChange(id)}
                   className={classes.checkboxBlue}
+                  color='primary'
                   checked={winner === fighterBlue && winner ? true : false}
                 />
               </Box>

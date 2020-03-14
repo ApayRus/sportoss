@@ -113,7 +113,7 @@ export function generateGrid(N) {
 export function gridByLevels(grid) {
   const gridArray = map(grid, (elem, key) => {
     return { id: key, ...elem }
-  })
+  }).filter(elem => String(elem.level).substr(0, 3) !== 'con') //not consolation duels
 
   return groupBy(gridArray, 'level')
 }

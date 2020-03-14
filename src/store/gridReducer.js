@@ -56,8 +56,6 @@ const gridReducer = (state = initState, action) => {
 
     case 'SET_WINNER': {
       const { duelId, athletId, operation } = action.payload
-      console.log('action.payload', action.payload)
-
       const { grid } = state
       // update current duel
       const oldDuel = grid[duelId]

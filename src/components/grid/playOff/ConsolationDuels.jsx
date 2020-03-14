@@ -1,6 +1,8 @@
 import React from 'react'
 import Duel from '../Duel'
+import { useSelector } from 'react-redux'
 import { Typography as T } from '@material-ui/core'
+import { map, groupBy } from 'lodash'
 
 const styles = {
   consolationBlock: position => ({
@@ -18,19 +20,23 @@ const styles = {
  * @param {number} props.tourCount
  */
 function ConsolationDuels(props) {
-  const { tourCount, mainDuelCount, position } = props
-  const consolationTourCount = tourCount - 2 //excepted first tour and final
-  const columnsRange = new Array(consolationTourCount).fill(0)
-  const duelsRow = rowIndex =>
-    columnsRange.map((elem, index) => (
-      <td key={`consolationDuel-${index}`}>
-        <Duel
-          duelData={{ id: mainDuelCount + index * 2 + rowIndex, fighterRed: '', fighterBlue: '' }}
-          onFighterChange={duelId => event => {}}
-          onWinnerChange={duelId => event => {}}
-        />
-      </td>
-    ))
+  const { position } = props
+  const { grid, participants } = useSelector(state => state.grid)
+  const finalId = participants.length - 1
+  const gridArray = map(grid, (elem, key) => ({ id: key, ...elem }))
+  const consolationDuels = gridArray.filter(elem => elem.id > finalId)
+
+  let consolationDuelsByLevel = groupBy(consolationDuels, 'level')
+  //sometimes we need fake duels for take empty place
+  const firstConsolationTour = consolationDuelsByLevel['con1']
+  if (
+    firstConsolationTour &&
+    firstConsolationTour.length === 1 &&
+    firstConsolationTour[0].next - Number(firstConsolationTour[0].id) === 1
+  ) {
+    const fakeDuel = { id: 0, status: 'fake' }
+    firstConsolationTour.unshift(fakeDuel)
+  }
 
   return (
     <div style={styles.consolationBlock(position)}>
@@ -39,12 +45,21 @@ function ConsolationDuels(props) {
           Утешительные поединки
         </T>
       </div>
-      <table>
-        <tbody>
-          <tr>{duelsRow(1)}</tr>
-          <tr>{duelsRow(2)}</tr>
-        </tbody>
-      </table>
+      <div style={{ marginTop: 4 }}>
+        {Object.keys(consolationDuelsByLevel).map(level => (
+          <div key={level} style={{ display: 'inline-block', marginRight: 15 }}>
+            {consolationDuelsByLevel[level].map(duel => (
+              <Duel
+                duelData={duel}
+                participants={participants}
+                key={duel.id}
+                showWinnerCheckbox={true}
+                onFighterChange={() => {}}
+              />
+            ))}
+          </div>
+        ))}
+      </div>
     </div>
   )
 }

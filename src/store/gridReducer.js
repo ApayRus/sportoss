@@ -1,4 +1,8 @@
 import { generateGrid } from '../components/grid/playOff/functionsPlayOff'
+import {
+  generateConsolationDuels,
+  getFightersLostToFinalist
+} from '../components/grid/playOff/functionsConsolation'
 import { generateGridAllPlayAll } from '../components/grid/playAlltoAll/functionsAllPlayAll'
 import { divide2 } from '../components/grid/playOff/functionsPlayOff'
 
@@ -28,6 +32,18 @@ const gridReducer = (state = initState, action) => {
         group2grid = generateGridAllPlayAll([...group2ParticipantIds])
       }
       return { ...state, grid, group1grid, group2grid }
+    }
+
+    //for play-off grid, after final duel is filled and we know finalists
+    case 'CREATE_CONSOLATION': {
+      const finalId = state.participants.length - 1
+      const finalDuel = state.grid[finalId]
+      const { fighterRed, fighterBlue } = finalDuel
+      const fightersRed = getFightersLostToFinalist(fighterRed, state.grid)
+      const fightersBlue = getFightersLostToFinalist(fighterBlue, state.grid)
+      const consolationDuels = generateConsolationDuels(fightersRed, fightersBlue, finalId)
+      const grid = { ...state.grid, ...consolationDuels }
+      return { ...state, grid }
     }
 
     case 'UPDATE_FIGHTER': {

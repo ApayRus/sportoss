@@ -102,8 +102,7 @@ function DuelSimple(props) {
             <td className={`${classes.checkboxColumnRed} ${classes.checkboxColumn}`}>
               <Box displayPrint='none'>
                 <Checkbox
-                  inputProps={{ 'data-winner': fighterRed }}
-                  onChange={onWinnerChange(id)}
+                  onChange={onWinnerChange(id, fighterRed)}
                   className={classes.checkboxRed}
                   color='secondary'
                   checked={winner === fighterRed && winner ? true : false}
@@ -134,8 +133,7 @@ function DuelSimple(props) {
             <td className={`${classes.checkboxColumn}`}>
               <Box displayPrint='none'>
                 <Checkbox
-                  inputProps={{ 'data-winner': fighterBlue }}
-                  onChange={onWinnerChange(id)}
+                  onChange={onWinnerChange(id, fighterBlue)}
                   className={classes.checkboxBlue}
                   color='primary'
                   checked={winner === fighterBlue && winner ? true : false}

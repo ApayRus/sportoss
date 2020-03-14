@@ -28,8 +28,7 @@ function Grid(props) {
     dispatch(updateFighter({ duelId, fighterColor, athletId }))
   }
 
-  const onWinnerChange = duelId => e => {
-    const { winner: athletId = '' } = e.target.dataset
+  const onWinnerChange = (duelId, athletId) => e => {
     const operation = e.target.checked ? 'set' : 'reset'
     dispatch(setWinner({ duelId, athletId, operation }))
   }

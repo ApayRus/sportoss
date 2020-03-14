@@ -6,6 +6,46 @@ import { makeStyles } from '@material-ui/core/styles'
 import { find } from 'lodash'
 import { athletName, trainerName } from '../../config/functions'
 
+const useStyles = makeStyles(theme => ({
+  duelTable: props => ({
+    /* width: '5cm', */
+    border: '1px solid gray',
+    borderRadius: 5,
+    marginBottom: 5,
+    borderSpacing: 0,
+    tableLayout: 'fixed',
+    opacity: props.duelData.status === 'fake' ? 0 : 1,
+    visibility: props.duelData.status === 'fake' ? 'hidden' : 'visible'
+  }),
+  duelNumber: {
+    width: 30,
+    borderRight: '1px solid gray',
+    textAlign: 'center',
+    color: 'slategray'
+  },
+  duelLabel: {
+    fontSize: 9
+  },
+  athletRed: { width: 140, height: 33, padding: '0 5px', borderBottom: '1px solid gray' },
+  athletBlue: { width: 140, height: 33, padding: '0 5px' },
+  athletInput: { width: '100%', border: 'none' },
+  checkboxColumn: { width: 35, height: 33 },
+  checkboxColumnRed: { borderBottom: '1px solid gray' },
+  checkboxRed: { width: 7, height: 7, marginTop: 2, color: theme.palette.secondary.main },
+  checkboxBlue: { width: 7, height: 7, marginTop: 2, color: theme.palette.primary.main },
+  trainer: { color: 'gray', fontSize: 10 },
+  athletColorColumn: { width: 5 },
+  athletColorRed: { backgroundColor: 'rgba(255,0,0,0.5)', borderBottom: ' 1px solid gray' },
+  athletColorBlue: { backgroundColor: 'rgba(0,0,255,0.5)' },
+  scoreColumn: { width: 35, borderLeft: ' 1px solid gray' },
+  scoreColumnRed: {
+    '& input': { color: 'rgba(255,0,0,0.5)', fontWeight: 'bold' },
+    borderBottom: ' 1px solid gray'
+  },
+  scoreColumnBlue: { '& input': { color: 'rgba(0,0,255,0.5)', fontWeight: 'bold' } },
+  scoreInput: { border: 'none', width: 31, height: 25, textAlign: 'center' }
+}))
+
 function DuelSimple(props) {
   const {
     duelData,
@@ -23,46 +63,6 @@ function DuelSimple(props) {
     const operation = e.target.checked ? 'set' : 'reset'
     dispatch(setWinner({ duelId, athletId, operation }))
   }
-
-  const useStyles = makeStyles(theme => ({
-    duelTable: props => ({
-      /* width: '5cm', */
-      border: '1px solid gray',
-      borderRadius: 5,
-      marginBottom: 5,
-      borderSpacing: 0,
-      tableLayout: 'fixed',
-      opacity: props.duelData.status === 'fake' ? 0 : 1,
-      visibility: props.duelData.status === 'fake' ? 'hidden' : 'visible'
-    }),
-    duelNumber: {
-      width: 30,
-      borderRight: '1px solid gray',
-      textAlign: 'center',
-      color: 'slategray'
-    },
-    duelLabel: {
-      fontSize: 9
-    },
-    athletRed: { width: 140, height: 33, padding: '0 5px', borderBottom: '1px solid gray' },
-    athletBlue: { width: 140, height: 33, padding: '0 5px' },
-    athletInput: { width: '100%', border: 'none' },
-    checkboxColumn: { width: 35, height: 33 },
-    checkboxColumnRed: { borderBottom: '1px solid gray' },
-    checkboxRed: { width: 7, height: 7, marginTop: 2, color: theme.palette.secondary.main },
-    checkboxBlue: { width: 7, height: 7, marginTop: 2, color: theme.palette.primary.main },
-    trainer: { color: 'gray', fontSize: 10 },
-    athletColorColumn: { width: 5 },
-    athletColorRed: { backgroundColor: 'rgba(255,0,0,0.5)', borderBottom: ' 1px solid gray' },
-    athletColorBlue: { backgroundColor: 'rgba(0,0,255,0.5)' },
-    scoreColumn: { width: 35, borderLeft: ' 1px solid gray' },
-    scoreColumnRed: {
-      '& input': { color: 'rgba(255,0,0,0.5)', fontWeight: 'bold' },
-      borderBottom: ' 1px solid gray'
-    },
-    scoreColumnBlue: { '& input': { color: 'rgba(0,0,255,0.5)', fontWeight: 'bold' } },
-    scoreInput: { border: 'none', width: 31, height: 25, textAlign: 'center' }
-  }))
 
   const classes = useStyles(props)
 

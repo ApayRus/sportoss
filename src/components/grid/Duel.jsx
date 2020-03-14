@@ -8,8 +8,8 @@ function DuelSimple(props) {
   const {
     duelData,
     participants,
-    onFighterChange,
-    onWinnerChange,
+    onFighterChange = () => {},
+    onWinnerChange = () => {},
     showScoreInput,
     showWinnerCheckbox
   } = props

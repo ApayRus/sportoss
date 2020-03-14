@@ -34,12 +34,13 @@ export function updateFighter(payload) {
  *
  * @param {Object} payload
  * @param {number} payload.duelId
- * @param {string} payload.fighterId
+ * @param {string} payload.athletId
+ * @param {string} payload.operation - set or reset (checked or unchecked)
  * @returns {Object} action
  * @example
   const setWinnerExample = {
     type: 'SET_WINNER',
-    payload: { duelId: 8, athletId: 'cccdddeee' }
+    payload: { duelId: 8, athletId: 'cccdddeee', operation: 'set' }
   }
  */
 export function setWinner(payload) {

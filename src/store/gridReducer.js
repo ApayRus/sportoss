@@ -55,9 +55,38 @@ const gridReducer = (state = initState, action) => {
     }
 
     case 'SET_WINNER': {
-      const { duelId, athletId } = action.payload
-      const updatedDuel = { [duelId]: { ...state.grid[duelId], winner: athletId } }
-      return { ...state, grid: { ...state.grid, ...updatedDuel } }
+      const { duelId, athletId, operation } = action.payload
+      console.log('action.payload', action.payload)
+
+      const { grid } = state
+      // update current duel
+      const oldDuel = grid[duelId]
+      const updatedDuel = { [duelId]: { ...oldDuel, winner: operation === 'set' ? athletId : '' } }
+
+      // update next duel
+      const { next: nextDuelId, winner: oldWinner } = oldDuel
+      const nextDuel = grid[nextDuelId] || {}
+      let updatedNextDuel = {}
+      if (nextDuelId) {
+        if (operation === 'set') {
+          //delete old winner from nextDuel
+          let { fighterRed, fighterBlue } = nextDuel
+          if (fighterRed === oldWinner) nextDuel.fighterRed = ''
+          if (fighterBlue === oldWinner) nextDuel.fighterBlue = ''
+          //place new winner to nextDuel
+          const color = nextDuel.fighterRed ? 'Blue' : 'Red'
+          nextDuel['fighter' + color] = athletId
+          updatedNextDuel = { [nextDuelId]: { ...nextDuel } }
+        }
+        if (operation === 'reset') {
+          const { fighterRed } = nextDuel
+          const color = athletId === fighterRed ? 'Red' : 'Blue'
+          nextDuel['fighter' + color] = ''
+          updatedNextDuel = { [nextDuelId]: { ...nextDuel } }
+        }
+      }
+
+      return { ...state, grid: { ...grid, ...updatedDuel, ...updatedNextDuel } }
     }
 
     case 'SET_GRID_PARAMETER': {

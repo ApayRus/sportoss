@@ -21,22 +21,9 @@ function Grid(props) {
   }
 
   const onWinnerChange = duelId => e => {
-    const winnerId = e.target.checked ? e.target.dataset.winner : ''
-    // const duelId = id
-    const duel = grid[duelId]
-    setWinner({ duelId, athletId: winnerId })
-
-    const fillNextRoundByWinners = () => {
-      //winner goes to the next round (level)
-      const duelNextId = duel.next
-      if (duelNextId) {
-        const duelNext = grid[duelNextId]
-        const fighterColor = duelNext.fighterRed ? 'Blue' : 'Red'
-        updateFighter({ duelId: duelNextId, fighterColor, athletId: winnerId })
-      }
-    }
-
-    fillNextRoundByWinners()
+    const { winner: athletId = '' } = e.target.dataset
+    const operation = e.target.checked ? 'set' : 'reset'
+    setWinner({ duelId, athletId, operation })
   }
 
   const eventHandlers = { onWinnerChange, onFighterChange }

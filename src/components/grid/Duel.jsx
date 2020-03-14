@@ -1,4 +1,6 @@
 import React from 'react'
+import { useDispatch } from 'react-redux'
+import { setWinner } from '../../store/gridActions'
 import { Checkbox, Box } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { find } from 'lodash'
@@ -9,11 +11,18 @@ function DuelSimple(props) {
     duelData,
     participants,
     onFighterChange = () => {},
-    onWinnerChange = () => {},
     showScoreInput,
     showWinnerCheckbox
   } = props
+
   const { id, fighterRed, fighterBlue, winner, label /* scoreRed, scoreBlue  */ } = duelData
+
+  const dispatch = useDispatch()
+
+  const onWinnerChange = (duelId, athletId) => e => {
+    const operation = e.target.checked ? 'set' : 'reset'
+    dispatch(setWinner({ duelId, athletId, operation }))
+  }
 
   const useStyles = makeStyles(theme => ({
     duelTable: props => ({

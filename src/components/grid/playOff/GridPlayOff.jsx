@@ -3,7 +3,7 @@ import Duel from '../Duel'
 import { useDispatch, useSelector } from 'react-redux'
 import { find } from 'lodash'
 import { gridByLevelsWithFakeDuelsInZeroTour } from './functionsPlayOff'
-import { updateFighter, setWinner } from '../../../store/gridActions'
+import { updateFighter } from '../../../store/gridActions'
 import { makeStyles } from '@material-ui/core/styles'
 
 const useStyles = makeStyles(theme => ({
@@ -28,13 +28,6 @@ function Grid(props) {
     dispatch(updateFighter({ duelId, fighterColor, athletId }))
   }
 
-  const onWinnerChange = (duelId, athletId) => e => {
-    const operation = e.target.checked ? 'set' : 'reset'
-    dispatch(setWinner({ duelId, athletId, operation }))
-  }
-
-  const eventHandlers = { onWinnerChange, onFighterChange }
-
   const gridByLevels = gridByLevelsWithFakeDuelsInZeroTour(grid)
 
   return (
@@ -47,7 +40,7 @@ function Grid(props) {
               participants={participants}
               key={duel.id}
               showWinnerCheckbox={true}
-              {...eventHandlers}
+              onFighterChange={onFighterChange}
             />
           ))}
         </div>

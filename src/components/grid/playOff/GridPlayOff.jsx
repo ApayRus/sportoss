@@ -1,29 +1,37 @@
 import React from 'react'
 import Duel from '../Duel'
-import { connect } from 'react-redux'
-import { compose } from 'redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { find } from 'lodash'
 import { gridByLevelsWithFakeDuelsInZeroTour } from './functionsPlayOff'
-
 import { updateFighter, setWinner } from '../../../store/gridActions'
-import { withStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@material-ui/core/styles'
+
+const useStyles = makeStyles(theme => ({
+  levelBox: {
+    display: 'flex',
+    flexDirection: 'column',
+    marginLeft: 10,
+    justifyContent: 'space-around'
+  }
+}))
 
 function Grid(props) {
-  const { grid, classes, participants, updateFighter, setWinner } = props
+  const { grid, participants } = useSelector(state => state.grid)
+  const classes = useStyles()
+  const dispatch = useDispatch()
 
   const onFighterChange = duelId => e => {
     const { color: fighterColor } = e.target.dataset
     const [familyName, firstName] = e.target.value.split(' ')
-
     const relatedParticipant = find(participants, { athlet: { familyName, firstName } })
     const athletId = relatedParticipant ? relatedParticipant.athlet.id : ''
-    updateFighter({ duelId, fighterColor, athletId })
+    dispatch(updateFighter({ duelId, fighterColor, athletId }))
   }
 
   const onWinnerChange = duelId => e => {
     const { winner: athletId = '' } = e.target.dataset
     const operation = e.target.checked ? 'set' : 'reset'
-    setWinner({ duelId, athletId, operation })
+    dispatch(setWinner({ duelId, athletId, operation }))
   }
 
   const eventHandlers = { onWinnerChange, onFighterChange }
@@ -49,23 +57,4 @@ function Grid(props) {
   )
 }
 
-const styles = {
-  levelBox: {
-    display: 'flex',
-    flexDirection: 'column',
-    marginLeft: 10,
-    justifyContent: 'space-around'
-  }
-}
-
-const mapStateToProps = state => ({
-  participants: state.grid.participants,
-  grid: state.grid.grid
-})
-
-const mapDispatchToProps = dispatch => ({
-  updateFighter: payload => dispatch(updateFighter(payload)),
-  setWinner: payload => dispatch(setWinner(payload))
-})
-
-export default compose(withStyles(styles), connect(mapStateToProps, mapDispatchToProps))(Grid)
+export default Grid

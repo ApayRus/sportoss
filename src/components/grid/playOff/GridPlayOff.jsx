@@ -36,22 +36,7 @@ function Grid(props) {
       }
     }
 
-    const fillDuelFor3rdPlaceByLosers = () => {
-      //in 1/2 finals, loser goes to Duel for 3rd place, also it is a last Duel in Grid
-      const duelTotalCount = Object.keys(grid).length
-      const { fighterRed, fighterBlue } = duel
-      const loserId = winnerId === fighterRed ? fighterBlue : fighterRed
-
-      if (+duelId === duelTotalCount - 3)
-        //1-st of 1/2 finals
-        updateFighter({ duelId: duelTotalCount, fighterColor: 'Red', athletId: loserId })
-      if (+duelId === duelTotalCount - 2)
-        //2-nd of 1/2 finals
-        updateFighter({ duelId: duelTotalCount, fighterColor: 'Blue', athletId: loserId })
-    }
-
     fillNextRoundByWinners()
-    fillDuelFor3rdPlaceByLosers()
   }
 
   const eventHandlers = { onWinnerChange, onFighterChange }
@@ -96,10 +81,4 @@ const mapDispatchToProps = dispatch => ({
   setWinner: payload => dispatch(setWinner(payload))
 })
 
-export default compose(
-  withStyles(styles),
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )
-)(Grid)
+export default compose(withStyles(styles), connect(mapStateToProps, mapDispatchToProps))(Grid)

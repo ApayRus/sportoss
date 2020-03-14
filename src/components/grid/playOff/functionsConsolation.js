@@ -79,9 +79,13 @@ export function generateConsolationDuels(fighters1, fighters2, startingId) {
   }
 
   const duelsObject = duelsArray.reduce((obj, item) => {
-    let { id } = item
+    let { id, next } = item
+    id = id + startingId
+    if (next) {
+      next = next + startingId
+    }
     delete item.id
-    obj[id + startingId] = { ...item }
+    obj[id] = { ...item, next }
     return obj
   }, {})
 

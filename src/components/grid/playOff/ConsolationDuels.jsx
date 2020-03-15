@@ -20,13 +20,25 @@ const styles = {
  * @param {number} props.tourCount
  */
 function ConsolationDuels(props) {
-  const { position } = props
+  const { tourCount, mainDuelCount, position } = props
   const { grid, participants } = useSelector(state => state.grid)
   const finalId = participants.length - 1
   const gridArray = map(grid, (elem, key) => ({ id: key, ...elem }))
   const consolationDuels = gridArray.filter(elem => elem.id > finalId)
 
-  let consolationDuelsByLevel = groupBy(consolationDuels, 'level')
+  // if we haven't yet consolationDuels, we should output default duels for printing
+  if (consolationDuels.length === 0) {
+    const consolationTourCount = tourCount - 2 // excepted first tour and last (final)
+    for (let i = 1; i <= consolationTourCount * 2; i++) {
+      const id = i + mainDuelCount
+      const level = 'con' + Math.floor((i + 1) / 2)
+      // console.log('id', id, 'level', level)
+      const defaultDuel = { id, level }
+      consolationDuels.push(defaultDuel)
+    }
+  }
+
+  const consolationDuelsByLevel = groupBy(consolationDuels, 'level')
   //sometimes we need fake duels for take empty place
   const firstConsolationTour = consolationDuelsByLevel['con1']
   if (

@@ -47,7 +47,7 @@ function ConsolationDuels(props) {
     firstConsolationTour[0].next - Number(firstConsolationTour[0].id) === 1
   ) {
     const fakeDuel = { id: 0, status: 'fake' }
-    firstConsolationTour.unshift(fakeDuel)
+    firstConsolationTour.push(fakeDuel)
   }
 
   return (

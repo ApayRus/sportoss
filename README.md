@@ -1,3 +1,7 @@
+# Sportoss
+
+![gif-presentation](https://user-images.githubusercontent.com/1222611/93039496-54dfef80-f650-11ea-98fd-ca44e2358ab7.gif)
+
 ## Install locally
 
 `cd <project-folder-path>` - open in terminal project folder.

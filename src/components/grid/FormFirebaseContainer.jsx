@@ -24,7 +24,7 @@ function FormFirebaseContainer(props) {
 		{ collection: 'trainers', doc: club, storeAs: 'trainers' },
 		{ collection: 'grids', doc: `${tournamentId}`, storeAs: 'grids' },
 		{ collection: 'applications', where: [['tournamentId', '==', tournamentId]] },
-		{ collection: 'athletes', where: [['club', '==', club]], storeAs: 'allAthletes' }
+		{ collection: 'athletes', /* where: [['club', '==', club]], */ storeAs: 'allAthletes' }
 	])
 
 	const { tournament, categories, grids, trainers, allAthletes } = useSelector(
@@ -69,7 +69,7 @@ function FormFirebaseContainer(props) {
 				map(oneTrainerAthletes, (elem, key) => ({ id: key, ...elem }))
 			)
 			allAthlets = allAthlets.flat()
-			allAthlets = allAthlets.filter(elem => elem.id !== 'club')
+			// allAthlets = allAthlets.filter(elem => elem.id !== 'club')
 
 			const allTrainers = map(trainers, (elem, key) => ({ ...elem, id: key })) || []
 			const trainerColorMap = trainerColors(participants)

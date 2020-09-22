@@ -10,7 +10,7 @@
   }
  */
 export function createGrid(payload) {
-  return { type: 'CREATE_GRID', payload }
+    return { type: 'CREATE_GRID', payload }
 }
 
 /**
@@ -27,7 +27,7 @@ export function createGrid(payload) {
   }
  */
 export function updateFighter(payload) {
-  return { type: 'UPDATE_FIGHTER', payload }
+    return { type: 'UPDATE_FIGHTER', payload }
 }
 
 /**
@@ -44,19 +44,19 @@ export function updateFighter(payload) {
   }
  */
 export function setWinner(payload) {
-  return { type: 'SET_WINNER', payload }
+    return { type: 'SET_WINNER', payload }
 }
 
 /**
  * 
  * @param {*} payload 
  * @example 
-    setGridParameter({ participants })
-    setGridParameter({ tournament })
-    setGridParameter({ category })
+    setGridParams({ participants })
+    setGridParams({ tournament })
+    setGridParams({ category })
  */
-export function setGridParameter(payload) {
-  return { type: 'SET_GRID_PARAMETER', payload }
+export function setGridParams(payload) {
+    return { type: 'SET_GRID_PARAMS', payload }
 }
 
 /**
@@ -72,7 +72,7 @@ export function setGridParameter(payload) {
 }
  */
 export function setGroupParticipant(payload) {
-  return { type: 'SET_GROUP_PARTICIPANT', payload }
+    return { type: 'SET_GROUP_PARTICIPANT', payload }
 }
 
 /**
@@ -85,12 +85,12 @@ export function setGroupParticipant(payload) {
  [ ['', '', ''], ['', '', ''] ]
  */
 export function createGroups(payload) {
-  return { type: 'CREATE_GROUPS', payload }
+    return { type: 'CREATE_GROUPS', payload }
 }
 
 /**
  * will set grid to initState
  */
 export function clearGrid() {
-  return { type: 'CLEAR_GRID' }
+    return { type: 'CLEAR_GRID' }
 }

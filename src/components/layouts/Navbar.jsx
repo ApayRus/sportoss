@@ -40,9 +40,6 @@ const Navbar = props => {
 							Sportoss
 						</Button>
 
-						<Hidden smUp>
-							<Drawer authLinks={links} />
-						</Hidden>
 						<Hidden xsDown>
 							<Typography variant='h6' color='inherit' className={classes.grow} />
 							<Button component={Link} to='/athlets' color='inherit'>
@@ -61,6 +58,10 @@ const Navbar = props => {
 								Заявки
 							</Button>
 							{links}
+						</Hidden>
+						<Hidden smUp>
+							<Typography variant='h6' color='inherit' className={classes.grow} />
+							<Drawer authLinks={links} />
 						</Hidden>
 					</Toolbar>
 				</AppBar>

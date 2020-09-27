@@ -1,96 +1,56 @@
-import React from 'react'
-import { withStyles } from '@material-ui/core/styles'
-import {
-  List,
-  Divider,
-  ListItem,
-  ListItemText,
-  SwipeableDrawer,
-  IconButton
-} from '@material-ui/core'
-
+import React, { useState } from 'react'
+import { makeStyles } from '@material-ui/core/styles'
+import { List, ListItem, ListItemText, SwipeableDrawer, IconButton } from '@material-ui/core'
 import { Link } from 'react-router-dom'
-
 import { Menu as MenuIcon } from '@material-ui/icons'
 
-const styles = {
-  list: {
-    width: 250
-  },
-  fullList: {
-    width: 'auto'
-  }
+const useStyles = makeStyles(theme => ({
+	list: {
+		width: 250
+	},
+	fullList: {
+		width: 'auto'
+	}
+}))
+
+const SwipeableTemporaryDrawer = props => {
+	const [isOpen, setIsOpen] = useState(false)
+
+	const toggleDrawer = () => setIsOpen(!isOpen)
+
+	const { menuMap } = props
+	const classes = useStyles()
+
+	const sideList = (
+		<div className={classes.list}>
+			<List>
+				{menuMap.map(elem => (
+					<ListItem button component={Link} to={elem.path} key={elem.path} onClick={elem.onClick}>
+						<ListItemText primary={elem.text} />
+					</ListItem>
+				))}
+			</List>
+		</div>
+	)
+
+	return (
+		<div>
+			<IconButton
+				className={classes.menuButton}
+				color='inherit'
+				aria-label='Menu'
+				onClick={toggleDrawer}
+			>
+				<MenuIcon />
+			</IconButton>
+
+			<SwipeableDrawer anchor='right' open={isOpen} onClose={toggleDrawer} onOpen={toggleDrawer}>
+				<div tabIndex={0} role='button' onClick={toggleDrawer} onKeyDown={toggleDrawer}>
+					{sideList}
+				</div>
+			</SwipeableDrawer>
+		</div>
+	)
 }
 
-class SwipeableTemporaryDrawer extends React.Component {
-  state = {
-    top: false,
-    left: false,
-    bottom: false,
-    right: false
-  }
-
-  toggleDrawer = (side, open) => () => {
-    this.setState({
-      [side]: open
-    })
-  }
-
-  render() {
-    const { classes } = this.props
-
-    const sideList = (
-      <div className={classes.list}>
-        <List>
-          <ListItem button component={Link} to='/athlets'>
-            <ListItemText primary='Спортсмены' />
-          </ListItem>
-          <ListItem button component={Link} to='/trainers'>
-            <ListItemText primary='Тренеры' />
-          </ListItem>
-          <ListItem button component={Link} to='/tournaments'>
-            <ListItemText primary='Турниры' />
-          </ListItem>
-          <ListItem button component={Link} to='/categories'>
-            <ListItemText primary='Категории' />
-          </ListItem>
-          <ListItem button component={Link} to='/applications'>
-            <ListItemText primary='Заявки' />
-          </ListItem>
-        </List>
-        <Divider />
-        {this.props.authLinks}
-      </div>
-    )
-
-    return (
-      <div>
-        <IconButton
-          className={classes.menuButton}
-          color='inherit'
-          aria-label='Menu'
-          onClick={this.toggleDrawer('left', true)}
-        >
-          <MenuIcon />
-        </IconButton>
-
-        <SwipeableDrawer
-          open={this.state.left}
-          onClose={this.toggleDrawer('left', false)}
-          onOpen={this.toggleDrawer('left', true)}
-        >
-          <div
-            tabIndex={0}
-            role='button'
-            onClick={this.toggleDrawer('left', false)}
-            onKeyDown={this.toggleDrawer('left', false)}
-          >
-            {sideList}
-          </div>
-        </SwipeableDrawer>
-      </div>
-    )
-  }
-}
-
-export default withStyles(styles)(SwipeableTemporaryDrawer)
+export default SwipeableTemporaryDrawer

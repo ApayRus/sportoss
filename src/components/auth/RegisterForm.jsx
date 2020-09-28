@@ -10,7 +10,8 @@ import {
 	FormHelperText,
 	InputAdornment,
 	IconButton,
-	FormControl
+	FormControl,
+	Container
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { Visibility, VisibilityOff } from '@material-ui/icons'
@@ -77,29 +78,21 @@ const RegistrationForm = props => {
 
 	if (!auth.isEmpty) return <Redirect to='/' />
 	return (
-		<div className={classes.flexContainer}>
+		<Container maxWidth='md' className={classes.flexContainer}>
 			<Paper className={classes.loginForm}>
 				<Typography variant='h5' color='primary'>
 					Регистрация
 				</Typography>
 				<form onChange={handleChange}>
-					<TextField
-						id='fullName'
-						label='full name'
-						type='text'
-						margin='normal'
-						autoFocus
-						fullWidth
-					/>
+					<TextField id='fullName' label='фио' type='text' margin='normal' autoFocus fullWidth />
 					<br />
 					<TextField id='email' label='email' type='text' margin='normal' fullWidth />
 					<br />
 					<FormControl className={classes.inputMargin} fullWidth>
 						{/* endAdornment with button inside doesn't work with TextField, only with Input  */}
-						<InputLabel htmlFor='password'>password</InputLabel>
+						<InputLabel htmlFor='password'>пароль</InputLabel>
 						<Input
 							id='password'
-							label='пароль'
 							type={showPassword ? 'text' : 'password'}
 							endAdornment={passwordShowHideButton}
 						/>
@@ -128,7 +121,7 @@ const RegistrationForm = props => {
 					</FormHelperText>
 				</form>
 			</Paper>
-		</div>
+		</Container>
 	)
 }
 

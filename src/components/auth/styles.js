@@ -7,10 +7,20 @@ const styles = theme => ({
         height: '90vh'
     },
     loginForm: {
-        padding: 70,
-        paddingTop: 30,
-        position: 'relative',
-        width: '40%'
+        [theme.breakpoints.up('xs')]: {
+            paddingLeft: 5,
+            paddingRight: 5,
+            padding: 30,
+            width: '100%'
+        },
+        [theme.breakpoints.up('sm')]: {
+            width: '80%',
+            padding: 30
+        },
+        [theme.breakpoints.up('md')]: {
+            width: '60%'
+        },
+        position: 'relative'
     },
     loginButton: {
         position: 'absolute',

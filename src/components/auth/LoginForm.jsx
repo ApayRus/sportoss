@@ -1,91 +1,114 @@
-import React from "react";
+import React, { useState, useEffect } from 'react'
 
-import { Button, TextField, Paper, Typography, FormHelperText } from "@material-ui/core";
-import { Link, Redirect } from "react-router-dom";
-import styles from "./styles";
-import { compose } from "redux";
-import { connect } from "react-redux";
-import { firebaseConnect } from "react-redux-firebase";
+import {
+	Button,
+	TextField,
+	Input,
+	InputLabel,
+	Paper,
+	Typography,
+	FormHelperText,
+	InputAdornment,
+	IconButton,
+	FormControl
+} from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
+import { Visibility, VisibilityOff } from '@material-ui/icons'
+import { useFirebase } from 'react-redux-firebase'
+import { useSelector } from 'react-redux'
+import { Link, Redirect } from 'react-router-dom'
+import styles from './styles'
 
-// import { signIn } from '../../store/actions/authActions';
+const useStyles = makeStyles(styles)
 
-class LoginForm extends React.Component {
-  state = { email: "", password: "" };
-  handleChange = e => {
-    this.setState({
-      [e.target.id]: e.target.value
-    });
-  };
+const RegistrationForm = props => {
+	const [state, setState] = useState({ email: '', password: '' })
+	const [errorMessage, setErrorMessage] = useState()
+	const [showPassword, setShowPassword] = useState()
 
-  handleSubmit = () => {
-    this.props.firebase.login(this.state);
-  };
+	const firebase = useFirebase()
+	const { authError, auth } = useSelector(state => state.firebase)
+	const { message: authErrorMessage = '' } = authError || {}
 
-  render() {
-    const { authError, auth } = this.props;
+	const classes = useStyles()
 
-    if (auth.uid) return <Redirect to="/" />;
-    return (
-      <div style={styles.flexContainer}>
-        <Paper style={styles.loginForm}>
-          <Typography variant="h5" color="primary">
-            Войти
-          </Typography>
-          <TextField
-            onChange={this.handleChange}
-            id="email"
-            label="Email"
-            type="text"
-            margin="normal"
-            autoFocus
-            fullWidth
-          />
-          <br />
-          <TextField
-            onChange={this.handleChange}
-            id="password"
-            label="Password"
-            type="password"
-            margin="normal"
-            fullWidth
-          />
-          <br />
-          <Button
-            style={styles.loginButton}
-            onClick={this.handleSubmit}
-            variant="contained"
-            color="primary"
-            margin="normal"
-          >
-            Войти
-          </Button>
-          <FormHelperText error>{authError ? authError : null}</FormHelperText>
-          <FormHelperText>
-            В первый раз на сайте? Тогда <Link to="/register">зарегистрируйтесь</Link>.
-          </FormHelperText>
-        </Paper>
-      </div>
-    );
-  }
+	useEffect(() => {
+		setErrorMessage(authErrorMessage)
+	}, [authErrorMessage])
+
+	// for clear errorMessage on switch between register/login
+	// else it will go from redux to other component on first open
+	useEffect(() => {
+		setErrorMessage()
+	}, [])
+
+	const handleChange = e => {
+		setErrorMessage()
+		setState({ ...state, [e.target.id]: e.target.value })
+	}
+
+	const handleSubmit = () => {
+		firebase.login(state)
+	}
+
+	const handleClickShowPassword = () => {
+		setShowPassword(!showPassword)
+	}
+
+	const handleMouseDownPassword = event => {
+		event.preventDefault()
+	}
+
+	const passwordShowHideButton = (
+		<InputAdornment position='end'>
+			<IconButton
+				aria-label='toggle password visibility'
+				onClick={handleClickShowPassword}
+				onMouseDown={handleMouseDownPassword}
+			>
+				{showPassword ? <Visibility /> : <VisibilityOff />}
+			</IconButton>
+		</InputAdornment>
+	)
+
+	if (!auth.isEmpty) return <Redirect to='/' />
+	return (
+		<div className={classes.flexContainer}>
+			<Paper className={classes.loginForm}>
+				<Typography variant='h5' color='primary'>
+					Вход
+				</Typography>
+				<form onChange={handleChange}>
+					<TextField id='email' label='email' type='text' margin='normal' fullWidth />
+					<br />
+					<FormControl className={classes.inputMargin} fullWidth>
+						{/* endAdornment with button inside doesn't work with TextField, only with Input  */}
+						<InputLabel htmlFor='password'>password</InputLabel>
+						<Input
+							id='password'
+							label='пароль'
+							type={showPassword ? 'text' : 'password'}
+							endAdornment={passwordShowHideButton}
+						/>
+					</FormControl>
+					<br />
+					<Button
+						className={classes.loginButton}
+						onClick={handleSubmit}
+						variant='contained'
+						color='primary'
+						margin='normal'
+					>
+						Войти
+					</Button>
+					<FormHelperText error>{errorMessage}</FormHelperText>
+					<FormHelperText>
+						Нет аккаунта? Тогда <Link to='/register'>зарегистрируйтесь</Link>.
+					</FormHelperText>
+				</form>
+			</Paper>
+		</div>
+	)
 }
 
-const mapStateToProps = state => {
-  return {
-    // authError: state.auth.authError,
-    auth: state.firebase.auth,
-    profile: state.firebase.profile
-  };
-};
-const mapDispatchToProps = dispatch => {
-  return {
-    // signIn: creds => dispatch(signIn(creds))
-  };
-};
-
-export default compose(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  ),
-  firebaseConnect()
-)(LoginForm);
+export default RegistrationForm

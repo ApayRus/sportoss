@@ -5,11 +5,14 @@ import { makeStyles } from '@material-ui/core/styles'
 import { useFirestore } from 'react-redux-firebase'
 import { useSelector } from 'react-redux'
 import { Link, Redirect } from 'react-router-dom'
-import styles from '../auth/styles'
+import { isEqual } from 'lodash'
+import styles from './styles'
 
 const useStyles = makeStyles(styles)
 
 const ClubForm = props => {
+	const { clubDoc, profile } = props
+
 	const [state, setState] = useState({
 		name: '',
 		kindOfSport: '',
@@ -17,6 +20,7 @@ const ClubForm = props => {
 		logo: '',
 		location: ''
 	})
+	const [isFormDataChanged, setIsFormDataChanged] = useState()
 
 	const [errorMessage, setErrorMessage] = useState()
 
@@ -35,17 +39,21 @@ const ClubForm = props => {
 		// else it will go from redux to other component on first open
 		setErrorMessage()
 		// fill form with loaded data
-		const {
-			clubDoc: { name = '', kindOfSport = '', description = '', logo = '', location = '' }
-		} = props
-		console.log('props', props)
+		const { name = '', kindOfSport = '', description = '', logo = '', location = '' } = clubDoc
 		setState({ name, kindOfSport, description, logo, location })
 	}, [])
 
-	/* 	// fill form with loaded data
 	useEffect(() => {
-		setState({ name, kindOfSport, description, logo, location })
-	}, [name, kindOfSport, description, logo, location]) */
+		const downloadedClubInfo = { ...clubDoc }
+		delete downloadedClubInfo.created
+		delete downloadedClubInfo.updated
+		delete downloadedClubInfo.id
+		if (isEqual(state, downloadedClubInfo)) {
+			setIsFormDataChanged(false)
+		} else {
+			setIsFormDataChanged(true)
+		}
+	}, [state, clubDoc])
 
 	const handleChange = e => {
 		setErrorMessage()
@@ -54,11 +62,7 @@ const ClubForm = props => {
 
 	const handleSubmit = () => {
 		// firebase.login(state)
-		console.log('profile', props.profile)
-		const {
-			profile: { fullName: userName, userId },
-			clubDoc
-		} = props
+		const { fullName: userName, userId } = profile
 		const actionInfo = { userName, userId, time: Date.now() }
 		let createdUpdatedInfo = {}
 		let clubRef
@@ -87,6 +91,7 @@ const ClubForm = props => {
 				<Typography variant='h5' color='primary'>
 					Клуб
 				</Typography>
+				<img className={classes.logo} src={state.logo} alt='logo' />
 				<form onChange={handleChange}>
 					<TextField
 						required
@@ -141,15 +146,20 @@ const ClubForm = props => {
 					/>
 					<br />
 					<br />
-					<Button
-						className={classes.loginButton}
-						onClick={handleSubmit}
-						variant='contained'
-						color='primary'
-						margin='normal'
-					>
-						Сохранить
-					</Button>
+					{isFormDataChanged ? (
+						<Button
+							className={classes.loginButton}
+							onClick={handleSubmit}
+							variant='contained'
+							color='primary'
+							margin='normal'
+						>
+							Сохранить
+						</Button>
+					) : (
+						<FormHelperText className={classes.formInfo}>все данные сохранены</FormHelperText>
+					)}
+
 					<FormHelperText error>{errorMessage}</FormHelperText>
 				</form>
 			</Paper>

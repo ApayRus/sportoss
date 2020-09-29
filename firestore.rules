@@ -5,6 +5,10 @@ service cloud.firestore {
       return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.roles[role] == true
     }
 
+    function fromClub(clubId) {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.club == clubId
+    }
+
     function isAuthorized() {
       return request.auth.uid != null
     }
@@ -15,9 +19,16 @@ service cloud.firestore {
 
     match /users/{userId} {
       allow read, create: if request.auth.uid == userId;
+      allow update: if request.auth.uid == userId && haveRole("admin")
     }
 
-    // tournaments, categories, trainers - can add/update only Admin 
+    // club, trainers, categories, tournaments - can add/update only Admin 
+
+      match /clubs/{document} {
+      allow read: if isAuthorized()
+      allow create: if haveRole("admin")
+      allow update: if haveRole("admin") && fromClub(document)
+  }
 
       match /tournaments/{document} {
       allow read: if isAuthorized()

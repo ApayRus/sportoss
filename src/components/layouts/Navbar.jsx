@@ -30,15 +30,24 @@ const Navbar = () => {
 
 	const menuMap = isAuthorized
 		? [
-				{ path: '/athlets', text: 'Спортсмены' },
+				// admin role:
+				{ path: '/club', text: 'Клуб' },
 				{ path: '/trainers', text: 'Тренеры' },
-				{ path: '/tournaments', text: 'Турниры' },
 				{ path: '/categories', text: 'Категории' },
+				{ path: '/tournaments', text: 'Турниры' },
+
+				// trainer role:
+				{ path: '/athlets', text: 'Спортсмены' },
 				{ path: '/applications', text: 'Заявки' },
+
+				// common:
 				{ path: '/', text: 'Выйти', onClick: firebase.logout },
-				{ path: '#', text: profile.userName }
+				{ path: '#', text: profile.fullName }
 		  ]
-		: [{ path: '/login', text: 'Войти' }]
+		: [
+				{ path: '/register', text: 'Регистрация' },
+				{ path: '/login', text: 'Войти' }
+		  ]
 
 	const logo = (
 		<Button startIcon={<BracketCupIcon />} component={Link} to='/' color='inherit'>

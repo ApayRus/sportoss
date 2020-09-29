@@ -52,7 +52,7 @@ const RegistrationForm = props => {
 		const { email, password, confirmPassword, fullName } = state
 		const isPasswordMatch = password === confirmPassword
 		isPasswordMatch
-			? firebase.createUser({ email, password }, { fullName })
+			? firebase.createUser({ email, password }, { fullName, roles: { admin: true } })
 			: setErrorMessage('Passwords do not match')
 	}
 
@@ -82,6 +82,13 @@ const RegistrationForm = props => {
 			<Paper className={classes.loginForm}>
 				<Typography variant='h5' color='primary'>
 					Регистрация
+				</Typography>
+				<br />
+				<Typography variant='body2' color='primary'>
+					<span style={{ color: 'red' }}>Внимание! </span>
+					Регистрируйтесь через эту форму только если хотите создать новый клуб. Если ваш клуб уже
+					зарегистрирован и вы хотите присоединиться к нему, свяжитесь с админом клуба чтобы он
+					прислал вам на почту ссылку - приглашение для регистрации.
 				</Typography>
 				<form onChange={handleChange}>
 					<TextField id='fullName' label='фио' type='text' margin='normal' autoFocus fullWidth />

@@ -74,14 +74,24 @@ const Navbar = () => {
 				<AppBar position='static'>
 					<Toolbar>
 						{logo}
-						<Hidden xsDown>
-							<Typography variant='h6' color='inherit' className={classes.grow} />
-							{navLinks}
-						</Hidden>
-						<Hidden smUp>
-							<Typography variant='h6' color='inherit' className={classes.grow} />
-							<Drawer menuMap={menuMap} />
-						</Hidden>
+						{isAuthorized && (
+							<>
+								<Hidden smDown>
+									<Typography variant='h6' color='inherit' className={classes.grow} />
+									{navLinks}
+								</Hidden>
+								<Hidden mdUp>
+									<Typography variant='h6' color='inherit' className={classes.grow} />
+									<Drawer menuMap={menuMap} />
+								</Hidden>
+							</>
+						)}
+						{!isAuthorized && (
+							<>
+								<Typography variant='h6' color='inherit' className={classes.grow} />
+								{navLinks}
+							</>
+						)}
 					</Toolbar>
 				</AppBar>
 			</Box>

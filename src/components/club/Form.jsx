@@ -39,7 +39,8 @@ const ClubForm = props => {
 		// else it will go from redux to other component on first open
 		setErrorMessage()
 		// fill form with loaded data
-		const { name = '', kindOfSport = '', description = '', logo = '', location = '' } = clubDoc
+		const { name = '', kindOfSport = '', description = '', logo = '', location = '' } =
+			clubDoc || {}
 		setState({ name, kindOfSport, description, logo, location })
 	}, [])
 
@@ -91,7 +92,7 @@ const ClubForm = props => {
 				<Typography variant='h5' color='primary'>
 					Клуб
 				</Typography>
-				<img className={classes.logo} src={state.logo} alt='logo' />
+				{state.logo && <img className={classes.logo} src={state.logo} alt='logo' />}
 				<form onChange={handleChange}>
 					<TextField
 						required

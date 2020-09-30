@@ -30,6 +30,9 @@ const styles = theme => ({
     inputMargin: {
         marginTop: 16,
         marginBottom: 8
+    },
+    inviteToLoginRegister: {
+        position: 'absolute'
     }
 })
 

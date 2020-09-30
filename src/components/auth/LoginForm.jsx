@@ -101,8 +101,10 @@ const RegistrationForm = props => {
 					>
 						Войти
 					</Button>
-					<FormHelperText error>{errorMessage}</FormHelperText>
-					<FormHelperText>
+					<br />
+					<br />
+					<FormHelperText error>{errorMessage} &nbsp;</FormHelperText>
+					<FormHelperText className={classes.inviteToLoginRegister}>
 						Нет аккаунта? Тогда <Link to='/register'>зарегистрируйтесь</Link>.
 					</FormHelperText>
 				</form>

@@ -2,10 +2,11 @@ import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { AppBar, Toolbar, Typography, Button, Hidden, Box } from '@material-ui/core'
 import { Link } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { useFirebase } from 'react-redux-firebase'
 import Drawer from './Drawer'
 import BracketCupIcon from './BracketCupIcon'
+import { actionTypes } from 'redux-firestore'
 
 const useStyles = makeStyles(theme => {
 	return {
@@ -27,6 +28,12 @@ const Navbar = () => {
 	const classes = useStyles()
 	const firebase = useFirebase()
 	const isAuthorized = !profile.isEmpty
+	const dispatch = useDispatch()
+
+	const logout = () => {
+		firebase.logout()
+		dispatch({ type: actionTypes.CLEAR_DATA })
+	}
 
 	const menuMap = isAuthorized
 		? [
@@ -41,7 +48,7 @@ const Navbar = () => {
 				{ path: '/applications', text: 'Заявки' },
 
 				// common:
-				{ path: '/', text: 'Выйти', onClick: firebase.logout },
+				{ path: '/', text: 'Выйти', onClick: logout },
 				{ path: '#', text: profile.fullName }
 		  ]
 		: [

@@ -4,8 +4,11 @@ import { Button, TextField, Paper, Typography, FormHelperText, Container } from 
 import { makeStyles } from '@material-ui/core/styles'
 import { useFirestore } from 'react-redux-firebase'
 import { useSelector } from 'react-redux'
-import { Link, Redirect } from 'react-router-dom'
+import { Redirect } from 'react-router-dom'
 import { isEqual } from 'lodash'
+import nanoid from 'nanoid'
+import { useHistory } from 'react-router-dom'
+
 import styles from './styles'
 
 const useStyles = makeStyles(styles)
@@ -21,8 +24,8 @@ const ClubForm = props => {
 		location: ''
 	})
 	const [isFormDataChanged, setIsFormDataChanged] = useState()
-
 	const [errorMessage, setErrorMessage] = useState()
+	const history = useHistory()
 
 	const db = useFirestore()
 	const { authError, auth } = useSelector(state => state.firebase)
@@ -63,8 +66,8 @@ const ClubForm = props => {
 
 	const handleSubmit = () => {
 		// firebase.login(state)
-		const { fullName: userName, userId } = profile
-		const actionInfo = { userName, userId, time: Date.now() }
+		const { fullName, userId, email, roles } = profile
+		const actionInfo = { userName: fullName, userId, time: Date.now() }
 		let createdUpdatedInfo = {}
 		let clubRef
 		// club exists and it is an update
@@ -73,14 +76,22 @@ const ClubForm = props => {
 			clubRef = db.collection('clubs').doc(clubDoc.id)
 			clubRef.set({ ...state, ...createdUpdatedInfo })
 		}
-		// club doesn't exist and we need put it to user user profile
+		// club doesn't exist and we need put it to user profile
 		else {
 			createdUpdatedInfo = { created: actionInfo, updated: actionInfo }
 			clubRef = db.collection('clubs').doc()
 			clubRef.set({ ...state, ...createdUpdatedInfo })
 
+			// add clubId to user profile
 			const userRef = db.collection('users').doc(userId)
 			userRef.set({ club: clubRef.id }, { merge: true })
+
+			// add current user to the club trainers automatically.
+			const trainersRef = db.collection('trainers').doc(clubRef.id)
+			const trainerId = nanoid(10)
+			trainersRef.set({ [trainerId]: { fullName, email, userId, roles } })
+
+			history.push('/trainers')
 		}
 	}
 

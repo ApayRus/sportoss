@@ -58,7 +58,7 @@ export function Page(props) {
 				columns={columnsTrainers}
 				collection='trainers'
 				doc={profile.club}
-				title='Спортсмены'
+				title='Тренеры (пользователи)'
 			/>
 
 			<Fab style={styles.fab} onClick={() => openModal(null)} color='primary' aria-label='Add'>

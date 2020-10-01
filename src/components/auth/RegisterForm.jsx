@@ -19,6 +19,7 @@ import { useFirebase } from 'react-redux-firebase'
 import { useSelector } from 'react-redux'
 import { Link, Redirect } from 'react-router-dom'
 import styles from './styles'
+import { useHistory } from 'react-router-dom'
 
 const useStyles = makeStyles(styles)
 
@@ -26,6 +27,7 @@ const RegistrationForm = props => {
 	const [state, setState] = useState({ email: '', password: '', fullName: '', authError: '' })
 	const [errorMessage, setErrorMessage] = useState()
 	const [showPassword, setShowPassword] = useState()
+	const history = useHistory()
 
 	const firebase = useFirebase()
 	const { authError, auth } = useSelector(state => state.firebase)
@@ -52,7 +54,9 @@ const RegistrationForm = props => {
 		const { email, password, confirmPassword, fullName } = state
 		const isPasswordMatch = password === confirmPassword
 		isPasswordMatch
-			? firebase.createUser({ email, password }, { fullName, roles: { admin: true } })
+			? firebase
+					.createUser({ email, password }, { fullName, roles: { admin: true, trainer: false } })
+					.then(() => history.push('/club'))
 			: setErrorMessage('Passwords do not match')
 	}
 

@@ -8,7 +8,6 @@ export function ClubFirebaseContainer(props) {
 	const { profile } = useSelector(state => state.firebase)
 	const { club: clubDoc } = useSelector(state => state.firestore.ordered)
 	const { club = '' } = profile
-	useFirestoreConnect([{ collection: 'clubs', doc: club, storeAs: 'club' }])
 
 	if (isLoaded(clubDoc, profile)) {
 		const loadedProps = { clubDoc: club ? clubDoc[0] : null, profile }

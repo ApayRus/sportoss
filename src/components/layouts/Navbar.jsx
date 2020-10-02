@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { AppBar, Toolbar, Typography, Button, Hidden, Box } from '@material-ui/core'
 import { Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { useFirebase } from 'react-redux-firebase'
+import { useFirebase, useFirestoreConnect } from 'react-redux-firebase'
 import Drawer from './Drawer'
 import BracketCupIcon from './BracketCupIcon'
 import { actionTypes } from 'redux-firestore'
@@ -29,6 +29,7 @@ const Navbar = () => {
 	const firebase = useFirebase()
 	const isAuthorized = !profile.isEmpty
 	const dispatch = useDispatch()
+	useFirestoreConnect([{ collection: 'clubs', doc: profile.club, storeAs: 'club' }])
 
 	const logout = () => {
 		firebase.logout()

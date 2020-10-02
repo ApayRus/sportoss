@@ -19,21 +19,42 @@ import { useFirebase } from 'react-redux-firebase'
 import { useSelector } from 'react-redux'
 import { Link, Redirect } from 'react-router-dom'
 import styles from './styles'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
+import InviteMessage from './InviteMessage'
 
 const useStyles = makeStyles(styles)
 
 const RegistrationForm = props => {
-	const [state, setState] = useState({ email: '', password: '', fullName: '', authError: '' })
+	const [state, setState] = useState({
+		fullName: '',
+		email: '',
+		password: '',
+		confirmPassword: '',
+		authError: ''
+	})
 	const [errorMessage, setErrorMessage] = useState()
 	const [showPassword, setShowPassword] = useState()
 	const history = useHistory()
+
+	// console.log('useQuery', useQuery())
 
 	const firebase = useFirebase()
 	const { authError, auth } = useSelector(state => state.firebase)
 	const { message: authErrorMessage = '' } = authError || {}
 
 	const classes = useStyles()
+
+	const locationSearchStringToObject = locationSearchString => {
+		const searchParams = new URLSearchParams(locationSearchString)
+		const object = {}
+		for (var pair of searchParams.entries()) {
+			object[pair[0]] = pair[1]
+		}
+		return object
+	}
+
+	const inviteInfo = locationSearchStringToObject(useLocation().search)
+	const { fullName, email } = inviteInfo
 
 	useEffect(() => {
 		setErrorMessage(authErrorMessage)
@@ -44,6 +65,9 @@ const RegistrationForm = props => {
 	useEffect(() => {
 		setErrorMessage()
 	}, [])
+	useEffect(() => {
+		setState({ ...state, fullName, email })
+	}, [fullName, email])
 
 	const handleChange = e => {
 		setErrorMessage()
@@ -88,16 +112,27 @@ const RegistrationForm = props => {
 					Регистрация
 				</Typography>
 				<br />
-				<Typography variant='body2' color='primary'>
-					<span style={{ color: 'red' }}>Внимание! </span>
-					Регистрируйтесь через эту форму только если хотите создать новый клуб. Если ваш клуб уже
-					зарегистрирован и вы хотите присоединиться к нему, свяжитесь с админом клуба чтобы он
-					прислал вам на почту ссылку - приглашение для регистрации.
-				</Typography>
+				<InviteMessage inviteInfo={inviteInfo} />
 				<form onChange={handleChange}>
-					<TextField id='fullName' label='фио' type='text' margin='normal' autoFocus fullWidth />
+					<TextField
+						id='fullName'
+						value={state.fullName}
+						label='фио'
+						type='text'
+						margin='normal'
+						autoFocus
+						fullWidth
+					/>
 					<br />
-					<TextField id='email' label='email' type='text' margin='normal' fullWidth />
+					<TextField
+						id='email'
+						value={state.email}
+						label='email'
+						type='text'
+						margin='normal'
+						disabled={email ? true : false}
+						fullWidth
+					/>
 					<br />
 					<FormControl className={classes.inputMargin} fullWidth>
 						{/* endAdornment with button inside doesn't work with TextField, only with Input  */}

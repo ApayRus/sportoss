@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import nanoid from 'nanoid'
 import { useFirestore } from 'react-redux-firebase'
+import { useSelector } from 'react-redux'
 import {
 	Button,
 	TextField,
@@ -16,12 +17,25 @@ import RoleChecker from './RolesDisplaySelect'
 function Form(props) {
 	const { isModalOpen, data, closeModal, collection, doc } = props
 	const firestore = useFirestore()
+	const { userId = '' } = data || {}
 	const [formState, setFormState] = useState({
 		fullName: '',
 		email: '',
-		roles: { admin: false, trainer: false }
+		roles: { admin: false, trainer: true },
+		id: nanoid(10)
 	})
 	const [errorMessage, setErrorMessage] = useState()
+	const [club] = useSelector(state => state.firestore.ordered.club) || []
+	const { profile } = useSelector(state => state.firebase)
+	const inviteLink = !userId
+		? encodeURI(
+				`/register?clubId=${club.id}&clubName=${club.name}&inviterName=${
+					profile.fullName
+				}&fullName=${formState.fullName}&email=${formState.email}&trainerId=${
+					formState.id
+				}&roles=${JSON.stringify(formState.roles)}`
+		  )
+		: ''
 
 	useEffect(() => {
 		//component will mount
@@ -43,11 +57,11 @@ function Form(props) {
 	}
 
 	const handleSubmit = () => {
-		//id is empty when we creates new entry, and id is filled when we edit an existent one
-		const id = formState.id ? formState.id : nanoid(10)
-		firestore.set({ collection, doc }, { [id]: formState }, { merge: true }).catch(error => {
-			setErrorMessage(error.message)
-		})
+		firestore
+			.set({ collection, doc }, { [formState.id]: formState }, { merge: true })
+			.catch(error => {
+				setErrorMessage(error.message)
+			})
 		handleCancel()
 	}
 
@@ -86,6 +100,10 @@ function Form(props) {
 						<RoleChecker onRoleClick={onRoleClick} roles={formState.roles} />
 					</form>
 					<br />
+					<Typography style={{ fontSize: 10, wordBrake: 'break-all' }} variant='body2'>
+						<a href={inviteLink}>Приглашение на регистрацию</a>
+					</Typography>
+
 					<FormHelperText error> {errorMessage} &nbsp; </FormHelperText>
 				</DialogContent>
 				<DialogActions>

@@ -98,6 +98,7 @@ function Form(props) {
 						type='date'
 						value={formState.date}
 						margin='normal'
+						placeholder='yyyy-mm-dd'
 						fullWidth
 						InputLabelProps={{
 							shrink: true
@@ -111,6 +112,7 @@ function Form(props) {
 						value={formState.dateAge}
 						margin='normal'
 						fullWidth
+						placeholder='yyyy-mm-dd'
 						InputLabelProps={{
 							shrink: true
 						}}

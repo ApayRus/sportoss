@@ -108,6 +108,7 @@ function Form(props) {
 							label='Дата рождения'
 							type='date'
 							value={formState.birthday}
+							placeholder='yyyy-mm-dd'
 							margin='normal'
 							fullWidth
 							InputLabelProps={{

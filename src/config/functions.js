@@ -1,34 +1,33 @@
 import groupBy from 'lodash/groupBy'
 
 export function athletName(athlet) {
-  if (athlet) {
-    const { familyName, firstName } = athlet
-    // const name = `${familyName} ${firstName} ${fatherName}`
-    return `${familyName} ${firstName}`
-  } else return ''
+	if (athlet) {
+		const { familyName, firstName } = athlet
+		// const name = `${familyName} ${firstName} ${fatherName}`
+		return `${familyName} ${firstName}`
+	} else return ''
 }
 
 export function trainerName(trainer) {
-  if (trainer.familyName) {
-    const { familyName, firstName, fatherName } = trainer
-    // const name = `${familyName} ${firstName} ${fatherName}`
-    return `${familyName} ${firstName[0]}. ${fatherName[0]}.`
-  } else return ''
+	const { fullName } = trainer
+	if (fullName) {
+		return fullName
+	} else return ''
 }
 
 export function categoryName(category) {
-  if (category) {
-    const { gender, minAge, maxAge, weight } = category
-    return `${gender}, ${minAge}-${maxAge} лет, ${weight}`
-  } else return ''
+	if (category) {
+		const { gender, minAge, maxAge, weight } = category
+		return `${gender}, ${minAge}-${maxAge} лет, ${weight}`
+	} else return ''
 }
 
 export function tournamentName(tournament) {
-  if (tournament) {
-    const { name, date /* address */ } = tournament
-    const localDate = new Date(date).toLocaleDateString('ru')
-    return `${name}, ${localDate}`
-  } else return ''
+	if (tournament) {
+		const { name, date /* address */ } = tournament
+		const localDate = new Date(date).toLocaleDateString('ru')
+		return `${name}, ${localDate}`
+	} else return ''
 }
 
 /**
@@ -40,21 +39,21 @@ export function tournamentName(tournament) {
  * ageAtDate('1987-05-14', '2019-05-15') // 32
  */
 export function ageAtDate(birthday, date) {
-  const [birthYear, birthMonth, birthDay] = birthday.split('-')
-  const [dateYear, dateMonth, dateDay] = date.split('-')
+	const [birthYear, birthMonth, birthDay] = birthday.split('-')
+	const [dateYear, dateMonth, dateDay] = date.split('-')
 
-  let answer = dateYear - birthYear //2019-1984 = 35
-  if (dateMonth > birthMonth) {
-    return answer
-  }
-  if (dateMonth < birthMonth) {
-    answer--
-    return answer
-  }
-  if (dateMonth === birthMonth) {
-    if (dateDay <= birthDay) answer--
-    return answer
-  }
+	let answer = dateYear - birthYear //2019-1984 = 35
+	if (dateMonth > birthMonth) {
+		return answer
+	}
+	if (dateMonth < birthMonth) {
+		answer--
+		return answer
+	}
+	if (dateMonth === birthMonth) {
+		if (dateDay <= birthDay) answer--
+		return answer
+	}
 }
 
 /**
@@ -64,27 +63,27 @@ export function ageAtDate(birthday, date) {
  * returns {trainerId1: "aqua", trainerId2: "teal" }
  */
 export function trainerColors(participants) {
-  const trainerColorsMap = {}
-  const participantsGroupedByTrainer = groupBy(participants, 'trainerId')
-  const trainerIds = Object.keys(participantsGroupedByTrainer)
-  const commonHtmlColors = [
-    'teal',
-    'aqua',
-    'green',
-    'lime',
-    'olive',
-    'yellow',
-    'maroon',
-    'black',
-    'gray',
-    'silver',
-    'purple',
-    'fuchsia',
-    'navy'
-    /* 'white', 'red', 'blue'*/
-  ]
-  trainerIds.forEach((trainerId, index) => {
-    trainerColorsMap[trainerId] = commonHtmlColors[index]
-  })
-  return trainerColorsMap
+	const trainerColorsMap = {}
+	const participantsGroupedByTrainer = groupBy(participants, 'trainerId')
+	const trainerIds = Object.keys(participantsGroupedByTrainer)
+	const commonHtmlColors = [
+		'teal',
+		'aqua',
+		'green',
+		'lime',
+		'olive',
+		'yellow',
+		'maroon',
+		'black',
+		'gray',
+		'silver',
+		'purple',
+		'fuchsia',
+		'navy'
+		/* 'white', 'red', 'blue'*/
+	]
+	trainerIds.forEach((trainerId, index) => {
+		trainerColorsMap[trainerId] = commonHtmlColors[index]
+	})
+	return trainerColorsMap
 }

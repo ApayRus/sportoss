@@ -67,7 +67,7 @@ const ClubForm = props => {
 	const handleSubmit = () => {
 		// firebase.login(state)
 		const { fullName, userId, email, roles } = profile
-		const actionInfo = { userName: fullName, userId, time: Date.now() }
+		const actionInfo = { fullName, userId, time: Date.now() }
 		let createdUpdatedInfo = {}
 		let clubRef
 		// club exists and it is an update

@@ -19,7 +19,7 @@ const categoryColumns = [{ id: 'name', numeric: false, disablePadding: true, lab
 function Form(props) {
 	const { categories, isModalOpen, data, closeModal, firestore } = props
 
-	const { userName, userId } = useSelector((state) => state.firebase.profile)
+	const { fullName, userId } = useSelector(state => state.firebase.profile)
 
 	const [formState, setFormState] = useState({})
 
@@ -31,28 +31,28 @@ function Form(props) {
 		}
 	}, [])
 
-	const handleChange = (field) => (e) => {
+	const handleChange = field => e => {
 		setFormState({ ...formState, [field]: e.target.value })
 	}
-	const handleSelect = (selected) => {
+	const handleSelect = selected => {
 		setFormState({ ...formState, categories: selected })
 	}
 
 	const handleSubmit = () => {
 		// category = { id, gender, minAge, maxAge, weight }
 		const createdBy = {
-			userName,
+			fullName,
 			userId
 		}
 		//id is empty when we creates new endtry, and filled when we edit an existen one
 		if (!formState.id) {
-			firestore.add({ collection: 'tournaments' }, { ...formState, createdBy }).catch((error) => {
+			firestore.add({ collection: 'tournaments' }, { ...formState, createdBy }).catch(error => {
 				console.log('firestoreAdd error', error.message)
 			})
 		} else {
 			firestore
 				.update({ collection: 'tournaments', doc: formState.id }, { ...formState, createdBy })
-				.catch((error) => {
+				.catch(error => {
 					console.log('firestoreUpdate error', error.message)
 				})
 		}
@@ -66,7 +66,7 @@ function Form(props) {
 
 	const formTitle = formState.id ? 'Редактирование' : 'Добавление'
 
-	const categoriesForTable = categories.map((cat) => {
+	const categoriesForTable = categories.map(cat => {
 		return { id: cat.id, name: categoryName(cat) }
 	})
 
